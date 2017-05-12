@@ -83,7 +83,7 @@ router.route('/students/:class_id')
                                 }
                             }, function(err, result) {
                                 db.close();
-                                res.end('true');
+                                 res.send({status:'true',id:class_id+'-STD-'+autoIndex});
                             });
                         });
                     }
