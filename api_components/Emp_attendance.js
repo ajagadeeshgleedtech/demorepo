@@ -20,9 +20,9 @@ router.use(function(req, res, next) {
 
 // Add Attandance
 
-router.route('/attendance/:student_id')
+router.route('/employee_attendance/:employee_id')
     .post(function(req, res, next) {
-        var student_id = req.params.student_id;
+        var employee_id = req.params.employee_id;
         var d = new Date();
         var month = d.getMonth() + 1;
         var time = d.getHours();
@@ -37,18 +37,16 @@ router.route('/attendance/:student_id')
         }
         var item = {
             attendance_id: 'getauto',
-            student_id: student_id,
-            class_id: req.body.class_id,
-            section_id: req.body.section_id,
+            employee_id: employee_id,
             date: d.getDate() + '-' + month + '-' + d.getFullYear(),
             session,
             status: req.body.status,
         };
         mongo.connect(url, function(err, db) {
-            autoIncrement.getNextSequence(db, 'attendance', function(err, autoIndex) {
-                var collection = db.collection('attendance');
+            autoIncrement.getNextSequence(db, 'employee_attendance', function(err, autoIndex) {
+                var collection = db.collection('employee_attendance');
                 collection.ensureIndex({
-                    "attendance_id": 1,
+                    "employee_attendance_id": 1,
                 }, {
                     unique: true
                 }, function(err, result) {
@@ -67,11 +65,11 @@ router.route('/attendance/:student_id')
                                 _id: item._id
                             }, {
                                 $set: {
-                                    attendance_id: student_id+'-ATT-' + autoIndex
+                                    employee_attendance_id: employee_id+'-EMPATT-' + autoIndex
                                 }
                             }, function(err, result) {
                                 db.close();
-                                res.send({attendance_id: student_id+'-ATT-' + autoIndex});
+                                res.send({employee_attendance_id: employee_id+'-EMPATT-' + autoIndex});
                                 // res.end();
                             });
                         });
@@ -81,30 +79,30 @@ router.route('/attendance/:student_id')
         });
     })
     .get(function(req, res, next) {
-        var student_id = req.params.student_id;
+        var employee_id = req.params.employee_id;
         var resultArray = [];
         mongo.connect(url, function(err, db) {
             assert.equal(null, err);
-            var cursor = db.collection('attendance').find({student_id});
+            var cursor = db.collection('employee_attendance').find({employee_id});
             cursor.forEach(function(doc, err) {
                 assert.equal(null, err);
                 resultArray.push(doc);
             }, function() {
                 db.close();
                 res.send({
-                    attendance: resultArray
+                    emp_attendance: resultArray
                 });
             });
         });
     });
 
-    router.route('/edit_attendance/:attendance_id/:name/:value')
+    router.route('/edit_attendance/:employee_attendance_id/:name/:value')
         .post(function(req, res, next){
-          var attendance_id = req.params.attendance_id;
+          var employee_attendance_id = req.params.employee_attendance_id;
           var name = req.params.name;
           var value = req.params.value;
           mongo.connect(url, function(err, db){
-                db.collection('attendance').update({attendance_id},{$set:{[name]: value}}, function(err, result){
+                db.collection('employee_attendance').update({employee_attendance_id},{$set:{[name]: value}}, function(err, result){
                   assert.equal(null, err);
                    db.close();
                    res.send('true');
@@ -113,14 +111,14 @@ router.route('/attendance/:student_id')
         });
 
 
-router.route('/get_attendance/:student_id/')
+router.route('/get_employee_attendance/:employee_id/')
     .get(function(req, res, next) {
-        var student_id = req.params.student_id;
+        var employee_id = req.params.employee_id;
         var resultArray = [];
         mongo.connect(url, function(err, db) {
             assert.equal(null, err);
-            var cursor = db.collection('attendance').find({
-                student_id
+            var cursor = db.collection('employee_attendance').find({
+                employee_id
             }, {
                 'status': 1,
                 'session': 1,
@@ -136,14 +134,14 @@ router.route('/get_attendance/:student_id/')
         });
     });
 
-router.route('/get_attendance_by_date/:student_id/:date')
+router.route('/get_employee_attendance_by_date/:employee_id/:date')
     .get(function(req, res, next) {
         var student_id = req.params.student_id;
         var date = req.params.date;
         var resultArray = [];
         mongo.connect(url, function(err, db) {
             assert.equal(null, err);
-            var cursor = db.collection('attendance').find({
+            var cursor = db.collection('employee_attendance').find({
                 student_id,
                 date
             }, {
@@ -161,20 +159,20 @@ router.route('/get_attendance_by_date/:student_id/:date')
         });
     });
 
-    router.route('/get_attendance_id_by_date_session/:student_id/:date/:session')
+    router.route('/get_employeeattendance_id_by_date_session/:employee_id/:date/:session')
         .get(function(req, res, next) {
-            var student_id = req.params.student_id;
+            var employee_id = req.params.employee_id;
             var date = req.params.date;
             var session = req.params.session;
             var resultArray = [];
             mongo.connect(url, function(err, db) {
                 assert.equal(null, err);
-                var cursor = db.collection('attendance').find({
+                var cursor = db.collection('employee_attendance').find({
                     student_id,
                     date,
                     session
                 }, {
-                    'attendance_id': 1,
+                    'employee_attendance_id': 1,
                     '_id': 0
                 });
                 cursor.forEach(function(doc, err) {

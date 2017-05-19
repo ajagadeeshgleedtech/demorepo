@@ -20,21 +20,22 @@ router.use(function(req, res, next) {
 
 // Add Schools
 
-router.route('/subjects/:section_id')
+router.route('/class_sections/:class_id')
     .post(function(req, res, next) {
         var status = 1;
-        var section_id = req.params.section_id;
-        subjects = [];
+        var class_id = req.params.class_id;
+        school_classes = [];
         var item = {
-            subject_id: 'getauto',
-            section_id: section_id,
+            section_id: 'getauto',
+            class_id: class_id,
             name: req.body.name,
+            status: status,
         };
         mongo.connect(url, function(err, db) {
-            autoIncrement.getNextSequence(db, 'subjects', function(err, autoIndex) {
-                var collection = db.collection('subjects');
+            autoIncrement.getNextSequence(db, 'class_sections', function(err, autoIndex) {
+                var collection = db.collection('class_sections');
                 collection.ensureIndex({
-                    "subject_id": 1,
+                    "section_id": 1,
                 }, {
                     unique: true
                 }, function(err, result) {
@@ -53,7 +54,7 @@ router.route('/subjects/:section_id')
                                 _id: item._id
                             }, {
                                 $set: {
-                                    subject_id: section_id+'-SUB-'+autoIndex
+                                    section_id: class_id+'-SEC-'+autoIndex
                                 }
                             }, function(err, result) {
                                 db.close();
@@ -66,33 +67,55 @@ router.route('/subjects/:section_id')
         });
     })
     .get(function(req, res, next) {
+      var class_id = req.params.class_id;
         var resultArray = [];
-        var section_id = req.params.section_id;
         mongo.connect(url, function(err, db) {
             assert.equal(null, err);
-            var cursor = db.collection('subjects').find({section_id});
+            var cursor = db.collection('class_sections').find({class_id});
             cursor.forEach(function(doc, err) {
                 assert.equal(null, err);
                 resultArray.push(doc);
             }, function() {
                 db.close();
                 res.send({
-                    subjects: resultArray
+                    class_sections: resultArray
                 });
             });
         });
     });
 
-    router.route('/get_subject_ids/:section_id')
+    router.route('/get_sections_ids/:class_id')
+    .get(function(req, res, next){
+      var class_id = req.params.class_id;
+      var resultArray = [];
+      mongo.connect(url, function(err, db){
+        assert.equal(null, err);
+        var cursor = db.collection('class_sections').aggregate([
+          {$match:{class_id}},
+          {$group: {
+            _id: '$class_id', classes: {$push: '$section_id'}
+            }
+          }
+        ]);
+        cursor.forEach(function(doc, err){
+          resultArray.push(doc);
+        }, function(){
+          db.close();
+          res.send(resultArray[0]);
+        });
+      });
+    });
+
+    router.route('/get_section_name/:section_id')
     .get(function(req, res, next){
       var section_id = req.params.section_id;
       var resultArray = [];
       mongo.connect(url, function(err, db){
         assert.equal(null, err);
-        var cursor = db.collection('subjects').aggregate([
+        var cursor = db.collection('class_sections').aggregate([
           {$match:{section_id}},
           {$group: {
-            _id: '$section_id', subject_ids: {$push: '$subject_id'}
+            _id: '$section_id', classes: {$push: '$name'}
             }
           }
         ]);
@@ -105,35 +128,13 @@ router.route('/subjects/:section_id')
       });
     });
 
-    router.route('/get_subject_name/:subject_id')
-    .get(function(req, res, next){
-      var subject_id = req.params.subject_id;
-      var resultArray = [];
-      mongo.connect(url, function(err, db){
-        assert.equal(null, err);
-        var cursor = db.collection('subjects').aggregate([
-          {$match:{subject_id}},
-          {$group: {
-            _id: '$subject_id', subject_names: {$push: '$name'}
-            }
-          }
-        ]);
-        cursor.forEach(function(doc, err){
-          resultArray.push(doc);
-        }, function(){
-          db.close();
-          res.send(resultArray[0]);
-        });
-      });
-    });
-
-    router.route('/subject_edit/:subject_id/:name/:value')
+    router.route('/class_sections_edit/:class_id/:name/:value')
         .post(function(req, res, next){
-          var subject_id = req.params.subject_id;
+          var section_id = req.params.section_id;
           var name = req.params.name;
           var value = req.params.value;
           mongo.connect(url, function(err, db){
-                db.collection('subjects').update({subject_id},{$set:{[name]: value}}, function(err, result){
+                db.collection('class_sections').update({section_id},{$set:{[name]: value}}, function(err, result){
                   assert.equal(null, err);
                    db.close();
                    res.send('true');
