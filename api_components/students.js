@@ -114,7 +114,7 @@ router.route('/students/:section_id')
                                 }
                             }, function(err, result) {
                                 db.close();
-                                // res.end('true');
+                               // res.end('true');
                                 res.send({status:'true',id:class_id+'-STD-'+autoIndex});
                             });
                             collection.update({
