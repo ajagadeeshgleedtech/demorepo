@@ -41,7 +41,7 @@ router.route('/attendance/:student_id')
             class_id: req.body.class_id,
             section_id: req.body.section_id,
             date: d.getDate() + '-' + month + '-' + d.getFullYear(),
-            session,
+            session : session,
             status: req.body.status,
         };
         mongo.connect(url, function(err, db) {
