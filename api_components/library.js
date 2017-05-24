@@ -20,12 +20,14 @@ router.use(function(req, res, next) {
 
 // Add Schools
 
-router.route('/book')
+router.route('/book/:school_id')
     .post(function(req, res, next) {
         var status = 1;
+        var school_id = req.params.school_id;
         books = [];
         var item = {
             book_id: 'getauto',
+            school_id: school_id,
             book_title: req.body.book_title,
             author_name: req.body.author_name,
             book_price: req.body.book_price,
@@ -90,7 +92,7 @@ router.route('/book')
 
     router.route('/book_edit/:book_id/:name/:value')
         .post(function(req, res, next){
-          var book_id = req.params.book_id;
+          var subject_id = req.params.subject_id;
           var name = req.params.name;
           var value = req.params.value;
           mongo.connect(url, function(err, db){
