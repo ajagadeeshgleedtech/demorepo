@@ -90,7 +90,7 @@ router.route('/book')
 
     router.route('/book_edit/:book_id/:name/:value')
         .post(function(req, res, next){
-          var subject_id = req.params.subject_id;
+          var book_id = req.params.book_id;
           var name = req.params.name;
           var value = req.params.value;
           mongo.connect(url, function(err, db){
