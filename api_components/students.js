@@ -142,11 +142,11 @@ router.route('/students/:section_id')
 
     })
     .get(function(req, res, next) {
-        var class_id = req.params.class_id;
+        var section = req.params.section_id;
         var resultArray = [];
         mongo.connect(url, function(err, db) {
             assert.equal(null, err);
-            var cursor = db.collection('students').find({class_id});
+            var cursor = db.collection('students').find({section});
             cursor.forEach(function(doc, err) {
                 assert.equal(null, err);
                 resultArray.push(doc);
@@ -270,9 +270,10 @@ router.route('/student_permanent_address/:student_id')
     });
 
 
-    router.route('/students/:student_id')
+    router.route('/studentsdetails/:student_id')
         .get(function(req, res, next){
           var student_id = req.params.student_id;
+         
           var resultArray = [];
           mongo.connect(url, function(err, db){
             assert.equal(null, err);

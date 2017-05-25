@@ -128,7 +128,7 @@ router.route('/class_sections/:class_id')
       });
     });
 
-    router.route('/class_sections_edit/:class_id/:name/:value')
+    router.route('/class_sections_edit/:section_id/:name/:value')
         .post(function(req, res, next){
           var section_id = req.params.section_id;
           var name = req.params.name;
