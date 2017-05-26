@@ -39,7 +39,7 @@ router.route('/employee_attendance/:employee_id')
             attendance_id: 'getauto',
             employee_id: employee_id,
             date: d.getDate() + '-' + month + '-' + d.getFullYear(),
-            session,
+            session:session,
             status: req.body.status,
         };
         mongo.connect(url, function(err, db) {
@@ -50,7 +50,7 @@ router.route('/employee_attendance/:employee_id')
                 }, {
                     unique: true
                 }, function(err, result) {
-                    if (item.class_id == null || item.section_id == null || item.date == null || item.session == null || item.status == null) {
+                    if (item.employee_id == null  || item.date == null || item.session == null || item.status == null) {
                         res.end('null');
                     } else {
                         collection.insertOne(item, function(err, result) {
@@ -168,7 +168,7 @@ router.route('/get_employee_attendance_by_date/:employee_id/:date')
             mongo.connect(url, function(err, db) {
                 assert.equal(null, err);
                 var cursor = db.collection('employee_attendance').find({
-                    student_id,
+                    employee_id,
                     date,
                     session
                 }, {

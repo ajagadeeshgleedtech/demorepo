@@ -66,7 +66,7 @@ router.route('/employee/:school_id')
                 }, {
                     unique: true
                 }, function(err, result) {
-                    if (item.name == null || item.dob == null || item.phone == null) {
+                    if (item.first_name == null || item.dob == null || item.phone == null) {
                         res.end('null');
                     } else {
                         collection.insertOne(item, function(err, result) {
@@ -115,15 +115,15 @@ router.route('/employee/:school_id')
             });
         });
     });
-router.route('/search_employee/:employee_type/:gender/:search_key')
+router.route('/search_employee/:job_category/:gender/:search_key')
     .get(function(req, res, next){
-      var employee_type = req.params.employee_type;
+      var job_category = req.params.job_category;
       var gender = req.params.gender;
       var search_key = req.params.search_key;
       var resultArray = [];
       mongo.connect(url, function(err, db){
         assert.equal(null, err);
-        var cursor = db.collection('employee').find({employee_type: job_category,gender, $text:{$search:search_key}});
+        var cursor = db.collection('employee').find({job_category: job_category,gender, $text:{$search:search_key}});
         cursor.forEach(function(doc, err){
           resultArray.push(doc);
         }, function(){
