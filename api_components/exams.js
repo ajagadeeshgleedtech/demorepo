@@ -20,15 +20,15 @@ router.use(function(req, res, next) {
 
 // Add Exams
 
-router.route('/exams/:section_id/:exam_sch_id')
+router.route('/exams/:subject_id/:exam_sch_id')
     .post(function(req, res, next) {
         var status = 1;
-        var section_id = req.params.section_id;
+        var subject_id = req.params.subject_id;
         var exam_sch_id = req.params.exam_sch_id;
         subjects = [];
         var item = {
             exam_paper_id: 'getauto',
-            section_id: section_id,
+            subject_id: subject_id,
             exam_sch_id: exam_sch_id,
             exam_paper_title: req.body.exam_paper_title,
             date: req.body.date,
