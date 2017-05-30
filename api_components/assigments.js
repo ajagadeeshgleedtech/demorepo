@@ -103,9 +103,10 @@ router.route('/assignment/:section_id/:lesson_id')
     router.route('/assignment_edit/:assignment_id')
       .get(function(req, res, next) {
           var resultArray = [];
+          var assignment_id = req.params.assignment_id;
           mongo.connect(url, function(err, db) {
               assert.equal(null, err);
-              var cursor = db.collection('assignments').remove({assignment_id});
+              var cursor = db.collection('assignments').find({assignment_id});
               cursor.forEach(function(doc, err) {
                   assert.equal(null, err);
                   resultArray.push(doc);
