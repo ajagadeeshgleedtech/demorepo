@@ -1,0 +1,162 @@
+
+    <section class="content-header">
+      <h1>
+        <i class="fa fa-book"></i>
+        Library
+        <small>Book List</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href=""><i class="fa fa-dashboard"></i> Home</a></li>
+        <li>Library</li>
+        <li class="active">Book List</li>
+      </ol>
+    </section>
+    <!-- /.Content Header -->
+
+    <!-- Main content -->
+    <section class="content">
+      <!-- Select Criteria -->
+        <div class="box box-default">
+            <div class="box-header with-border">
+                <i class="fa fa-th-list" aria-hidden="true"></i>
+                <h3 class="box-title">Book List</h3>
+            </div>
+            <div class="tab-content">
+                <div class="tab-pane table-responsive no-padding active" id="tab_1">
+                  <table class="table table-striped">
+                    <thead>
+                     <tr>
+                      <th>#</th>
+                      <th>Book Title</th>
+                      <th>Author</th>
+                      <th>Subject</th>
+                      <th>Book Price</th>
+                      <th>Quantity</th>
+                      <th>Rack Number</th>
+                      <th>Inward Date</th>
+                      <th class="pull-right">Action</th>
+                     </tr>
+                     <tr ng-repeat="books in data">
+                       <td>{{$index+1}}</td>
+                      <td>{{books.book_title}}</td>
+                      <td>{{books.author_name}}</td>
+                      <td>{{books.subject}}</td>
+                      <td>{{books.book_price}}</td>
+                      <td>{{books.qty}}</td>
+                      <td>{{books.rack_number}}</td>
+                      <td>{{books.inward_date}}</td>
+                    
+                      <td class="pull-right">
+                        <a href="" class="btn btn-default btn-xs" ng-click="EditBook($index)" data-toggle="modal" data-target="#myModal" title="Edit">
+                            <i class="fa fa-pencil"></i>
+                        </a>
+                        <a href="" class="btn btn-default btn-xs" data-toggle="tooltip" title="Delete">
+                            <i class="fa fa-trash" aria-hidden="true"></i>
+                        </a>
+                      </td>
+                     </tr>
+                     
+                    </thead>
+                    <tbody>
+                      
+                    </tbody>
+                  </table>
+                </div>                       
+              </div>
+        </div>
+    </section>
+  
+
+    <!--Edit values modal Starts here-->
+ <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog modal-md">
+      <form name="BookList" ng-submit="Book.$valid && EditBook(data)" novalidate>
+      <div class="modal-content">
+        
+         <div class="modal-header">
+            <h3>Edit Book</h3>
+        </div>
+        
+        <div class="modal-body">
+       
+        <!-- /.box-header -->
+         <!-- /.box-header -->
+             
+              <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Book Title</label>
+                      <input type="text" ng-model="editdata.book_title"  class="form-control" placeholder="Enter ...">
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Author Name</label>
+                      <input type="text" ng-model="editdata.author_name" class="form-control" placeholder="Enter ...">
+                    </div>
+                  </div>
+              </div>
+              
+              <div class="row">
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <label>Book Price</label>
+                      <input type="text" ng-model="editdata.book_price" class="form-control" placeholder="Enter ...">
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <label>Quantity</label>
+                      <input type="text" ng-model="editdata.qty" class="form-control" placeholder="Enter ...">
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <label>Rack Number</label>
+                      <input type="text" ng-model="editdata.rack_number" class="form-control" placeholder="Enter ...">
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <label>Inward Date</label>
+                      <input type="text" ng-model="editdata.inward_date" class="form-control" placeholder="Enter ...">
+                    </div>
+                  </div>
+              </div>
+              
+              <div class="row">
+                  <div class="col-md-6">
+                      <label>Book Description</label>
+                      <textarea class="form-control" ng-model="editdata.book_description" rows="3" placeholder="Enter ..."></textarea>
+                  </div>
+                  <div class="col-md-4">
+                      <label>Select Subject</label>
+                      <select class="form-control select2" ng-model="editdata.subject" style="width: 100%;">
+                        <option selected="selected">--Select--</option>
+                        <option>Subject 1</option>
+                        <option>Subject 2</option>
+                        <option>Subject 3</option>
+                        <option>Subject 4</option>
+                        <option>Subject 5</option>
+                        <option>Subject 6</option>
+                        <option>Subject 7</option>
+                        <option>Subject 8</option>
+                      </select>
+                  </div>
+              </div>
+                
+        
+              </div>
+         
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Add Book</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+              </div>
+        
+        </div>
+       
+      </form>
+    
+      </div>
+    </div>
+  </div>

@@ -1,0 +1,230 @@
+
+    <section class="content-header">
+      <h1>
+        <i class="fa fa-bus"></i>
+        Transport
+        <small>Add Bus Route</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href=""><i class="fa fa-dashboard"></i> Home</a></li>
+        <li>Transport</li>
+        <li class="active">Add Bus Route</li>
+      </ol>
+    </section>
+    <!-- /.Content Header -->
+
+    <!-- Main content -->
+    <section class="content">
+      <!-- Select Criteria -->
+      
+      <div class="box box-default">
+        <div class="box-header with-border">
+          
+          <h3 class="box-title">Create Bus Route</h3>
+
+        </div>
+           
+        <div class="box-body">
+              <form name="BusRoute" ng-submit="BusRoute.$valid && addBusRoute(data)" novalidate>
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-group" ng-class="{'has-error': BusRoute.$submitted  && BusRoute.routeTitle.$pristine}">
+                      <label>Route Title</label>
+                      <input name="routeTitle" type="text" ng-model="data.route_title" class="form-control" placeholder="Enter ...">
+                    </div>
+                  </div>
+
+                  <div class="col-md-4">
+                    <div class="form-group" ng-class="{'has-error': BusRoute.$submitted  && BusRoute.vehicleCode.$pristine}">
+                      <label>Vehicle Code</label>
+                      <input name="vehicleCode" type="text" ng-model="data.vehicle_code" class="form-control" placeholder="Enter ...">
+                    </div>
+                  </div>
+                    
+                  <div class="col-md-4">
+                    <div class="form-group" ng-class="{'has-error': BusRoute.$submitted  && BusRoute.vehicleNumber.$pristine}">
+                      <label>Vehicle Number</label>
+                      <input name="vehicleNumber" type="text" ng-model="data.vehicle_number" class="form-control" placeholder="Enter ...">
+                    </div>
+                  </div>
+                </div>
+            
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary pull-right">  Add Route  </button>
+                        </div>
+                    </div>
+                </div>
+              </form>
+              <form  ng-submit="addTime(data)" >
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Select Route</label>
+                      <select class="form-control select2" ng-model="routeId" style="width: 100%;">
+                        <option selected="selected">--Select--</option>
+                         <option ng-repeat="route in busRoutes " value="{{route.route_id}}">{{route.route_title}}</option>
+                        
+                      </select>
+                    </div>
+                  </div>
+                </div>
+            
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Select a Station</label>
+                            <select class="form-control select2"  ng-model="stationId" style="width: 100%;">
+                                <option selected="selected">--Select--</option>
+                                <option ng-repeat="station in stations " value="{{station.station_id}}">{{station.station_name}}</option>
+                        
+                              
+                            </select>    
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="bootstrap-timepicker">
+                            <div class="form-group">
+                                <label>Pickup Time</label>
+                                    <div class="input-group">
+                                        <input type="text"  ng-model="data.pickup_time" class="form-control timepicker">
+                                        <div class="input-group-addon">
+                                        <i class="fa fa-clock-o"></i>
+                                        </div>
+                                    </div>
+                  <!-- /.input group -->
+                            </div>
+                <!-- /.form group -->
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="bootstrap-timepicker">
+                            <div class="form-group">
+                                <label>Dropping Time</label>
+                                    <div class="input-group">
+                                        <input type="text"  ng-model="data.droping_time" class="form-control timepicker">
+                                        <div class="input-group-addon">
+                                        <i class="fa fa-clock-o"></i>
+                                        </div>
+                                    </div>
+                  <!-- /.input group -->
+                            </div>
+                <!-- /.form group -->
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <button type="submit"  class="btn btn-primary pull-right">  Create Bus Route  </button>
+                        </div>
+                    </div>
+                </div>
+              </form>
+        </div>
+          
+    <!-- /.content -->
+    
+    <!-- Content List -->
+        <div class="box box-default">
+            <div class="box-header with-border">
+                  <h3 class="box-title">Route List</h3>
+            </div>
+          <div class="box-body">       
+                
+            <div class="tab-content">
+              <div class="mailbox-controls">
+                <div class="pull-right">
+                              
+                </div><!-- /.pull-right -->
+              </div>  
+              
+              <div class="table-responsive mailbox-messages">
+                <table class="table table-hover table-striped">
+                  <thead>
+                    <tr>
+                      <th>#</th>  
+                      <th>Route Title</th>
+                      <th>Vehicle Number</th>
+                      <th>Vehicle Code</th>
+                      <th class="pull-right">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  
+                    
+                    <tr ng-repeat="busRoute in busRoutes">
+                       <td class="mailbox-name"> {{$index+1}}</td> 
+                      <td class="mailbox-name"> {{busRoute.route_title}}</td>
+                      <td class="mailbox-name"> {{busRoute.vehicle_number}}</td>
+                      <td class="mailbox-name"> {{busRoute.vehicle_code}}</td>                       
+                      <td class="mailbox-date pull-right">                    
+                        <a href="" class="btn btn-default btn-xs" data-toggle="modal" data-target="#myModal" title="" data-original-title="Edit">
+                            <i class="fa fa-pencil"></i>
+                        </a>
+                        <a href="" class="btn btn-default btn-xs" data-toggle="tooltip" title="" onclick="return confirm('Are you sure you want to delete this item?');" data-original-title="Delete">
+                            <i class="fa fa-remove"></i>
+                        </a>                                                                
+                      </td>      
+                    </tr>
+                  </tbody>
+                </table><!-- /.table -->
+              </div>
+            </div>
+          </div>
+        </div>
+    </section>
+  
+
+  <!--Edit values modal Starts here-->
+ <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog modal-md">
+      <div class="modal-content">
+        <form name="employeeDetails" ng-submit="addEmployee(data)" novalidate>
+         <div class="modal-header">
+            <h3>Edit Route</h3>
+        </div>
+        <div class="modal-body">
+       
+        <!-- /.box-header -->
+         <!-- /.box-header -->    
+                 <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Route Title</label>
+                      <input type="text" class="form-control" placeholder="Enter ...">
+                    </div>
+                  </div>
+
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Vehicle Code</label>
+                      <input type="text" class="form-control" placeholder="Enter ...">
+                    </div>
+                  </div>
+                    
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Vehicle Number</label>
+                      <input type="text" class="form-control" placeholder="Enter ...">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Add Route</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+              </div>
+        
+        </div>
+       
+     </form>
+      </div>
+    </div>
+  </div>
+  

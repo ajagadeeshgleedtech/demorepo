@@ -1,0 +1,275 @@
+
+    <section class="content-header">
+      <h1>
+        <i class="fa fa-users"></i>
+        Student Information
+        <small>Students</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href=""><i class="fa fa-dashboard"></i> Home</a></li>
+        <li>Student Information</li>
+        <li class="active">Students</li>
+      </ol>
+    </section>
+    <!-- /.Content Header -->
+
+    <!-- Main content -->
+    <section class="content">
+      <!-- Select Criteria -->
+
+            <div class="box box-default">
+              <div class="box-header with-border">
+                  <i class="fa fa-search" aria-hidden="true"></i> 
+                  <h3 class="box-title">Select Criteria</h3>
+              </div>
+              <!-- /.box-header -->
+              <div class="box-body">
+                <div class="row">
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <label>Batch Year</label>
+                      <select class="form-control select2" style="width: 100%;">
+                        <option selected="selected">--Select--</option>
+                        <option>2017-2018</option>
+                        <option>2018-2019</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <label>Class</label>
+                      <select class="form-control select2" data-ng-change="populateSections(classId)" style="width: 100%;" ng-model="classId">
+                        <option selected="selected">--Select--</option>
+                        <option ng-repeat="class in classData" value="{{class.class_id}}">{{class.name}}</option>
+                      </select>
+                    </div>
+                  </div>
+                  
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <label>Section</label>
+                      <select class="form-control select2" style="width: 100%;" ng-model="secId">
+                       <option selected="selected">--Select--</option>
+                        <option ng-repeat="sec in secData" value="{{sec.section_id}}">{{sec.name}}</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <label>Search by keyword</label>
+                      <input type="text" name="search_text" class="form-control" ng-model="searchstudent" placeholder="Search...">
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              <div class="box-footer">
+                  <button ng-click="getStudentValue(secId)" class="btn btn-primary pull-right">Search</button>
+              </div>
+            </div>
+    
+    <!-- /.content -->
+    
+    <!-- Content List -->
+        <div class="box box-default">
+            <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true"><i class="fa fa-list"></i> List  View</a></li>
+                    <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false"><i class="fa fa-newspaper-o"></i> Details View</a></li>
+                </ul>
+            </div>
+           
+          <div class="box-body">  
+            <div class="tab-content">
+              <div class="tab-pane table-responsive no-padding active" id="tab_1">
+                <table class="table table-striped">
+                  <thead>
+                   <tr >
+                    <th>Admission No</th>
+                    <th>Student Name</th>
+                    <th>Class</th>
+                    <th>Father Name</th>
+                    <th>Date Of Birth</th>
+                    <th>Gender</th>
+                    <th>Category</th>
+                    <th>Mobile No</th>
+                    <th>RTE</th>
+                    <th class="pull-right">Action</th>
+                   </tr>
+                  </thead>
+                 <tbody>
+                   <tr ng-repeat="student in studentData | filter:searchstudent">
+                    <td>{{student.student_id}}</td>
+                    <td><a href="">{{student.first_name}} {{student.last_name}}</a></td>
+                    <td>{{student.class_id}}</td>
+                    <td>{{student.parents[0].parent_name}}</td>
+                    <td>{{student.dob}}</td>
+                    <td>{{student.gender}}</td>
+                    <td>{{student.category}}</td>
+                    <td>{{student.phone}}</td>
+                    <td>yes</td>
+                    <td class="pull-right">
+                      <a class="btn btn-default btn-xs"  data-toggle="modal" data-target="#myModal" title="Edit">
+                        <i class="fa fa-pencil"></i>
+                      </a>
+                    </td>
+                   </tr>
+                 </tbody>
+                </table>
+              </div>                       
+            </div>
+          </div>
+        </div>
+    </section>
+
+ <!--Edit values modal Starts here-->
+ <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog modal-md">
+      <div class="modal-content">
+        <form name="employeeDetails" ng-submit="addEmployee(data)" novalidate>
+         <div class="modal-header">
+            <h3>Edit Students</h3>
+        </div>
+        <div class="modal-body">
+       
+        <!-- /.box-header -->
+         <!-- /.box-header -->
+        <div class="box-body">
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Admission No</label>
+                      <input type="text" class="form-control" placeholder="Enter ...">
+                    </div>
+                  </div>
+
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Roll No</label>
+                      <input type="text" class="form-control" placeholder="Enter ...">
+                    </div>
+                  </div>
+                    
+                  <div class="col-md-4">  
+                    <div class="form-group">
+                      <label>Class</label>
+                      <select class="form-control select2" style="width: 100%;">
+                        <option selected="selected">--Select--</option>
+                        <option>Class 6</option>
+                        <option>Class 7</option>
+                        <option>Class 8</option>
+                        <option>Class 9</option>
+                        <option>Class 10</option>
+                      </select>
+                    </div>
+                  </div>
+                  
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Section</label>
+                      <select class="form-control select2" style="width: 100%;">
+                        <option selected="selected">--Select--</option>
+                        <option>Section A</option>
+                        <option>Section B</option>
+                      </select>
+                    </div>
+                  </div>
+               
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>First Name</label>
+                      <input type="text" class="form-control" placeholder="Enter ...">
+                    </div>
+                  </div>
+
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Last Name</label>
+                      <input type="text" class="form-control" placeholder="Enter ...">
+                    </div>
+                  </div>
+                                                  
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Gender</label>
+                      <select class="form-control select2" style="width: 100%;">
+                        <option selected="selected">--Select--</option>
+                        <option>Male</option>
+                        <option>Female</option>
+                      </select>
+                    </div>
+                  </div>
+                    
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Date of Birth</label>
+                      <datepicker date-set="{{today1}}" date-set-hidden="true" date-format="dd-MM-yyyy" style="z-index:999">
+                          <input class="form-control" name="startDate" type="text" ng-model="data.dob" ng-readonly="true" placeholder="Enter ..." required/>
+                      </datepicker>
+                      </div>                    
+                  </div>
+                  
+                  <div class="col-md-4">  
+                    <div class="form-group">
+                      <label>Category</label>
+                      <select class="form-control select2" style="width: 100%;">
+                        <option selected="selected">--Select--</option>
+                        <option>General</option>
+                        <option>OBC</option>
+                        <option>Minority</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Religion</label>
+                      <input type="text" class="form-control" placeholder="Enter ...">
+                    </div>
+                  </div>
+                    
+                  <div class="col-md-4">  
+                    <div class="form-group">
+                      <label>Contact No</label>
+                      <input type="text" class="form-control" placeholder="Enter ...">
+                    </div>
+                  </div>
+                  
+                  <div class="col-md-4">  
+                    <div class="form-group">
+                      <label>Email</label>
+                      <input type="text" class="form-control" placeholder="Enter ...">
+                    </div>
+                  </div>
+              
+                  <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Admission Date</label>
+                        <datepicker date-set="{{today1}}" date-set-hidden="true" date-format="dd-MM-yyyy" style="z-index:999">
+                          <input class="form-control" name="startDate" type="text" ng-model="data.date" ng-readonly="true" placeholder="Enter ..." required/>
+                      </datepicker>
+                    </div>
+                  </div>
+                    
+                  <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Student Photo</label>
+                        <input type="file" name="first_doc" id="doc1">
+                    </div>
+                  </div>
+        </div>
+        </div>
+        
+        
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Submit</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        </div>
+     </form>
+      </div>
+    </div>
+  </div>
