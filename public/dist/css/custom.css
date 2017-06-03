@@ -1,0 +1,21 @@
+.modal-header{
+    border-bottom:3px solid #ccc;
+    padding: 0px 15px;
+}
+
+.errorText{
+    display: none;
+}
+
+.has-error .errorText{
+    display: block;
+}
+
+.radio.radio-info.radio-inline{
+    margin-top: 0px;
+    
+}
+ .radio label{
+     padding-left: 0px;
+     padding-right: 20px;
+ }

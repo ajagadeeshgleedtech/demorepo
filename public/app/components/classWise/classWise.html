@@ -1,0 +1,562 @@
+
+    <section class="content-header">
+      <h1>
+        <i class="fa fa-calendar"></i>
+        Timetable
+        <small>class-wise</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href=""><i class="fa fa-dashboard"></i> Home</a></li>
+        <li>Timetable</li>
+        <li class="active">Class-wise</li>
+      </ol>
+    </section>
+    <!-- /.Content Header -->
+
+    <!-- Main content -->
+    <section class="content">
+      <!-- Select Criteria -->
+
+        <div class="box box-default">
+              
+            <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true"><i class="fa fa-calendar-plus-o" aria-hidden="true"></i> Add Timetable </a></li>
+                    <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false"><i class="fa fa-calendar-check-o" aria-hidden="true"></i> View Timetable </a></li>
+                </ul>
+            </div>
+        
+         
+          <div class="box-body">  
+            <div class="tab-content">
+              <div class="tab-pane no-padding active" id="tab_1">
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Select Class</label>
+                      <select class="form-control select2" style="width: 100%;">
+                        <option selected="selected">--Select--</option>
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                        <option>6</option>
+                        <option>7</option>
+                        <option>8</option>
+                        <option>9</option>
+                        <option>10</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Select Section</label>
+                      <select class="form-control select2" style="width: 100%;">
+                        <option selected="selected">--Select--</option>
+                        <option>Section A</option>
+                        <option>Section B</option>
+                        <option>Section C</option>
+                        <option>Section D</option>
+                      </select>
+                    </div>
+                  </div>
+                  
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Select Subject</label>
+                      <select class="form-control select2" style="width: 100%;">
+                        <option selected="selected">--Select--</option>
+                        <option>Subject 1</option>
+                        <option>Subject 2</option>
+                        <option>Subject 3</option>
+                        <option>Subject 4</option>
+                        <option>Subject 5</option>
+                        <option>Subject 6</option>
+                        <option>Subject 7</option>
+                        <option>Subject 8</option>
+                      </select>
+                    </div>
+                  </div>  
+
+                </div>
+                  
+                <div class="row">
+                    <div class="col-md-12">
+                    <button type="submit" class="btn btn-primary pull-right">Select</button>
+                    </div>                  
+                </div>
+                
+                <div class="box-header with-border">
+                  <i class="fa fa-calendar" aria-hidden="true"></i> 
+                  <h3 class="box-title">Class Timetable</h3>
+                </div>
+                  
+                <div class="box-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Day</th>
+                                <th>Start Time</th>
+                                <th>End Time</th>
+                                <th>Room NO</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th>Monday</th>
+                                <th>
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control timepicker">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-clock-o"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control timepicker">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-clock-o"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" placeholder="Enter ...">
+                                    </div>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th>Tuesday</th>
+                                <th>
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <input type="text"  class="form-control timepicker">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-clock-o"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control timepicker">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-clock-o"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" placeholder="Enter ...">
+                                    </div>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th>Wednesday</th>
+                                <th>
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control timepicker">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-clock-o"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control timepicker">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-clock-o"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" placeholder="Enter ...">
+                                    </div>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th>Thursday</th>
+                                <th>
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control timepicker">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-clock-o"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control timepicker">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-clock-o"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" placeholder="Enter ...">
+                                    </div>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th>Friday</th>
+                                <th>
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control timepicker">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-clock-o"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control timepicker">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-clock-o"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" placeholder="Enter ...">
+                                    </div>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th>Saturday</th>
+                                <th>
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control timepicker">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-clock-o"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control timepicker">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-clock-o"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" placeholder="Enter ...">
+                                    </div>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th>Sunday</th>
+                                <th>
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control timepicker">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-clock-o"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control timepicker">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-clock-o"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" placeholder="Enter ...">
+                                    </div>
+                                </th>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                  <div class="row">
+                    <div class="col-md-12">
+                        <button type="submit" class="btn btn-primary pull-right">Submit</button>
+                    </div>                  
+                  </div>
+                      
+                </div>
+                  
+              </div> 
+                
+              <div class="tab-pane no-padding active" id="tab_2">
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Select Class</label>
+                      <select class="form-control select2" style="width: 100%;">
+                        <option selected="selected">--Select--</option>
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                        <option>6</option>
+                        <option>7</option>
+                        <option>8</option>
+                        <option>9</option>
+                        <option>10</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Select Section</label>
+                      <select class="form-control select2" style="width: 100%;">
+                        <option selected="selected">--Select--</option>
+                        <option>Section A</option>
+                        <option>Section B</option>
+                        <option>Section C</option>
+                        <option>Section D</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-12">
+                    <button type="submit" class="btn btn-primary pull-right">Select</button>
+                    </div>                  
+                </div> 
+              </div>
+                
+              <div class="box-body">
+                  <table class="table">
+                      <thead>
+                        <tr>
+                            <th>Time    </th>
+                            <th class="text text-center">
+                                Monday
+                            </th>
+                            <th class="text text-center">
+                                Tuesday
+                            </th>
+                            <th class="text text-center">
+                                Wednesday
+                            </th>
+                            <th class="text text-center">
+                                Thursday
+                            </th>
+                            <th class="text text-center">
+                                Friday
+                            </th>
+                            <th class="text text-center">
+                                Saturday
+                            </th>
+                            <th class="text text-center">
+                                Sunday
+                            </th>
+                        </tr>
+                      </thead>
+                      
+                      <tbody>
+                        <tr>
+                            <th>
+                                <div class="attachment-block clearfix">
+                                    <strong class="text-blue">09:00 A.M.</strong>
+                                    <b class="text text-center">-</b>
+                                    <strong class="text-blue">10:00 A.M.</strong>
+                                </div>
+                            </th>
+                            <td class="text text-center">
+                                <strong class="text-blue">Subject-1</strong>
+                            </td>
+                            <td class="text text-center">
+                                <strong class="text-blue">Subject-1</strong>
+                            </td>
+                            <td class="text text-center">
+                                <strong class="text-blue">Subject-1</strong>
+                            </td>
+                            <td class="text text-center">
+                                <strong class="text-blue">Subject-1</strong>
+                            </td>
+                            <td class="text text-center">
+                                <strong class="text-blue">Subject-1</strong>
+                            </td>
+                            <td class="text text-center">
+                                <strong class="text-blue">Subject-1</strong>
+                            </td>
+                            <td><strong class="text-blue">Holiday</strong></td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <div class="attachment-block clearfix">
+                                    <strong class="text-blue">10:00 A.M.</strong>
+                                    <b class="text text-center">-</b>
+                                    <strong class="text-blue">11:00 A.M.</strong>
+                                </div>
+                            </th>
+                            <td class="text text-center">
+                                <strong class="text-blue">Subject-2</strong>
+                            </td>
+                            <td class="text text-center">
+                                <strong class="text-blue">Subject-2</strong>
+                            </td>
+                            <td class="text text-center">
+                                <strong class="text-blue">Subject-2</strong>
+                            </td>
+                            <td class="text text-center">
+                                <strong class="text-blue">Subject-2</strong>
+                            </td>
+                            <td class="text text-center">
+                                <strong class="text-blue">Subject-2</strong>
+                            </td>
+                            <td class="text text-center">
+                                <strong class="text-blue">Subject-2</strong>
+                            </td>
+                            <td><strong class="text-blue">Holiday</strong></td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <div class="attachment-block clearfix">
+                                    <strong class="text-blue">11:00 A.M.</strong>
+                                    <b class="text text-center">-</b>
+                                    <strong class="text-blue">12:00 A.M.</strong>
+                                </div>
+                            </th>
+                            <td class="text text-center">
+                                <strong class="text-blue">Subject-3</strong>
+                            </td>
+                            <td class="text text-center">
+                                <strong class="text-blue">Subject-3</strong>
+                            </td>
+                            <td class="text text-center">
+                                <strong class="text-blue">Subject-3</strong>
+                            </td>
+                            <td class="text text-center">
+                                <strong class="text-blue">Subject-3</strong>
+                            </td>
+                            <td class="text text-center">
+                                <strong class="text-blue">Subject-3</strong>
+                            </td>
+                            <td class="text text-center">
+                                <strong class="text-blue">Subject-3</strong>
+                            </td>
+                            <td><strong class="text-blue">Holiday</strong></td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <div class="attachment-block clearfix">
+                                    <strong class="text-blue">12:00 A.M.</strong>
+                                    <b class="text text-center">-</b>
+                                    <strong class="text-blue">01:00 P.M.</strong>
+                                </div>
+                            </th>
+                            <td class="text text-center">
+                                <strong class="text-blue">Subject-4</strong>
+                            </td>
+                            <td class="text text-center">
+                                <strong class="text-blue">Subject-4</strong>
+                            </td>
+                            <td class="text text-center">
+                                <strong class="text-blue">Subject-4</strong>
+                            </td>
+                            <td class="text text-center">
+                                <strong class="text-blue">Subject-4</strong>
+                            </td>
+                            <td class="text text-center">
+                                <strong class="text-blue">Subject-4</strong>
+                            </td>
+                            <td class="text text-center">
+                                <strong class="text-blue">Subject-4</strong>
+                            </td>
+                            <td><strong class="text-blue">Holiday</strong></td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <div class="attachment-block clearfix">
+                                    <strong class="text-blue">02:00 P.M.</strong>
+                                    <b class="text text-center">-</b>
+                                    <strong class="text-blue">03:00 P.M.</strong>
+                                </div>
+                            </th>
+                            <td class="text text-center">
+                                <strong class="text-blue">Subject-5</strong>
+                            </td>
+                            <td class="text text-center">
+                                <strong class="text-blue">Subject-5</strong>
+                            </td>
+                            <td class="text text-center">
+                                <strong class="text-blue">Subject-5</strong>
+                            </td>
+                            <td class="text text-center">
+                                <strong class="text-blue">Subject-5</strong>
+                            </td>
+                            <td class="text text-center">
+                                <strong class="text-blue">Subject-5</strong>
+                            </td>
+                            <td class="text text-center">
+                                <strong class="text-blue">Subject-5</strong>
+                            </td>
+                            <td><strong class="text-blue">Holiday</strong></td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <div class="attachment-block clearfix">
+                                    <strong class="text-blue">03:00 P.M.</strong>
+                                    <b class="text text-center">-</b>
+                                    <strong class="text-blue">04:00 P.M.</strong>
+                                </div>
+                            </th>
+                            <td class="text text-center">
+                                <strong class="text-blue">Subject-6</strong>
+                            </td>
+                            <td class="text text-center">
+                                <strong class="text-blue">Subject-6</strong>
+                            </td>
+                            <td class="text text-center">
+                                <strong class="text-blue">Subject-6</strong>
+                            </td>
+                            <td class="text text-center">
+                                <strong class="text-blue">Subject-6</strong>
+                            </td>
+                            <td class="text text-center">
+                                <strong class="text-blue">Subject-6</strong>
+                            </td>
+                            <td class="text text-center">
+                                <strong class="text-blue">Subject-6</strong>
+                            </td>
+                            <td><strong class="text-blue">Holiday</strong></td>
+                        </tr>
+                      </tbody>
+                  </table>                     
+              </div>    
+          </div>
+        </div>
+    </section>
+  
