@@ -4,13 +4,15 @@ const config = require('../config');
 var emailregex = require('regex-email');
 
 function tokenForUser(user) {
+	// console.log(user)
 	const timestamp = new Date().getTime();
 	return jwt.encode({ sub: user._id, unid: user.uniqueId, role:user.role, school_id:user.school_id, iat: timestamp }, "ex23hf9284y9er2ehfbdbvcv83yehrdf8273");
 }
 exports.signin = function(req, res, next){
 	// User has already had their email and password auth'd
 	// we just need to give them a token
-	res.send({ token: tokenForUser(req.user) });
+
+	res.send({ token: tokenForUser(req.user),role:req.user.role,uniqueId: req.user.uniqueId});
 }
 exports.signup = function(req, res, next){
 	const email = req.body.email;
