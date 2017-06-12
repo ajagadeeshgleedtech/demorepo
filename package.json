@@ -26,6 +26,7 @@
     "passport-local": "^1.0.0",
     "regex-email": "^1.0.2",
     "socket.io": "^1.4.8",
-    "mongodb-autoincrement": "1.0.1"
+    "mongodb-autoincrement": "1.0.1",
+    "async-foreach":"0.1.3"
   }
 }
