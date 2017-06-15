@@ -17,14 +17,14 @@
       <!-- Select Criteria -->
 
             <div class="box box-default">
-              <div class="box-header with-border">
+              <div class="box-header with-border" ng-if="showRole(['admin','teacher'])">
                   <i class="fa fa-search" aria-hidden="true"></i> 
                   <h3 class="box-title">Select Criteria</h3>
               </div>
               <!-- /.box-header -->
               <div class="box-body">
                 <div class="row">
-                  <div class="col-md-4">
+                  <div class="col-md-4" ng-if="showRole(['admin','teacher'])">
                     <div class="form-group">
                       <label>Class</label>
                       <select class="form-control select2" data-ng-change="populateSections(classId)" style="width: 100%;" ng-model="classId">
@@ -34,7 +34,7 @@
                     </div>
                   </div>
                   
-                  <div class="col-md-4">
+                  <div class="col-md-4" ng-if="showRole(['admin','teacher'])">
                     <div class="form-group">
                       <label>Section</label>
                       <select class="form-control select2" style="width: 100%;" ng-model="secId">
@@ -44,7 +44,7 @@
                     </div>
                   </div>
                   
-                  <div class="col-md-4">
+                  <div class="col-md-4" ng-if="showRole(['admin','teacher','parent'])">
                       <div class="form-group">
                         <label>Select Subject</label>                       
                         <select data-ng-change="populateChapters(subId)" class="form-control select2" ng-model="subId" style="width: 100%;">
@@ -56,24 +56,24 @@
 
                 </div>
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-12" ng-if="showRole(['admin','teacher'])">
                     <button type="submit" class="btn btn-primary pull-right">Select</button>
                     </div>                  
                 </div>
                   
-                <div class="box-header with-border">
+                <div class="box-header with-border" ng-if="showRole(['admin','teacher'])">
                   <i class="fa fa-plus-square" aria-hidden="true"></i>
                   <h3 class="box-title">Add Assignments</h3>
                 </div>
-                <form name="Assignments" ng-submit="Assignments.$valid && aaddAssignments(data)" novalidate> 
+                <form name="Assignments" ng-submit="Assignments.$valid && addAssignments(data)" novalidate> 
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-4" ng-if="showRole(['admin','teacher'])">
                       <div class="form-group" ng-class="{'has-error': Assignments.$submitted  && Assignments.assignmentTitle.$pristine}">
                         <label>Assignment Title</label>
                         <input type="text" name="assignmentTitle" ng-model="data.assignment_title" class="form-control" placeholder="Enter ..." required>
                       </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4" ng-if="showRole(['admin','teacher'])">
                     <div class="form-group">
                       <label>Select Chapter</label>
                       <select class="form-control select2" ng-model="chapterId" style="width: 100%;">
@@ -83,7 +83,7 @@
                       </select>
                     </div>
                   </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4" ng-if="showRole(['admin','teacher'])">
                       <div class="form-group">
                         <label>Due Date</label>
                         <div class="input-group date" ng-class="{'has-error': Assignments.$submitted  && Assignments.dueDate.$pristine}">
@@ -99,7 +99,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-6" ng-if="showRole(['admin','teacher'])">
                       <div class="form-group"  ng-class="{'has-error': Assignments.$submitted  && Assignments.description.$pristine}">
                         <label>Description</label>
                         <textarea class="form-control" name="description" ng-model="data.description" rows="3" placeholder="Enter ..." required></textarea>
@@ -108,7 +108,7 @@
                 </div>
        
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-12" ng-if="showRole(['admin','teacher'])">
                         <button type="submit" class="btn btn-primary pull-right">Add Assignment</button>
                     </div> 
                 </div>

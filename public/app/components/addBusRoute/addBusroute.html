@@ -18,30 +18,30 @@
       <!-- Select Criteria -->
       
       <div class="box box-default">
-        <div class="box-header with-border">
+        <div  ng-if="showRole(['admin','teacher'])">
+        <div class="box-header with-border" ng-if="showRole(['admin','teacher'])">
           
           <h3 class="box-title">Create Bus Route</h3>
 
         </div>
-           
         <div class="box-body">
               <form name="BusRoute" ng-submit="BusRoute.$valid && addBusRoute(data)" novalidate>
                 <div class="row">
-                  <div class="col-md-4">
+                  <div class="col-md-4" ng-if="showRole(['admin','teacher'])">
                     <div class="form-group" ng-class="{'has-error': BusRoute.$submitted  && BusRoute.routeTitle.$pristine}">
                       <label>Route Title</label>
                       <input name="routeTitle" type="text" ng-model="data.route_title" class="form-control" placeholder="Enter ...">
                     </div>
                   </div>
 
-                  <div class="col-md-4">
+                  <div class="col-md-4" ng-if="showRole(['admin','teacher'])">
                     <div class="form-group" ng-class="{'has-error': BusRoute.$submitted  && BusRoute.vehicleCode.$pristine}">
                       <label>Vehicle Code</label>
                       <input name="vehicleCode" type="text" ng-model="data.vehicle_code" class="form-control" placeholder="Enter ...">
                     </div>
                   </div>
                     
-                  <div class="col-md-4">
+                  <div class="col-md-4" ng-if="showRole(['admin','teacher'])">
                     <div class="form-group" ng-class="{'has-error': BusRoute.$submitted  && BusRoute.vehicleNumber.$pristine}">
                       <label>Vehicle Number</label>
                       <input name="vehicleNumber" type="text" ng-model="data.vehicle_number" class="form-control" placeholder="Enter ...">
@@ -50,7 +50,7 @@
                 </div>
             
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-12" ng-if="showRole(['admin','teacher'])">
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary pull-right">  Add Route  </button>
                         </div>
@@ -59,7 +59,7 @@
               </form>
               <form  ng-submit="addTime(data)" >
                 <div class="row">
-                  <div class="col-md-4">
+                  <div class="col-md-4" ng-if="showRole(['admin','teacher'])">
                     <div class="form-group">
                       <label>Select Route</label>
                       <select class="form-control select2" ng-model="routeId" style="width: 100%;">
@@ -72,7 +72,7 @@
                 </div>
             
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-4" ng-if="showRole(['admin','teacher'])">
                         <div class="form-group">
                             <label>Select a Station</label>
                             <select class="form-control select2"  ng-model="stationId" style="width: 100%;">
@@ -84,7 +84,7 @@
                         </div>
                     </div>
                     
-                    <div class="col-md-4">
+                    <div class="col-md-4" ng-if="showRole(['admin','teacher'])">
                         <div class="bootstrap-timepicker">
                             <div class="form-group">
                                 <label>Pickup Time</label>
@@ -100,7 +100,7 @@
                         </div>
                     </div>
                     
-                    <div class="col-md-4">
+                    <div class="col-md-4" ng-if="showRole(['admin','teacher'])">
                         <div class="bootstrap-timepicker">
                             <div class="form-group">
                                 <label>Dropping Time</label>
@@ -118,7 +118,7 @@
                 </div>
             
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-12" ng-if="showRole(['admin','teacher'])">
                         <div class="form-group">
                             <button type="submit"  class="btn btn-primary pull-right">  Create Bus Route  </button>
                         </div>
@@ -126,7 +126,7 @@
                 </div>
               </form>
         </div>
-          
+        </div>   
     <!-- /.content -->
     
     <!-- Content List -->

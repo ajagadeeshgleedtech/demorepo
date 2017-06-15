@@ -17,18 +17,18 @@
     <section class="content">
       <!-- Select Criteria -->
         <div class="box box-default">
-            <div class="box-header with-border">
+            <div class="box-header with-border" ng-if="showRole(['admin','teacher'])">
                 <i class="fa fa-th-list" aria-hidden="true"></i>
                 <h3 class="box-title">Library Rules</h3>
             </div>
             <div class="box-body">  
               <div class="row">
-                  <div class="col-md-10">
+                  <div class="col-md-10" ng-if="showRole(['admin','teacher'])">
                       <textarea class="form-control" rows="3" placeholder="Enter ..."></textarea>
                   </div>  
               </div>
               <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-12" ng-if="showRole(['admin','teacher'])">
                         <button type="submit" class="btn btn-primary pull-right">Add Rule</button>
                     </div> 
               </div>
