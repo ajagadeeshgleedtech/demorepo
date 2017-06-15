@@ -23,13 +23,17 @@ router.use(function(req, res, next) {
 router.route('/bus_route/:school_id')
     .post(function(req, res, next) {
         var status = 1;
+         
         var school_id = req.params.school_id;
         var item = {
             route_id: 'getauto',
                    school_id: school_id,
 						route_title: req.body.route_title,
 						vehicle_code: req.body.vehicle_code,
-						vehicle_number: req.body.vehicle_number,
+                        station : req.body.station,
+                        pickup_time: req.body.pickup_time,
+                        drop_time: req.body.drop_time,
+						// vehicle_number: req.body.vehicle_number,
             status: status,
         }
         mongo.connect(url, function(err, db) {

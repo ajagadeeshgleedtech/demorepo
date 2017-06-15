@@ -8,6 +8,7 @@ var autoIncrement = require("mongodb-autoincrement");
 var assert = require('assert');
 var port = process.env.PORT || 4005;
 var router = express.Router();
+var forEach = require('async-foreach').forEach;
 var url = 'mongodb://' + config.dbhost + ':27017/s_erp_data';
 
 var cookieParser = require('cookie-parser');
@@ -96,6 +97,88 @@ router.route('/employee_attendance/:employee_id')
         });
     });
 
+//add bulk attendance
+
+router.route('/employee_attendancebulk/:school_id')
+    .post(function(req, res, next) {
+       
+        var school_id = req.params.school_id;
+        var d = new Date();
+        var month = d.getMonth() + 1;
+        var time = d.getHours();
+        if (school_id == null ) {
+          res.end('null');
+        } else { 
+            var count = 0;
+            if(req.body.employees.length > 0){
+                  forEach(req.body.employees, function (key,value) {
+              
+                   if (time >= 13) {
+                        var session = 'afternoon';
+                    } else {
+                        var session = 'morning';
+                    }
+                    attendance = [];
+                    if (req.body.session) {
+                    var session = req.body.session;
+                    }
+                    var item = {
+                    employee_attendance_id: '',
+                    employee_id: key.employee_id,
+                    school_id:school_id,
+                    date: d.getDate() + '-' + month + '-' + d.getFullYear(),
+                    session : session,
+                    status: key.status
+                    };
+               
+                mongo.connect(url, function(err, db) {
+                            autoIncrement.getNextSequence(db, 'employee_attendance', function(err, autoIndex) {
+                             
+                                var collection = db.collection('employee_attendance');
+                                collection.ensureIndex({
+                                    "employee_attendance_id": 1,
+                                }, {
+                                    unique: true
+                                }, function(err, result) {
+                                    if (item.date == null || item.session == null || item.status == null) {
+                                        res.end('null');
+                                    } else {
+                                        item.employee_attendance_id= key.employee_id+'-EMPATT-'+ autoIndex;
+                                        collection.insertOne(item, function(err, result) {
+                                            if (err) {
+                                                  console.log(err);
+                                                if (err.code == 11000) {
+                                                  
+                                                    res.end('false');
+                                                }
+                                                res.end('false');
+                                            } 
+                                                count ++;
+                                                db.close();
+                                            
+                                            if(count == req.body.employees.length){
+                                               res.end('true');
+                                            }
+                                                
+                                             
+                                        });
+                                    }
+                                });
+                            });
+                        });
+ 
+                });
+              
+
+            }else{
+                 res.end('false');
+            }
+           
+                
+        }
+         
+       
+    });
     router.route('/edit_attendance/:employee_attendance_id/:name/:value')
         .post(function(req, res, next){
           var employee_attendance_id = req.params.employee_attendance_id;
@@ -183,6 +266,10 @@ router.route('/get_employee_attendance_by_date/:employee_id/:date')
                 });
             });
         });
+
+
+
+
 
 
 module.exports = router;
