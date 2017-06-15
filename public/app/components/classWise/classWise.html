@@ -19,7 +19,7 @@
 
         <div class="box box-default">
               
-            <div class="nav-tabs-custom">
+            <div class="nav-tabs-custom" ng-if="showRole(['admin'])">
                 <ul class="nav nav-tabs">
                     <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true"><i class="fa fa-calendar-plus-o" aria-hidden="true"></i> Add Timetable </a></li>
                     <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false"><i class="fa fa-calendar-check-o" aria-hidden="true"></i> View Timetable </a></li>
@@ -31,7 +31,7 @@
             <div class="tab-content">
               <div class="tab-pane no-padding active" id="tab_1">
                 <div class="row">
-                  <div class="col-md-4">
+                  <div class="col-md-4" ng-if="showRole(['admin','teacher'])">
                     <div class="form-group">
                       <label>Select Class</label>
                       <select class="form-control select2" style="width: 100%;">
@@ -50,7 +50,7 @@
                     </div>
                   </div>
 
-                  <div class="col-md-4">
+                  <div class="col-md-4" ng-if="showRole(['admin','teacher'])">
                     <div class="form-group">
                       <label>Select Section</label>
                       <select class="form-control select2" style="width: 100%;">
@@ -63,7 +63,7 @@
                     </div>
                   </div>
                   
-                  <div class="col-md-4">
+                  <div class="col-md-4" ng-if="showRole(['admin'])">
                     <div class="form-group">
                       <label>Select Subject</label>
                       <select class="form-control select2" style="width: 100%;">
@@ -82,18 +82,18 @@
 
                 </div>
                   
-                <div class="row">
+                <div class="row" ng-if="showRole(['admin'])">
                     <div class="col-md-12">
                     <button type="submit" class="btn btn-primary pull-right">Select</button>
                     </div>                  
                 </div>
                 
-                <div class="box-header with-border">
+                <div class="box-header with-border" ng-if="showRole(['admin'])">
                   <i class="fa fa-calendar" aria-hidden="true"></i> 
                   <h3 class="box-title">Class Timetable</h3>
                 </div>
                   
-                <div class="box-body">
+                <div class="box-body" ng-if="showRole(['admin'])">
                     <table class="table table-striped">
                         <thead>
                             <tr>
@@ -107,175 +107,7 @@
                             <tr>
                                 <th>Monday</th>
                                 <th>
-                                    <div class="form-group">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control timepicker">
-                                            <div class="input-group-addon">
-                                                <i class="fa fa-clock-o"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </th>
-                                <th>
-                                    <div class="form-group">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control timepicker">
-                                            <div class="input-group-addon">
-                                                <i class="fa fa-clock-o"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </th>
-                                <th>
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" placeholder="Enter ...">
-                                    </div>
-                                </th>
-                            </tr>
-                            <tr>
-                                <th>Tuesday</th>
-                                <th>
-                                    <div class="form-group">
-                                        <div class="input-group">
-                                            <input type="text"  class="form-control timepicker">
-                                            <div class="input-group-addon">
-                                                <i class="fa fa-clock-o"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </th>
-                                <th>
-                                    <div class="form-group">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control timepicker">
-                                            <div class="input-group-addon">
-                                                <i class="fa fa-clock-o"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </th>
-                                <th>
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" placeholder="Enter ...">
-                                    </div>
-                                </th>
-                            </tr>
-                            <tr>
-                                <th>Wednesday</th>
-                                <th>
-                                    <div class="form-group">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control timepicker">
-                                            <div class="input-group-addon">
-                                                <i class="fa fa-clock-o"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </th>
-                                <th>
-                                    <div class="form-group">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control timepicker">
-                                            <div class="input-group-addon">
-                                                <i class="fa fa-clock-o"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </th>
-                                <th>
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" placeholder="Enter ...">
-                                    </div>
-                                </th>
-                            </tr>
-                            <tr>
-                                <th>Thursday</th>
-                                <th>
-                                    <div class="form-group">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control timepicker">
-                                            <div class="input-group-addon">
-                                                <i class="fa fa-clock-o"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </th>
-                                <th>
-                                    <div class="form-group">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control timepicker">
-                                            <div class="input-group-addon">
-                                                <i class="fa fa-clock-o"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </th>
-                                <th>
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" placeholder="Enter ...">
-                                    </div>
-                                </th>
-                            </tr>
-                            <tr>
-                                <th>Friday</th>
-                                <th>
-                                    <div class="form-group">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control timepicker">
-                                            <div class="input-group-addon">
-                                                <i class="fa fa-clock-o"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </th>
-                                <th>
-                                    <div class="form-group">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control timepicker">
-                                            <div class="input-group-addon">
-                                                <i class="fa fa-clock-o"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </th>
-                                <th>
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" placeholder="Enter ...">
-                                    </div>
-                                </th>
-                            </tr>
-                            <tr>
-                                <th>Saturday</th>
-                                <th>
-                                    <div class="form-group">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control timepicker">
-                                            <div class="input-group-addon">
-                                                <i class="fa fa-clock-o"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </th>
-                                <th>
-                                    <div class="form-group">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control timepicker">
-                                            <div class="input-group-addon">
-                                                <i class="fa fa-clock-o"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </th>
-                                <th>
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" placeholder="Enter ...">
-                                    </div>
-                                </th>
-                            </tr>
-                            <tr>
-                                <th>Sunday</th>
-                                <th>
-                                    <div class="form-group">
+                                    <div class="form-group" >
                                         <div class="input-group">
                                             <input type="text" class="form-control timepicker">
                                             <div class="input-group-addon">
@@ -304,7 +136,7 @@
                     </table>
                     
                   <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-12" ng-if="showRole(['admin'])">
                         <button type="submit" class="btn btn-primary pull-right">Submit</button>
                     </div>                  
                   </div>
@@ -315,7 +147,7 @@
                 
               <div class="tab-pane no-padding active" id="tab_2">
                 <div class="row">
-                  <div class="col-md-6">
+                  <div class="col-md-6" ng-if="showRole(['admin'])">
                     <div class="form-group">
                       <label>Select Class</label>
                       <select class="form-control select2" style="width: 100%;">
@@ -334,7 +166,7 @@
                     </div>
                   </div>
 
-                  <div class="col-md-6">
+                  <div class="col-md-6" ng-if="showRole(['admin'])">
                     <div class="form-group">
                       <label>Select Section</label>
                       <select class="form-control select2" style="width: 100%;">
@@ -349,7 +181,7 @@
                 </div>
                 
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-12" ng-if="showRole(['admin'])">
                     <button type="submit" class="btn btn-primary pull-right">Select</button>
                     </div>                  
                 </div> 

@@ -25,7 +25,7 @@
               <!-- /.box-header -->
               <div class="box-body">
                 <div class="row">
-                  <div class="col-md-4">
+                  <div class="col-md-4" ng-if="showRole(['admin','teacher'])">
                     <div class="form-group">
                       <label>Select Class</label>
                       <select  data-ng-change="populateSections(classId)" class="form-control select2" style="width: 100%;" ng-model="classId">
@@ -36,7 +36,7 @@
                     </div>
                   </div>
 
-                  <div class="col-md-4">
+                  <div class="col-md-4" ng-if="showRole(['admin','teacher'])">
                     <div class="form-group">
                       <label>Select Section</label>
                       <select  data-ng-change="populateSubjects(secId)" class="form-control select2" style="width: 100%;" ng-model="secId">
@@ -47,7 +47,7 @@
                     </div>
                   </div>
                    
-                  <div class="col-md-4">
+                  <div class="col-md-4" ng-if="showRole(['admin','teacher','parent'])">
                         <div class="form-group">
                             <label>Select Subject</label>
                             <select  data-ng-change="getChapters(subId)" class="form-control select2" style="width: 100%;" ng-model="subId">
@@ -62,7 +62,7 @@
                     <button type="submit" class="btn btn-primary pull-right">Select</button>
                     </div>                  
                 </div>
-                  
+                <div  ng-if="showRole(['admin','teacher'])">  
                 <div class="box-header with-border">
                   <i class="fa fa-plus-square" aria-hidden="true"></i>
                   <h3 class="box-title">Add Chapters</h3>
@@ -104,6 +104,7 @@
                 </div>
               </form>
               </div>
+            </div>
 
               
             </div>

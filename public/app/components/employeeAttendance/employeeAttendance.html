@@ -108,15 +108,28 @@
                   <thead>
                    <tr>
                     <th>#</th>
+                    <th>   
+                      <div class="squaredFour">
+                      <input type="checkbox" value="None" id="squaredFour" name="check" checked />
+                      <label for="squaredFour"></label>
+                      </div>
+                      <span class="selection">All</span>
+                    </th>
                     <th>Employee Id</th>
                     <th>Name</th>
                     <th>Attendance</th>
-                   
+                     <th>Actions</th>
                    </tr>
                   </thead>
                  <tbody>
                    <tr ng-repeat="employee in employeeData">
                     <td>{{$index+1}}</td>
+                      <td>    
+                      <div class="squaredFour">
+                      <input type="checkbox" value="None" id="squaredFour{{$index}}" name="check" checked />
+                      <label for="squaredFour{{$index}}"></label>
+                      </div>
+                    </td>
                     <td>{{employee.employee_id}}</td>
                     <td>{{employee.first_name}} {{employee.last_name}}</td>
                    
@@ -143,6 +156,7 @@
                             <label for="inlineRadio1"> On Leave </label>
                         </div>
                     </td>
+                     <td><button class="btn btn-primary smallButton " type="button" value="add">Add</button></td>
                    </tr>
                   
                   

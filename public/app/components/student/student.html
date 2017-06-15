@@ -17,15 +17,15 @@
     <section class="content">
       <!-- Select Criteria -->
 
-            <div class="box box-default">
-              <div class="box-header with-border">
+            <div class="box box-default" ng-if="showRole(['admin','teacher'])">
+              <div class="box-header with-border" ng-if="showRole(['admin','teacher'])">
                   <i class="fa fa-search" aria-hidden="true"></i> 
                   <h3 class="box-title">Select Criteria</h3>
               </div>
               <!-- /.box-header -->
               <div class="box-body">
                 <div class="row">
-                  <div class="col-md-3">
+                  <div class="col-md-3" ng-if="showRole(['admin','teacher'])">
                     <div class="form-group">
                       <label>Batch Year</label>
                       <select class="form-control select2" style="width: 100%;">
@@ -36,7 +36,7 @@
                     </div>
                   </div>
 
-                  <div class="col-md-3">
+                  <div class="col-md-3" ng-if="showRole(['admin','teacher'])">
                     <div class="form-group">
                       <label>Class</label>
                       <select class="form-control select2" data-ng-change="populateSections(classId)" style="width: 100%;" ng-model="classId">
@@ -46,7 +46,7 @@
                     </div>
                   </div>
                   
-                  <div class="col-md-3">
+                  <div class="col-md-3" ng-if="showRole(['admin','teacher'])">
                     <div class="form-group">
                       <label>Section</label>
                       <select class="form-control select2" style="width: 100%;" ng-model="secId">
@@ -56,7 +56,7 @@
                     </div>
                   </div>
 
-                  <div class="col-md-3">
+                  <div class="col-md-3" ng-if="showRole(['admin','teacher'])">
                     <div class="form-group">
                       <label>Search by keyword</label>
                       <input type="text" name="search_text" class="form-control" ng-model="searchstudent" placeholder="Search...">
@@ -66,7 +66,7 @@
                 </div>
               </div>
 
-              <div class="box-footer">
+              <div class="box-footer" ng-if="showRole(['admin','teacher'])">
                   <button ng-click="getStudentValue(secId)" class="btn btn-primary pull-right">Search</button>
               </div>
             </div>

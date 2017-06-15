@@ -18,14 +18,14 @@
       <!-- Select Criteria -->
 
             <div class="box box-default">
-              <div class="box-header with-border">
+              <div class="box-header with-border" ng-if="showRole(['admin','teacher','parent'])">
                   <i class="fa fa-search" aria-hidden="true"></i> 
                   <h3 class="box-title">Select Criteria</h3>
               </div>
               <!-- /.box-header -->
               <div class="box-body">
                 <div class="row">
-                  <div class="col-md-4">
+                  <div class="col-md-4" ng-if="showRole(['admin','teacher'])">
                     <div class="form-group">
                       <label>Select Class</label>
                       <select class="form-control select2"  data-ng-change="populateSections(classId)" style="width: 100%;" ng-model="classId">
@@ -35,7 +35,7 @@
                     </div>
                   </div>
 
-                  <div class="col-md-4">
+                  <div class="col-md-4" ng-if="showRole(['admin','teacher'])">
                     <div class="form-group">
                       <label>Select Section</label>
                       <select class="form-control select2" style="width: 100%;" ng-model="secId">
@@ -46,7 +46,7 @@
                     </div>
                   </div>
                   
-                  <div class="col-md-4">
+                  <div class="col-md-4" ng-if="showRole(['admin','teacher','parent'])">
                     <div class="form-group">
                       <label>Select Exam Schedule</label>
                       <select class="form-control select2" style="width: 100%;" ng-model="examScheduleId">
@@ -58,7 +58,7 @@
                   </div>
                     
                   <div class="col-md-4">
-                      <div class="form-group">
+                      <div class="form-group" ng-if="showRole(['admin','teacher','parent'])">
                         <label>Select Subject</label>
                         <select  ng-change="getEvaluation(paperId ,studentId)" class="form-control select2" data-ng-change="populatePapers(subjectId)" style="width: 100%;"  ng-model="subjectId">
                             <option selected="selected">--Select--</option>
@@ -67,7 +67,7 @@
                       </div>
                     </div>
                     <div class="col-md-4">
-                      <div class="form-group">
+                      <div class="form-group" ng-if="showRole(['admin','teacher','parent'])">
                         <label>Paper Title</label>
                         <select  ng-change="getEvaluation(paperId ,studentId)" class="form-control select2" style="width: 100%;" ng-model="paperId">
                             <option selected="selected">--Select--</option>
@@ -77,7 +77,7 @@
                       </div>
                     </div>
                     <div class="col-md-4">
-                      <div class="form-group">
+                      <div class="form-group" ng-if="showRole(['admin','teacher'])">
                         <label>Select Student</label>
                         <select ng-change="getEvaluation(paperId ,studentId)" class="form-control select2" style="width: 100%;" ng-model="studentId">
                             <option selected="selected">--Select--</option>
@@ -89,30 +89,30 @@
                     
                 </div>
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-12" ng-if="showRole(['admin','teacher','parent'])">
                     <button type="submit" class="btn btn-primary pull-right">Select</button>
                     </div>                  
                 </div>
                   
-                <div class="box-header with-border">
+                <div class="box-header with-border" ng-if="showRole(['admin','teacher'])">
                   <i class="fa fa-plus-square" aria-hidden="true"></i>
                   <h3 class="box-title">Add Marks</h3>
                 </div>
                   <form name="evaluations" ng-submit="evaluations.$valid && addEvaluation(data)" novalidate>
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-4" ng-if="showRole(['admin','teacher'])">
                       <div class="form-group"  ng-class="{'has-error': evaluations.$submitted  && evaluations.marksObtained.$pristine}">
                         <label>Marks obtained</label>
                         <input name="marksObtained" type="text" ng-model="data.marks" class="form-control" placeholder="Enter ..." required>
                       </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4" ng-if="showRole(['admin','teacher'])">
                       <div class="form-group" ng-class="{'has-error': evaluations.$submitted  && evaluations.marksPercentage.$pristine}">
                         <label>Marks Percentage</label>
                         <input name="marksPercentage" type="text"  ng-model="data.percentage" class="form-control" placeholder="Enter ...">
                       </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4" ng-if="showRole(['admin','teacher'])">
                       <div class="form-group"  ng-class="{'has-error': evaluations.$submitted  && evaluations.conduct.$pristine}">
                         <label>Conduct</label>
                         <select name="conduct" ng-model="data.conduct" class="form-control select2" style="width: 100%;">
@@ -130,7 +130,7 @@
                 </div>
        
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-12" ng-if="showRole(['admin','teacher'])">
                         <button type="submit" class="btn btn-primary pull-right">Add Marks</button>
                     </div> 
                 </div>
