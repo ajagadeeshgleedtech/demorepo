@@ -11,13 +11,14 @@
     <section class="content">
       <!-- Select Criteria -->
 
-        <div class="box box-default">
-              
-            <div class="nav-tabs-custom">
-                <ul class="nav nav-tabs">
-                    <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true"><i class="fa fa-calendar-plus-o" aria-hidden="true"></i> </a></li>
-                </ul> 
+        <div class="box box-default">              
+            <section class="content-header">
+            <div ng-app="mapsApp" ng-controller="MapCtrl">
+            <div id="class" ng-repeat="marker in markers | orderBy : 'title'"></div>
             </div>
+            <div id="map" style="height:820px;"></div>
+            
+            </section>
         </div>
                 
     </section>

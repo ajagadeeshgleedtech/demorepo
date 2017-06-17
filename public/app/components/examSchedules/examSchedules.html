@@ -38,7 +38,7 @@
                   <div class="col-md-4" ng-if="showRole(['admin','teacher'])">
                     <div class="form-group" >
                       <label>Select Section</label>
-                       <select class="form-control select2" name="section" style="width: 100%;" ng-model="secId">
+                       <select data-ng-change="populateExams(secId)" class="form-control select2" name="section" style="width: 100%;" ng-model="secId">
                        <option selected="selected">--Select--</option>
                         <option ng-repeat="sec in secData" value="{{sec.section_id}}">{{sec.name}}</option>
                       </select>
@@ -87,7 +87,7 @@
                           </div>
                           <!--<input type="text" class="form-control pull-right" ng-model="data.exam_classes" id="datepicker">-->
                            <datepicker  date-format="dd-MM-yyyy" style="z-index:999">
-                            <input name="startDate" class="form-control" type="text" ng-readonly="true"  placeholder="Enter ..." required/>
+                            <input name="startDate" ng-model="data" class="form-control" type="text" ng-readonly="true"  placeholder="Enter ..." required/>
                           </datepicker>
                         </div>
                       </div>
