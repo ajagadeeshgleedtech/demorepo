@@ -17,13 +17,13 @@
     <section class="content">
       <!-- Select Criteria -->
 
-            <div class="box box-default">
+            <div class="box box-default" ng-if="showRole(['admin','teacher'])">
               <div class="box-header with-border" ng-if="showRole(['admin','teacher'])">
                   <i class="fa fa-search" aria-hidden="true"></i> 
                   <h3 class="box-title">Select Criteria</h3>
               </div>
               <!-- /.box-header -->
-              <div class="box-body">
+              <div class="box-body" >
                 <div class="row">
                   <div class="col-md-6" ng-if="showRole(['admin','teacher'])">
                     <div class="form-group">
@@ -38,7 +38,7 @@
                   <div class="col-md-6"ng-if="showRole(['admin','teacher'])">
                     <div class="form-group">
                       <label>Select Section</label>
-                      <select class="form-control select2" style="width: 100%;" ng-model="secId">
+                      <select data-ng-change="populateSubjects(secId)" class="form-control select2" style="width: 100%;" ng-model="secId">
                        <option selected="selected">--Select--</option>
                         <option ng-repeat="sec in secData" value="{{sec.section_id}}">{{sec.name}}</option>
                       </select>
@@ -52,7 +52,7 @@
                     </div>                  
                 </div>
                   
-                <div class="box-header with-border">
+                <div class="box-header with-border"  >
                   <i class="fa fa-plus-square" aria-hidden="true"></i>
                   <h3 class="box-title">Add Subjects</h3>
                 </div>
