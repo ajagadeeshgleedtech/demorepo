@@ -30,58 +30,29 @@
           <div class="box-body">  
             <div class="tab-content">
               <div class="tab-pane no-padding active" id="tab_1">
-                <div class="row">
-                  <div class="col-md-4" ng-if="showRole(['admin','teacher'])">
-                    <div class="form-group">
+                                <div class="row">
+                  <div class="col-md-4" ng-class="{'has-error': Book.$submitted  && Book.selectSubject.$pristine}">
                       <label>Select Class</label>
-                      <select class="form-control select2" style="width: 100%;">
+                      <select data-ng-change="populateSections(classId)" name="selectSubject" class="form-control select2" ng-model="classId" style="width: 100%;">
                         <option selected="selected">--Select--</option>
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
-                        <option>6</option>
-                        <option>7</option>
-                        <option>8</option>
-                        <option>9</option>
-                        <option>10</option>
+                        <option ng-repeat="class in classData" value="{{class.class_id}}">{{class.name}}</option>
                       </select>
-                    </div>
                   </div>
-
-                  <div class="col-md-4" ng-if="showRole(['admin','teacher'])">
-                    <div class="form-group">
+                    <div class="col-md-4" ng-class="{'has-error': Book.$submitted  && Book.selectSubject.$pristine}">
                       <label>Select Section</label>
-                      <select class="form-control select2" style="width: 100%;">
+                      <select data-ng-change="populateSubjects(secId)" name="selectSubject" class="form-control select2"  ng-model="secId" style="width: 100%;">
                         <option selected="selected">--Select--</option>
-                        <option>Section A</option>
-                        <option>Section B</option>
-                        <option>Section C</option>
-                        <option>Section D</option>
+                        <option ng-repeat="sec in secData" value="{{sec.section_id}}">{{sec.name}}</option>
                       </select>
-                    </div>
                   </div>
-                  
-                  <div class="col-md-4" ng-if="showRole(['admin'])">
-                    <div class="form-group">
+                    <div class="col-md-4" ng-class="{'has-error': Book.$submitted  && Book.selectSubject.$pristine}">
                       <label>Select Subject</label>
-                      <select class="form-control select2" style="width: 100%;">
+                      <select data-ng-change="getChapters(subId)" name="selectSubject" class="form-control select2" ng-model="subId" style="width: 100%;">
                         <option selected="selected">--Select--</option>
-                        <option>Subject 1</option>
-                        <option>Subject 2</option>
-                        <option>Subject 3</option>
-                        <option>Subject 4</option>
-                        <option>Subject 5</option>
-                        <option>Subject 6</option>
-                        <option>Subject 7</option>
-                        <option>Subject 8</option>
+                        <option ng-repeat="sub in subData" value="{{sub.subject_id}}">{{sub.name}}</option>
                       </select>
-                    </div>
-                  </div>  
-
-                </div>
-                  
+                  </div>
+              </div>
                 <div class="row" ng-if="showRole(['admin'])">
                     <div class="col-md-12">
                     <button type="submit" class="btn btn-primary pull-right">Select</button>

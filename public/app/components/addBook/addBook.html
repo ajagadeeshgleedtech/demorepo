@@ -60,29 +60,42 @@
                   <div class="col-md-3">
                     <div class="form-group" ng-class="{'has-error': Book.$submitted  && Book.inwardDate.$pristine}">
                       <label>Inward Date</label>
-                      <input name="inwardDate" type="text" ng-model="data.inward_date" class="form-control" placeholder="Enter ..." required>
+                      <datepicker date-min-limit='today1' date-format="dd-MM-yyyy" style="z-index:999">
+                          <input class="form-control"  name="inwardDate" type="text" ng-model="data.inward_date" ng-readonly="true" placeholder="Enter ..." required/>
+                      </datepicker>
                     </div>
                   </div>
               </div>
               
+
+              <div class="row">
+                  <div class="col-md-4" ng-class="{'has-error': Book.$submitted  && Book.selectSubject.$pristine}">
+                      <label>Select Class</label>
+                      <select data-ng-change="populateSections(classId)" name="selectSubject" class="form-control select2" ng-model="classId" style="width: 100%;">
+                        <option selected="selected">--Select--</option>
+                        <option ng-repeat="class in classData" value="{{class.class_id}}">{{class.name}}</option>
+                      </select>
+                  </div>
+                    <div class="col-md-4" ng-class="{'has-error': Book.$submitted  && Book.selectSubject.$pristine}">
+                      <label>Select Section</label>
+                      <select data-ng-change="populateSubjects(secId)" name="selectSubject" class="form-control select2"  ng-model="secId" style="width: 100%;">
+                        <option selected="selected">--Select--</option>
+                        <option ng-repeat="sec in secData" value="{{sec.section_id}}">{{sec.name}}</option>
+                      </select>
+                  </div>
+                    <div class="col-md-4" ng-class="{'has-error': Book.$submitted  && Book.selectSubject.$pristine}">
+                      <label>Select Subject</label>
+                      <select data-ng-change="getChapters(subId)" name="selectSubject" class="form-control select2" ng-model="subId" style="width: 100%;">
+                        <option selected="selected">--Select--</option>
+                        <option ng-repeat="sub in subData" value="{{sub.subject_id}}">{{sub.name}}</option>
+                      </select>
+                  </div>
+              </div>
+
               <div class="row">
                   <div class="col-md-6" ng-class="{'has-error': Book.$submitted  && Book.bookDescription.$pristine}">
                       <label>Book Description</label>
                       <textarea name="bookDescription" class="form-control" ng-model="data.book_description" rows="3" placeholder="Enter ..." required></textarea>
-                  </div>
-                  <div class="col-md-4" ng-class="{'has-error': Book.$submitted  && Book.selectSubject.$pristine}">
-                      <label>Select Subject</label>
-                      <select name="selectSubject" class="form-control select2" ng-model="data.subject" style="width: 100%;">
-                        <option selected="selected">--Select--</option>
-                        <option>Subject 1</option>
-                        <option>Subject 2</option>
-                        <option>Subject 3</option>
-                        <option>Subject 4</option>
-                        <option>Subject 5</option>
-                        <option>Subject 6</option>
-                        <option>Subject 7</option>
-                        <option>Subject 8</option>
-                      </select>
                   </div>
               </div>
                 

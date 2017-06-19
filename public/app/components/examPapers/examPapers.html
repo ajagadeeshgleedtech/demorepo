@@ -111,7 +111,7 @@
                       <div class="form-group" ng-class="{'has-error': examPapers.$submitted && examPapers.startTime.$invalid && examPapers.startTime.$pristine}">
                         <label>Start Time</label>
                         <div class="input-group">
-                            <input type="text" name="startTime" ng-model="data.satrt_time" class="form-control timepicker" required>
+                            <input type="text" name="startTime" ng-model="data.time_from" class="form-control timepicker" required>
                             <div class="input-group-addon">
                                 <i class="fa fa-clock-o"></i>
                             </div>
@@ -122,7 +122,7 @@
                       <div class="form-group" ng-class="{'has-error': examPapers.$submitted && examPapers.endTime.$invalid && examPapers.endTime.$pristine}">
                         <label>End Time</label>
                         <div class="input-group">
-                            <input type="text" name="endTime" ng-model="data.end_time" class="form-control timepicker" required>
+                            <input type="text" name="endTime" ng-model="data.time_to" class="form-control timepicker" required>
                             <div class="input-group-addon">
                                 <i class="fa fa-clock-o"></i>
                             </div>
@@ -172,10 +172,10 @@
                     <td>{{$index}}</td>
                     <td>{{exam.subject_id}}</td>
                     <td>{{exam.exam_paper_title}}</td>
-                    <td>100</td>
+                    <td>{{exam.max_marks}}</td>
                     <td>{{exam.date}}</td>
-                    <td>{{exam.time_from}}</td>
-                    <td>{{exam.time_to}}</td>
+                    <td>{{exam.start_time}}</td>
+                    <td>{{exam.end_time}}</td>
                     <td class="pull-right">
                       <a href="" class="btn btn-default btn-xs" data-toggle="modal" data-target="#myModal" title="Edit">
                         <i class="fa fa-pencil"></i>
