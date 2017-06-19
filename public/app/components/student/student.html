@@ -40,7 +40,6 @@
                     <div class="form-group">
                       <label>Class</label>
                       <select class="form-control select2" data-ng-change="populateSections(classId)" style="width: 100%;" ng-model="classId">
-                        <option selected="selected">--Select--</option>
                         <option ng-repeat="class in classData" value="{{class.class_id}}">{{class.name}}</option>
                       </select>
                     </div>
@@ -48,9 +47,8 @@
                   
                   <div class="col-md-3" ng-if="showRole(['admin','teacher'])">
                     <div class="form-group">
-                      <label>Section</label>
-                      <select class="form-control select2" style="width: 100%;" ng-model="secId">
-                       <option selected="selected">--Select--</option>
+                      <label>Section {{secId}}</label>
+                      <select class="form-control select2" data-ng-change="getStudentValue(secId)" style="width: 100%;" ng-model="secId">                    
                         <option ng-repeat="sec in secData" value="{{sec.section_id}}">{{sec.name}}</option>
                       </select>
                     </div>
@@ -78,14 +76,14 @@
             <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs">
                     <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true"><i class="fa fa-list"></i> List  View</a></li>
-                    <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false"><i class="fa fa-newspaper-o"></i> Details View</a></li>
+                    <!--<li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false"><i class="fa fa-newspaper-o"></i> Details View</a></li>-->
                 </ul>
             </div>
            
           <div class="box-body">  
             <div class="tab-content">
-              <div class="tab-pane table-responsive no-padding active studentDetails" id="tab_1">
-                <table class="table table-striped">
+              <div class="tab-pane table-responsive no-padding active studentDetails" id="tab_1">               
+                <table class="table rwd-table table-striped">
                   <thead>
                    <tr>
                     <th>Admission No</th>
@@ -95,8 +93,7 @@
                     <th>Date Of Birth</th>
                     <th>Gender</th>
                     <th>Category</th>
-                    <th>Mobile No</th>
-                    <th>RTE</th>
+                    <th>Mobile No</th>                   
                     <th class="pull-right">Action</th>
                    </tr>
                   </thead>
@@ -109,8 +106,7 @@
                     <td>{{student.dob}}</td>
                     <td>{{student.gender}}</td>
                     <td>{{student.category}}</td>
-                    <td>{{student.phone}}</td>
-                    <td>yes</td>
+                    <td>{{student.phone}}</td>                  
                     <td class="pull-right">
                       <a class="btn btn-default btn-xs"  data-toggle="modal" data-target="#myModal" title="Edit">
                         <i class="fa fa-pencil"></i>

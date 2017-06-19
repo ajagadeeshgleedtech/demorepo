@@ -81,59 +81,61 @@
 
     line-height: 6px;
 }
+.nav-tabs-custom{
+    margin-bottom: 0px;
+}
+/*Responsive Tables*/
+@import "https://fonts.googleapis.com/css?family=Montserrat:300,400,700";
+.rwd-table {
+  margin-bottom: 0px;
+  min-width: 300px;
+  border-collapse: inherit;
+}
+.rwd-table tr {
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+}
+.rwd-table th {
+  display: none;
+}
+.rwd-table td {
+  display: block;
+}
+.rwd-table td:first-child {
+  padding-top: .5em;
+}
+.rwd-table td:last-child {
+  padding-bottom: .5em;
+}
+.rwd-table td:before {
+  content: attr(data-th) ": ";
+  font-weight: bold;
+  width: 6.5em;
+  display: inline-block;
+}
+@media (min-width: 480px) {
+  .rwd-table td:before {
+    display: none;
+  }
+}
+.rwd-table th, .rwd-table td {
+  text-align: left;
+}
+@media (min-width: 480px) {
+  .rwd-table th, .rwd-table td {
+    display: table-cell;
+    padding: .25em .5em;
+  }
+  .rwd-table th:first-child, .rwd-table td:first-child {
+    padding-left: 0;
+  }
+  .rwd-table th:last-child, .rwd-table td:last-child {
+    padding-right: 0;
+  }
+}
 
-.studentDetails th{
-    width: 160px;
-}
-.studentDetails th+th{
-    width: 160px;
-}
-.studentDetails th+th+th{
-    width: 160px;
-}
-.studentDetails th+th+th+th{
-    width: 160px;
-}
-.studentDetails th+th+th+th+th{
-    width: 10px;
-}
-.studentDetails th+th+th+th+th+th{
-    width: 10px;
-}
-.studentDetails th+th+th+th+th+th+th{
-    width: 10px;
-}
-.studentDetails th+th+th+th+th+th+th+th{
-    width: 10px;
-}
-.studentDetails th+th+th+th+th+th+th+th+th{
-    width: 10px;
+.rwd-table {
+ overflow: hidden;
 }
 
-.employeDetails th{
-    width: 160px;
-}
-.employeDetails th+th{
-    width: 160px;
-}
-.employeDetails th+th+th{
-    width: 160px;
-}
-.employeDetails th+th+th+th{
-    width: 160px;
-}
-.employeDetails th+th+th+th+th{
-    width: 10px;
-}
-.employeDetails th+th+th+th+th+th{
-    width: 10px;
-}
-.employeDetails th+th+th+th+th+th+th{
-    width: 10px;
-}
-.employeDetails th+th+th+th+th+th+th+th{
-    width: 10px;
-}
-.employeDetails th+th+th+th+th+th+th+th+th{
-    width: 10px;
-}
+
