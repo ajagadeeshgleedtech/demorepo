@@ -8,6 +8,7 @@ var autoIncrement = require("mongodb-autoincrement");
 var assert = require('assert');
 var port = process.env.PORT || 4005;
 var router = express.Router();
+var ObjectID = require('mongodb').ObjectID;   
 var url = 'mongodb://' + config.dbhost + ':27017/s_erp_data';
 
 var cookieParser = require('cookie-parser');
@@ -46,18 +47,18 @@ router.route('/vehicles/:school_id')
                                 db.close();
                                 res.end('true');
                             }
-                             
-                        });
+            });
          }
      });
      
     })
     .get(function(req, res, next) {
         var school_id= req.params.school_id;
+        var status = 1;
         var resultArray = [];
           mongo.connect(url, function(err, db) {
             assert.equal(null, err);
-            var cursor = db.collection('vehicles').find({school_id});
+            var cursor = db.collection('vehicles').find({school_id,status});
             cursor.forEach(function(doc, err) {
                 assert.equal(null, err);
                 resultArray.push(doc);
@@ -70,32 +71,56 @@ router.route('/vehicles/:school_id')
         });
     });
 
-    // router.route('/vehicle/:vehicle_id')
-    // .get(function(req, res, next){
-    //   var _id = req.params.vehicle_id;
-    //   var resultArray = [];
-    //   mongo.connect(url, function(err, db){
-    //   assert.equal(null, err);
-    //   db.collection('vehicles').find({'_id':_id},function(err, result){
-    //               assert.equal(null, err);
-    //               if(err){
-    //                res.end('false');
-    //               }
-    //               if(result){
-    //                db.close();
-    //                console.log(result)
-    //                res.send('true');
-    //               }
-                   
-    //             });
-    //     // cursor.forEach(function(doc, err){
-    //     //   resultArray.push(doc);
-    //     // }, function(){
-    //     //   db.close();
-    //     //   res.send(resultArray[0]);
-    //     // });
-    //   });
-    // });
+    router.route('/vehicle/:vehicle_id')
+    .get(function(req, res, next){
+      var _id = new ObjectID(req.params.vehicle_id);
+      var resultArray = [];
+      
+          mongo.connect(url, function(err, db){
+          assert.equal(null, err);
+          var cursor = db.collection('vehicles').find({_id});
+             cursor.forEach(function(doc, err){
+              resultArray.push(doc);
+               }, function(){
+                db.close();
+                res.send(resultArray[0]);
+          });
+      });
+    });
  
+ router.route('/vehicle_edit/:vehicle_id')
+        .put(function(req, res, next){
+          var _id = new ObjectID(req.params.vehicle_id);
+          var req_vehicle_code = req.body.vehicle_code;
+          var req_vehicle_name = req.body.vehicle_name;
+   
+          mongo.connect(url, function(err, db){
+                db.collection('vehicles').update({_id},{$set:{vehicle_code:req_vehicle_code,vehicle_name:req_vehicle_name}}, function(err, result){
+                  assert.equal(null, err);
+                  if(err){
+                     res.send('false'); 
+                  }
+                   db.close();
+                   res.send('true');
+                });
+          });
+        });
+
+        router.route('/vehicle_delete/:vehicle_id')
+        .put(function(req, res, next){
+          var _id = new ObjectID(req.params.vehicle_id);
+          var req_status = 0;
+   
+          mongo.connect(url, function(err, db){
+                db.collection('vehicles').update({_id},{$set:{status:req_status}}, function(err, result){
+                  assert.equal(null, err);
+                  if(err){
+                     res.send('false'); 
+                  }
+                   db.close();
+                   res.send('true');
+                });
+          });
+        });
 
 module.exports = router;
