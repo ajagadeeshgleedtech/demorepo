@@ -136,7 +136,7 @@
             </span>
           </a>
           <ul class="treeview-menu">
-            <li data-ng-if="setRole('admin')"><a ui-sref='main.libraryRules'><i class="fa fa-circle-o"></i> Library rules</a></li>
+            <!--<li data-ng-if="setRole('admin')"><a ui-sref='main.libraryRules'><i class="fa fa-circle-o"></i> Library rules</a></li>-->
             <li data-ng-if="setRole('admin') || setRole('teacher')"><a  ui-sref='main.addBook'><i class="fa fa-circle-o"></i> Add Book</a></li>
             <li ><a  ui-sref='main.bookList'><i class="fa fa-circle-o"></i> Book List</a></li>
           </ul>
@@ -152,6 +152,7 @@
           <ul class="treeview-menu">
             <li data-ng-if="setRole('admin')"><a  ui-sref='main.addStation'><i class="fa fa-circle-o"></i> Add Station</a></li>
             <li data-ng-if="setRole('admin')"><a ui-sref='main.addBusRoute'><i class="fa fa-circle-o"></i> Add Bus Route</a></li>
+            <li data-ng-if="setRole('admin')"><a ui-sref='main.addVehicle'><i class="fa fa-circle-o"></i> Add Vehicle</a></li>
             <li><a  ui-sref='main.routeGeolocation'><i class="fa fa-circle-o"></i> Route Geolocation</a></li>
           </ul>
         </li>

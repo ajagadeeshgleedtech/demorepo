@@ -39,17 +39,17 @@
                   <div class="col-md-3" ng-if="showRole(['admin','teacher'])">
                     <div class="form-group">
                       <label>Class</label>
-                      <select class="form-control select2" data-ng-change="populateSections(classId)" style="width: 100%;" ng-model="classId">
-                        <option ng-repeat="class in classData" value="{{class.class_id}}">{{class.name}}</option>
+                      <select class="form-control select2" ng-options="class.class_id as class.name for class in classData" data-ng-change="populateSections(classId)" style="width: 100%;" ng-model="classId">
+                        <!--<option ng-repeat="class in classData" value="{{class.class_id}}">{{class.name}}</option>-->
                       </select>
                     </div>
                   </div>
                   
                   <div class="col-md-3" ng-if="showRole(['admin','teacher'])">
                     <div class="form-group">
-                      <label>Section {{secId}}</label>
-                      <select class="form-control select2" data-ng-change="getStudentValue(secId)" style="width: 100%;" ng-model="secId">                    
-                        <option ng-repeat="sec in secData" value="{{sec.section_id}}">{{sec.name}}</option>
+                      <label>Section</label>
+                      <select class="form-control select2"  ng-options="sec.section_id as sec.name for sec in secData" data-ng-change="getStudentValue(secId)" style="width: 100%;" ng-model="secId">                    
+                        <!--<option ng-repeat="sec in secData" value="{{sec.section_id}}">{{sec.name}}</option>-->
                       </select>
                     </div>
                   </div>

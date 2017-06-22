@@ -30,9 +30,8 @@
                      >
                     <div class="form-group">
                       <label>Select Class</label>
-                      <select class="form-control select2"  data-ng-change="populateSections(classId)" style="width: 100%;" ng-model="classId">
-                        <option selected="selected">--Select--</option>
-                       <option ng-repeat="class in classDatanew" value="{{class.class_id}}">{{class.name}}</option>
+                      <select class="form-control select2" ng-options="class.class_id as class.name for class in classData"  data-ng-change="populateSections(classId)" style="width: 100%;" ng-model="classId">
+                      
                       </select>
                     </div>
                   </div>
@@ -40,10 +39,8 @@
                   <div class="col-md-5"  ng-if="showRole(['admin','teacher'])">
                     <div class="form-group">
                       <label>Select Section</label>
-                      <select class="form-control select2" style="width: 100%;" ng-model="secId">
-                        <option selected="selected">--Select--</option>
-                       <option ng-repeat="sec in secData" value="{{sec.section_id}}">{{sec.name}}</option>
-                        
+                      <select class="form-control select2" style="width: 100%;" ng-options="sec.section_id as sec.name for sec in secData" ng-model="secId">
+                              
                       </select>
                     </div>
                   </div>
@@ -75,9 +72,7 @@
                 <div class="row">
                     <div class="col-md-5" ng-if="showRole(['admin','teacher','parent'])">
                       <div class="form-group">
-                           <select  class="form-control select2"  style="width: 100%;"  ng-model="data.subjectObj">
-                            <option selected="selected">--Select--</option>
-                            <option ng-repeat="subject in subjectsData" value="{{subject}}">{{subject.name}}</option>
+                           <select  class="form-control select2"  style="width: 100%;" ng-options="sub.subject_id as sub.name for sub in subjectsData"  ng-model="data.subjectObj">
 
                           </select>
                       </div>
@@ -85,9 +80,8 @@
                     <div class="col-md-5" ng-if="showRole(['admin','teacher','parent'])">
                    
                       <div class="form-group">
-                          <select class="form-control select2" style="width: 100%;"  ng-model="data.teachId">
-                            <option selected="selected">--Select--</option>
-                             <option ng-repeat="teacher in employeeData" value="{{teacher.employee_id}}">{{teacher.name}}</option>
+                          <select class="form-control select2" style="width: 100%;" ng-options="teacher.employee_id as teacher.name for teacher in employeeData" ng-model="data.teachId">
+                     
                           </select>
                       </div>
                     </div>

@@ -78,20 +78,20 @@
                         </div>
                       </div>
                     </div>
-                       <div class="col-md-4" ng-if="showRole(['admin'])">
+                       <!--<div class="col-md-4" ng-if="showRole(['admin'])">
                       <div class="form-group" ng-class="{'has-error': examSchedule.$submitted  && examSchedule.startDate.$pristine}">
                         <label>Due Date</label>
                         <div class="input-group date">
                           <div class="input-group-addon">
                             <i class="fa fa-calendar"></i>
                           </div>
-                          <!--<input type="text" class="form-control pull-right" ng-model="data.exam_classes" id="datepicker">-->
+                          <input type="text" class="form-control pull-right" ng-model="data.exam_classes" id="datepicker">
                            <datepicker  date-format="dd-MM-yyyy" style="z-index:999">
                             <input name="startDate" ng-model="data" class="form-control" type="text" ng-readonly="true"  placeholder="Enter ..." required/>
                           </datepicker>
                         </div>
                       </div>
-                    </div>
+                    </div>-->
                 </div>
                 
                 <div class="row">
@@ -122,7 +122,7 @@
                     <th>#</th>
                     <th>Examination Title</th>
                     <th>Start Date</th>
-                    <th>Due Date</th>
+                    <!--<th>Due Date</th>-->
                     <th class="pull-right">Action</th>
                    </tr>
                   </thead>
@@ -131,7 +131,7 @@
                      <td>{{$index}}</td>
                     <td>{{exam.exam_title}}</td>
                     <td>{{exam.from_date}}</td>
-                    <td>{{exam.exam_classes}}</td>  
+                    <!--<td>{{exam.exam_classes}}</td>  -->
                     <td class="pull-right">
                       <a href="" class="btn btn-default btn-xs" data-toggle="modal" ng-click="EditExamSchedule($index)" data-target="#myModal" title="Edit">
                         <i class="fa fa-pencil"></i>

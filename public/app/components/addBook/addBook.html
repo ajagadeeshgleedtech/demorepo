@@ -71,23 +71,18 @@
               <div class="row">
                   <div class="col-md-4" ng-class="{'has-error': Book.$submitted  && Book.selectSubject.$pristine}">
                       <label>Select Class</label>
-                      <select data-ng-change="populateSections(classId)" name="selectSubject" class="form-control select2" ng-model="classId" style="width: 100%;">
-                        <option selected="selected">--Select--</option>
-                        <option ng-repeat="class in classData" value="{{class.class_id}}">{{class.name}}</option>
+                      <select data-ng-change="populateSections(classId)" name="selectSubject" ng-options="class.class_id as class.name for class in classData" class="form-control select2" ng-model="classId" style="width: 100%;">
                       </select>
                   </div>
                     <div class="col-md-4" ng-class="{'has-error': Book.$submitted  && Book.selectSubject.$pristine}">
                       <label>Select Section</label>
-                      <select data-ng-change="populateSubjects(secId)" name="selectSubject" class="form-control select2"  ng-model="secId" style="width: 100%;">
-                        <option selected="selected">--Select--</option>
-                        <option ng-repeat="sec in secData" value="{{sec.section_id}}">{{sec.name}}</option>
+                      <select data-ng-change="populateSubjects(secId)" ng-options="sec.section_id as sec.name for sec in secData" name="selectSubject" class="form-control select2"  ng-model="secId" style="width: 100%;">
+                    
                       </select>
                   </div>
                     <div class="col-md-4" ng-class="{'has-error': Book.$submitted  && Book.selectSubject.$pristine}">
                       <label>Select Subject</label>
-                      <select data-ng-change="getChapters(subId)" name="selectSubject" class="form-control select2" ng-model="subId" style="width: 100%;">
-                        <option selected="selected">--Select--</option>
-                        <option ng-repeat="sub in subData" value="{{sub.subject_id}}">{{sub.name}}</option>
+                      <select data-ng-change="getChapters(subId)" name="selectSubject" ng-options="sub.subject_id as sub.name for sub in subData" class="form-control select2" ng-model="subId" style="width: 100%;">
                       </select>
                   </div>
               </div>
