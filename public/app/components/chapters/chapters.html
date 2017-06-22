@@ -28,10 +28,8 @@
                   <div class="col-md-4" ng-if="showRole(['admin','teacher'])">
                     <div class="form-group">
                       <label>Select Class</label>
-                      <select  data-ng-change="populateSections(classId)" class="form-control select2" style="width: 100%;" ng-model="classId">
-                        <option selected="selected">--Select--</option>
-                        <option ng-repeat="class in classData" value="{{class.class_id}}">{{class.name}}</option>
-                       
+                      <select  data-ng-change="populateSections(classId)" ng-options="class.class_id as class.name for class in classData"  class="form-control select2" style="width: 100%;" ng-model="classId">
+                                             
                       </select>
                     </div>
                   </div>
@@ -39,10 +37,8 @@
                   <div class="col-md-4" ng-if="showRole(['admin','teacher'])">
                     <div class="form-group">
                       <label>Select Section</label>
-                      <select  data-ng-change="populateSubjects(secId)" class="form-control select2" style="width: 100%;" ng-model="secId">
-                        <option selected="selected">--Select--</option>
-                         <option ng-repeat="sec in secData" value="{{sec.section_id}}">{{sec.name}}</option>
-                        
+                      <select ng-options="sec.section_id as sec.name for sec in secData"  data-ng-change="populateSubjects(secId)" class="form-control select2" style="width: 100%;" ng-model="secId">
+                                             
                       </select>
                     </div>
                   </div>
@@ -50,9 +46,8 @@
                   <div class="col-md-4" ng-if="showRole(['admin','teacher','parent'])">
                         <div class="form-group">
                             <label>Select Subject</label>
-                            <select  data-ng-change="getChapters(subId)" class="form-control select2" style="width: 100%;" ng-model="subId">
-                                <option selected="selected">--Select--</option>
-                               <option ng-repeat="sub in subData" value="{{sub.subject_id}}">{{sub.name}}</option>
+                            <select ng-options="sub.subject_id as sub.name for sub in subData"  data-ng-change="getChapters(subId)" class="form-control select2" style="width: 100%;" ng-model="subId">
+                               
                             </select>
                         </div>
                     </div>
