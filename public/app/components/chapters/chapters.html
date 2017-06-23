@@ -1,208 +1,206 @@
-
-    <section class="content-header">
-      <h1>
-        <i class="fa fa-graduation-cap" aria-hidden="true"></i>
-        Academics
+<section class="content-header">
+    <h1>
+        <i class="fa fa-graduation-cap" aria-hidden="true"></i> Academics
         <small>Chapters</small>
-      </h1>
-      <ol class="breadcrumb">
+    </h1>
+    <ol class="breadcrumb">
         <li><a href=""><i class="fa fa-dashboard"></i> Home</a></li>
         <li>Academics</li>
         <li class="active">Chapters</li>
-      </ol>
-    </section>
-    <!-- /.Content Header -->
+    </ol>
+</section>
+<!-- /.Content Header -->
 
-    <!-- Main content -->
-    <section class="content">
-      <!-- Select Criteria -->
+<!-- Main content -->
+<section class="content">
+    <!-- Select Criteria -->
 
-            <div class="box box-default">
-              <div class="box-header with-border">
-                  <i class="fa fa-search" aria-hidden="true"></i> 
-                  <h3 class="box-title">Select Criteria</h3>
-              </div>
-              <!-- /.box-header -->
-              <div class="box-body">
-                <div class="row">
-                  <div class="col-md-4" ng-if="showRole(['admin','teacher'])">
+    <div class="box box-default">
+        <div class="box-header with-border">
+            <i class="fa fa-search" aria-hidden="true"></i>
+            <h3 class="box-title">Select Criteria</h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-4" ng-if="showRole(['admin','teacher'])">
                     <div class="form-group">
-                      <label>Select Class</label>
-                      <select  data-ng-change="populateSections(classId)" ng-options="class.class_id as class.name for class in classData"  class="form-control select2" style="width: 100%;" ng-model="classId">
+                        <label>Select Class</label>
+                        <select data-ng-change="populateSections(classId)" ng-options="class.class_id as class.name for class in classData" class="form-control select2" style="width: 100%;" ng-model="classId">
                                              
                       </select>
                     </div>
-                  </div>
+                </div>
 
-                  <div class="col-md-4" ng-if="showRole(['admin','teacher'])">
+                <div class="col-md-4" ng-if="showRole(['admin','teacher'])">
                     <div class="form-group">
-                      <label>Select Section</label>
-                      <select ng-options="sec.section_id as sec.name for sec in secData"  data-ng-change="populateSubjects(secId)" class="form-control select2" style="width: 100%;" ng-model="secId">
+                        <label>Select Section</label>
+                        <select ng-options="sec.section_id as sec.name for sec in secData" data-ng-change="populateSubjects(secId)" class="form-control select2" style="width: 100%;" ng-model="secId">
                                              
                       </select>
                     </div>
-                  </div>
-                   
-                  <div class="col-md-4" ng-if="showRole(['admin','teacher','parent'])">
-                        <div class="form-group">
-                            <label>Select Subject</label>
-                            <select ng-options="sub.subject_id as sub.name for sub in subData"  data-ng-change="getChapters(subId)" class="form-control select2" style="width: 100%;" ng-model="subId">
+                </div>
+
+                <div class="col-md-4" ng-if="showRole(['admin','teacher','parent'])">
+                    <div class="form-group">
+                        <label>Select Subject</label>
+                        <select ng-options="sub.subject_id as sub.name for sub in subData" data-ng-change="getChapters(subId)" class="form-control select2" style="width: 100%;" ng-model="subId">
                                
                             </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <button type="submit" class="btn btn-primary pull-right">Select</button>
+                </div>
+            </div>
+            <div ng-if="showRole(['admin','teacher'])">
+                <div class="box-header with-border">
+                    <i class="fa fa-plus-square" aria-hidden="true"></i>
+                    <h3 class="box-title">Add Chapters</h3>
+                </div>
+                <form name="chapters" ng-submit="chapters.$valid && addChapters(data)" novalidate>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group" ng-class="{'has-error': chapters.$submitted  && chapters.chapterName.$pristine}">
+                                <label>Chapter Name</label>
+                                <input type="text" name="chapterName" ng-model="data.title" class="form-control" placeholder="Enter ..." required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group" ng-class="{'has-error': chapters.$submitted  && chapters.chapterCode.$pristine}">
+                                <label>Chapter Code</label>
+                                <input name="chapterCode" type="text" ng-model="data.code" class="form-control" placeholder="Enter ..." required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group" ng-class="{'has-error': chapters.$submitted  && chapters.NumOfTopics.$pristine}">
+                                <label>Number of Topics</label>
+                                <input name="NumOfTopics" type="text" ng-model="data.no_of_topics" class="form-control" placeholder="Enter ..." required>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                    <button type="submit" class="btn btn-primary pull-right">Select</button>
-                    </div>                  
-                </div>
-                <div  ng-if="showRole(['admin','teacher'])">  
-                <div class="box-header with-border">
-                  <i class="fa fa-plus-square" aria-hidden="true"></i>
-                  <h3 class="box-title">Add Chapters</h3>
-                </div>
-                <form name="chapters" ng-submit="chapters.$valid && addChapters(data)" novalidate>   
-                <div class="row">
-                    <div class="col-md-4">
-                      <div class="form-group" ng-class="{'has-error': chapters.$submitted  && chapters.chapterName.$pristine}">
-                        <label>Chapter Name</label>
-                        <input type="text" name="chapterName" ng-model="data.title" class="form-control" placeholder="Enter ..." required>
-                      </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group" ng-class="{'has-error': chapters.$submitted  && chapters.chapterDescription.$pristine}">
+                                <label>Chapter Description</label>
+                                <textarea name="chapterDescription" class="form-control" ng-model="data.description" rows="3" placeholder="Enter ..." required></textarea>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-md-4">
-                      <div class="form-group"  ng-class="{'has-error': chapters.$submitted  && chapters.chapterCode.$pristine}">
-                        <label>Chapter Code</label>
-                        <input name="chapterCode" type="text" ng-model="data.code" class="form-control" placeholder="Enter ..." required>
-                      </div>
-                    </div>
-                    <div class="col-md-4">
-                      <div class="form-group" ng-class="{'has-error': chapters.$submitted  && chapters.NumOfTopics.$pristine}">
-                        <label>Number of Topics</label>
-                        <input name="NumOfTopics" type="text" ng-model="data.no_of_topics" class="form-control" placeholder="Enter ..." required>
-                      </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                      <div class="form-group" ng-class="{'has-error': chapters.$submitted  && chapters.chapterDescription.$pristine}">
-                        <label>Chapter Description</label>
-                        <textarea name="chapterDescription" class="form-control" ng-model="data.description" rows="3" placeholder="Enter ..." required></textarea>
-                      </div>
-                    </div>        
-                </div>
-       
-                <div class="row">
-                    <div class="col-md-12">
-                        <button type="submit" class="btn btn-primary pull-right">Add Chapter</button>
-                    </div> 
-                </div>
-              </form>
-              </div>
-            </div>
 
-              
+                    <div class="row">
+                        <div class="col-md-12">
+                            <button type="submit" class="btn btn-primary pull-right">Add Chapter</button>
+                        </div>
+                    </div>
+                </form>
             </div>
-    
+        </div>
+
+
+    </div>
+
     <!-- /.content -->
-    
+
     <!-- Content List -->
-        <div class="box box-default">
-            <div class="box-header with-border">
-                  <i class="fa fa-th-list" aria-hidden="true"></i>
-                  <h3 class="box-title">Chapters List</h3>
-            </div>
-          <div class="box-body">  
+    <div class="box box-default">
+        <div class="box-header with-border">
+            <i class="fa fa-th-list" aria-hidden="true"></i>
+            <h3 class="box-title">Chapters List</h3>
+        </div>
+        <div class="box-body">
             <div class="tab-content">
-              <div class="tab-pane table-responsive no-padding active" id="tab_1">
-                <table class="table table-striped">
-                  <thead>
-                   <tr>
-                    <th>#</th>
-                    <th>Chapter Name</th>
-                    <th>Chapter Code</th>
-                    <th>Subject</th>
-                    <th>Description</th>
-                    <th>No of Topics</th>
-                    <th class="pull-right">Action</th>
-                   </tr>
-                  </thead>
-                  <tbody>
-                   <tr ng-repeat="chapter in chaptersData">
-                    <td>{{$index+1}}</td>
-                    <td>{{chapter.title}}</td>
-                    <td>{{chapter.lesson_id}}</td>  
-                    <td>{{chapter.subject_id}}</td>
-                    <td>{{chapter.description}}</td>
-                    <td>{{chapter.no_of_topics}}</td>
-                    <td class="pull-right">
-                      <a href="" class="btn btn-default btn-xs" data-toggle="modal" data-target="#myModal" title="Edit">
-                        <i class="fa fa-pencil"></i>
-                      </a>
-                      <a href="" class="btn btn-default btn-xs" data-toggle="tooltip" title="Delete">
-                        <i class="fa fa-trash" aria-hidden="true"></i>
-                      </a>
-                    </td>
-                   </tr>
-                 </tbody>
-                </table>
-              </div>                       
+                <div class="tab-pane table-responsive no-padding active" id="tab_1">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Chapter Name</th>
+                                <th>Chapter Code</th>
+                                <th>Subject</th>
+                                <th>Description</th>
+                                <th>No of Topics</th>
+                                <th class="pull-right">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="chapter in chaptersData">
+                                <td>{{$index+1}}</td>
+                                <td>{{chapter.title}}</td>
+                                <td>{{chapter.lesson_id}}</td>
+                                <td>{{chapter.subject_id}}</td>
+                                <td>{{chapter.description}}</td>
+                                <td>{{chapter.no_of_topics}}</td>
+                                <td class="pull-right">
+                                    <a href="" class="btn btn-default btn-xs" data-toggle="modal" data-target="#myModal" title="Edit">
+                                        <i class="fa fa-pencil"></i>
+                                    </a>
+                                    <a href="" class="btn btn-default btn-xs" data-toggle="tooltip" title="Delete">
+                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-          </div>
         </div>
-    </section>
- <!--Edit values modal Starts here-->
- <div class="modal fade" id="myModal" role="dialog">
+    </div>
+</section>
+<!--Edit values modal Starts here-->
+<div class="modal fade" id="myModal" role="dialog">
     <div class="modal-dialog modal-md">
-      <div class="modal-content">
-        <form name="employeeDetails" ng-submit="addEmployee(data)" novalidate>
-         <div class="modal-header">
-            <h3>Add Chapters</h3>
-        </div>
-        <div class="modal-body">
-       
-        <!-- /.box-header -->
-         <!-- /.box-header -->
-      
-                <div class="row">
-                    <div class="col-md-4">
-                      <div class="form-group">
-                        <label>Chapter Name</label>
-                        <input type="text" ng-model="editdata.title" class="form-control" placeholder="Enter ...">
-                      </div>
-                    </div>
-                    <div class="col-md-4">
-                      <div class="form-group">
-                        <label>Chapter Code</label>
-                        <input type="text" ng-model="editdata.code" class="form-control" placeholder="Enter ...">
-                      </div>
-                    </div>
-                    <div class="col-md-4">
-                      <div class="form-group">
-                        <label>Number of Topics</label>
-                        <input type="text" ng-model="editdata.no_of_topics" class="form-control" placeholder="Enter ...">
-                      </div>
-                    </div>
+        <div class="modal-content">
+            <form name="employeeDetails" ng-submit="addEmployee(data)" novalidate>
+                <div class="modal-header">
+                    <h3>Add Chapters</h3>
                 </div>
-                <div class="row">
-                    <div class="col-md-6">
-                      <div class="form-group">
-                        <label>Chapter Description</label>
-                        <textarea class="form-control" ng-model="editdata.description" rows="3" placeholder="Enter ..."></textarea>
-                      </div>
-                    </div>        
-                </div>
-                <div class="modal-footer">
+                <div class="modal-body">
+
+                    <!-- /.box-header -->
+                    <!-- /.box-header -->
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Chapter Name</label>
+                                <input type="text" ng-model="editdata.title" class="form-control" placeholder="Enter ...">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Chapter Code</label>
+                                <input type="text" ng-model="editdata.code" class="form-control" placeholder="Enter ...">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Number of Topics</label>
+                                <input type="text" ng-model="editdata.no_of_topics" class="form-control" placeholder="Enter ...">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Chapter Description</label>
+                                <textarea class="form-control" ng-model="editdata.description" rows="3" placeholder="Enter ..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
                         <button type="submit" class="btn btn-primary">Add Chapter</button>
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                      </div>
-              </div>
+                    </div>
+                </div>
 
-        
-        
+
+
         </div>
-       
-     </form>
-      </div>
+
+        </form>
     </div>
-  </div>
+</div>
+</div>
