@@ -1,65 +1,63 @@
-
-    <section class="content-header">
-      <h1>
-        <i class="fa fa-graduation-cap" aria-hidden="true"></i>
-        Academics
+<section class="content-header">
+    <h1>
+        <i class="fa fa-graduation-cap" aria-hidden="true"></i> Academics
         <small>Subjects</small>
-      </h1>
-      <ol class="breadcrumb">
+    </h1>
+    <ol class="breadcrumb">
         <li><a href=""><i class="fa fa-dashboard"></i> Home</a></li>
         <li>Academics</li>
         <li class="active">Subjects</li>
-      </ol>
-    </section>
-    <!-- /.Content Header -->
+    </ol>
+</section>
+<!-- /.Content Header -->
 
-    <!-- Main content -->
-    <section class="content">
-      <!-- Select Criteria -->
+<!-- Main content -->
+<section class="content">
+    <!-- Select Criteria -->
 
-            <div class="box box-default" ng-if="showRole(['admin','teacher'])">
-              <div class="box-header with-border" ng-if="showRole(['admin','teacher'])">
-                  <i class="fa fa-search" aria-hidden="true"></i> 
-                  <h3 class="box-title">Select Criteria</h3>
-              </div>
-              <!-- /.box-header -->
-              <div class="box-body" >
-                <div class="row">                  
-                  <div class="col-md-6" ng-if="showRole(['admin','teacher'])">
+    <div class="box box-default" ng-if="showRole(['admin','teacher'])">
+        <div class="box-header with-border" ng-if="showRole(['admin','teacher'])">
+            <i class="fa fa-search" aria-hidden="true"></i>
+            <h3 class="box-title">Select Criteria</h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-6" ng-if="showRole(['admin','teacher'])">
                     <div class="form-group">
-                      <label>Select Class {{classId}}</label>
-                     <select class="form-control select2" ng-options="class.class_id as class.name for class in classData" data-ng-change="populateSections(classId)" style="width: 100%;" ng-model="classId">
+                        <label>Select Class {{classId}}</label>
+                        <select class="form-control select2" ng-options="class.class_id as class.name for class in classData" data-ng-change="populateSections(classId)" style="width: 100%;" ng-model="classId">
                        
                       </select>
                     </div>
-                  </div>
+                </div>
 
-                  <div class="col-md-6"ng-if="showRole(['admin','teacher'])">
+                <div class="col-md-6" ng-if="showRole(['admin','teacher'])">
                     <div class="form-group">
-                      <label>Select Section {{secId}}</label>
-                      <select data-ng-change="getSubjects(secId)" ng-options="sec.section_id as sec.name for sec in secData" class="form-control select2" style="width: 100%;" ng-model="secId">
+                        <label>Select Section {{secId}}</label>
+                        <select data-ng-change="getSubjects(secId)" ng-options="sec.section_id as sec.name for sec in secData" class="form-control select2" style="width: 100%;" ng-model="secId">
                       </select>
                     </div>
-                  </div>
+                </div>
 
-                </div>
-                <div class="row">
-                    <div class="col-md-12" ng-if="showRole(['admin','teacher'])">
+            </div>
+            <div class="row">
+                <div class="col-md-12" ng-if="showRole(['admin','teacher'])">
                     <button type="submit" class="btn btn-primary pull-right">Select</button>
-                    </div>                  
                 </div>
-                  
-                <div class="box-header with-border"  >
-                  <i class="fa fa-plus-square" aria-hidden="true"></i>
-                  <h3 class="box-title">Add Subjects</h3>
-                </div>
-              <form name="subjects" ng-submit="subjects.$valid && addSubjects(data,secId)" novalidate>
+            </div>
+
+            <div class="box-header with-border">
+                <i class="fa fa-plus-square" aria-hidden="true"></i>
+                <h3 class="box-title">Add Subjects</h3>
+            </div>
+            <form name="subjects" ng-submit="subjects.$valid && addSubjects(data)" novalidate>
                 <div class="row">
                     <div class="col-md-4" ng-if="showRole(['admin','teacher'])">
-                      <div class="form-group" ng-class="{'has-error': subjects.$submitted  && subjects.subjectName.$pristine}">
-                        <label>Subject Name</label>
-                        <input type="text" name="subjectName" class="form-control" ng-model="data.name" placeholder="Enter ..." required>
-                      </div>
+                        <div class="form-group" ng-class="{'has-error': subjects.$submitted  && subjects.subjectName.$pristine}">
+                            <label>Subject Name</label>
+                            <input type="text" name="subjectName" class="form-control" ng-model="data.name" placeholder="Enter ..." required>
+                        </div>
                     </div>
                     <!--<div class="col-md-4" ng-if="showRole(['admin','teacher'])">
                       <div class="form-group">
@@ -84,108 +82,108 @@
                 </div>
                 <div class="row">
                     <div class="col-md-12" ng-if="showRole(['admin','teacher'])">
-                    <button type="submit" ng class="btn btn-primary pull-right">Add Subject</button>
-                    </div>                  
+                        <button type="submit" ng class="btn btn-primary pull-right">Add Subject</button>
+                    </div>
                 </div>
-                  </form>
-              </div>
+            </form>
+        </div>
 
-              
-            </div>
-    
+
+    </div>
+
     <!-- /.content -->
-    
+
     <!-- Content List -->
-        <div class="box box-default">
-            <div class="box-header with-border">
-                  <i class="fa fa-th-list" aria-hidden="true"></i>
-                  <h3 class="box-title">Subject List</h3>
-            </div>
-          <div class="box-body">  
+    <div class="box box-default">
+        <div class="box-header with-border">
+            <i class="fa fa-th-list" aria-hidden="true"></i>
+            <h3 class="box-title">Subject List</h3>
+        </div>
+        <div class="box-body">
             <div class="tab-content">
-              <div class="tab-pane table-responsive no-padding active" id="tab_1">
-                <table class="table table-striped">
-                  <thead>
-                   <tr>
-                    <th>#</th>
-                    <th>Subject Name</th>
-                    <!--<th>Subject Code</th>-->
-                    <!--<th>Subject Type</th>-->
-                    <th class="pull-right">Action</th>
-                   </tr>
-                  </thead>
-                  <tbody>
-                   <tr ng-repeat="subjects in subjectsData">
-                      <td>{{$index+1}}</td>
-                     <td>{{subjects.name}}</td>
-                      <!--<td>{{subjects.subject_id}} </td>-->
-                      <!--<td>{{subjects._id}}</td>-->
-                    <td class="pull-right">
-                      <a href="" class="btn btn-default btn-xs" data-toggle="modal" data-target="#myModal" title="Edit">
-                        <i class="fa fa-pencil"></i>
-                      </a>
-                      <a href="" class="btn btn-default btn-xs" title="Delete">
-                        <i class="fa fa-trash" aria-hidden="true"></i>
-                      </a>
-                    </td>
-                   </tr>
-                 </tbody>
-                </table>
-              </div>                       
+                <div class="tab-pane table-responsive no-padding active" id="tab_1">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Subject Name</th>
+                                <!--<th>Subject Code</th>-->
+                                <!--<th>Subject Type</th>-->
+                                <th class="pull-right">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="subjects in subjectsData">
+                                <td>{{$index+1}}</td>
+                                <td>{{subjects.name}}</td>
+                                <!--<td>{{subjects.subject_id}} </td>-->
+                                <!--<td>{{subjects._id}}</td>-->
+                                <td class="pull-right">
+                                    <a href="" class="btn btn-default btn-xs" data-toggle="modal" data-target="#myModal" title="Edit">
+                                        <i class="fa fa-pencil"></i>
+                                    </a>
+                                    <a href="" class="btn btn-default btn-xs" title="Delete">
+                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-          </div>
         </div>
-    </section>
-  </div>
-  
- <!--Edit values modal Starts here-->
- <div class="modal fade" id="myModal" role="dialog">
+    </div>
+</section>
+</div>
+
+<!--Edit values modal Starts here-->
+<div class="modal fade" id="myModal" role="dialog">
     <div class="modal-dialog modal-md">
-      <div class="modal-content">
-        <form name="employeeDetails" ng-submit="addEmployee(data)" novalidate>
-         <div class="modal-header">
-            <h3>Edit Subjects</h3>
-        </div>
-        <div class="modal-body">
-       
-        <!-- /.box-header -->
-         <!-- /.box-header -->
-         
-                
-                <div class="row">
-                    <div class="col-md-4">
-                      <div class="form-group">
-                        <label>Subject Name</label>
-                        <input type="text" class="form-control" placeholder="Enter ...">
-                      </div>
-                    </div>
-                    <div class="col-md-4">
-                      <div class="form-group">
-                        <label>Subject Code</label>
-                        <input type="text" class="form-control" placeholder="Enter ...">
-                      </div>
-                    </div>
-                    <div class="col-md-4">
-                      <div class="radio">
-                        <label>
+        <div class="modal-content">
+            <form name="employeeDetails" ng-submit="addEmployee(data)" novalidate>
+                <div class="modal-header">
+                    <h3>Edit Subjects</h3>
+                </div>
+                <div class="modal-body">
+
+                    <!-- /.box-header -->
+                    <!-- /.box-header -->
+
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Subject Name</label>
+                                <input type="text" class="form-control" placeholder="Enter ...">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Subject Code</label>
+                                <input type="text" class="form-control" placeholder="Enter ...">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="radio">
+                                <label>
                         <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked="">
                         Theory
                         </label>
-                      </div>
-                      <div class="radio">
-                        <label>
+                            </div>
+                            <div class="radio">
+                                <label>
                         <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
                         Practical
                         </label>
-                      </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Add Subject</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                </div>
+            </form>
         </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-primary">Add Subject</button>
-          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-        </div>
-     </form>
-      </div>
     </div>
-  </div>
+</div>

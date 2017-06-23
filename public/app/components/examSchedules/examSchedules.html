@@ -38,7 +38,7 @@
                   <div class="col-md-4" ng-if="showRole(['admin','teacher'])">
                     <div class="form-group" >
                       <label>Select Section</label>
-                       <select data-ng-change="populateExams(secId)"  class="form-control select2" name="section" style="width: 100%;" ng-model="secId">
+                       <select data-ng-change="populateExams(secId)" class="form-control select2" name="section" style="width: 100%;" ng-model="secId">
                        <option selected="selected">--Select--</option>
                         <option ng-repeat="sec in secData" value="{{sec.section_id}}">{{sec.name}}</option>
                       </select>
