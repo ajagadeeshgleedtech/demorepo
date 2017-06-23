@@ -76,6 +76,7 @@
                       <th>#</th>  
                       <th>Station Name</th>
                       <th>Station Code</th>
+                      <th>Station Geo-Location </th>
                       <th class="pull-right">Action</th>
                     </tr>
                   </thead>
@@ -84,7 +85,7 @@
                       <td class="mailbox-name"> {{$index+1}}</td>
                       <td class="mailbox-name"> {{station.station_name}}</td>
                       <td class="mailbox-name"> {{station.station_code}}</td>
-                                            
+                       <td class="mailbox-name"> {{station.station_geo_location}}</td>                     
                       <td class="mailbox-date pull-right">                    
                         <a href="" class="btn btn-default btn-xs"  data-toggle="modal" data-target="#myModal" title="" data-original-title="Edit">
                             <i class="fa fa-pencil"></i>

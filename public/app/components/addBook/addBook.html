@@ -82,7 +82,7 @@
                   </div>
                     <div class="col-md-4" ng-class="{'has-error': Book.$submitted  && Book.selectSubject.$pristine}">
                       <label>Select Subject</label>
-                      <select data-ng-change="getChapters(subId)" name="selectSubject" ng-options="sub.subject_id as sub.name for sub in subData" class="form-control select2" ng-model="subId" style="width: 100%;">
+                      <select data-ng-change="getChapters(subId)" name="selectSubject" ng-options="sub.name as sub.name for sub in subData" class="form-control select2" ng-model="data.subject" style="width: 100%;">
                       </select>
                   </div>
               </div>

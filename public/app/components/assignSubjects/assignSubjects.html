@@ -30,7 +30,7 @@
                      >
                     <div class="form-group">
                       <label>Select Class</label>
-                      <select class="form-control select2" ng-options="class.class_id as class.name for class in classData"  data-ng-change="populateSections(classId)" style="width: 100%;" ng-model="classId">
+                      <select class="form-control select2" ng-options="class.class_id as class.name for class in classDatanew"  data-ng-change="populateSections(classId)" style="width: 100%;" ng-model="classId">
                       
                       </select>
                     </div>
@@ -80,7 +80,7 @@
                     <div class="col-md-5" ng-if="showRole(['admin','teacher','parent'])">
                    
                       <div class="form-group">
-                          <select class="form-control select2" style="width: 100%;" ng-options="teacher.employee_id as teacher.name for teacher in employeeData" ng-model="data.teachId">
+                          <select class="form-control select2" style="width: 100%;" ng-options="teacher.employee_id as teacher.first_name for teacher in employeeData" ng-model="data.teachId">
                      
                           </select>
                       </div>
