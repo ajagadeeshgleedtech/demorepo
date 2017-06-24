@@ -1,0 +1,229 @@
+
+    <section class="content-header">
+      <h1>
+        <i class="fa fa-book"></i>
+        Assignments
+        <small></small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href=""><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Assignments</li>
+      </ol>
+    </section>
+    <!-- /.Content Header -->
+
+    <!-- Main content -->
+    <section class="content">
+      <!-- Select Criteria -->
+
+            <div class="box box-default">
+              <div class="box-header with-border" ng-if="showRole(['admin','teacher'])">
+                  <i class="fa fa-search" aria-hidden="true"></i> 
+                  <h3 class="box-title">Select Criteria</h3>
+              </div>
+              <!-- /.box-header -->
+              <div class="box-body">
+                <div class="row">
+                  <div class="col-md-4" ng-if="showRole(['admin','teacher'])">
+                    <div class="form-group">
+                      <label>Class</label>
+                      <select class="form-control select2" ng-options="class.class_id as class.name for class in classData" data-ng-change="populateSections(classId)" style="width: 100%;" ng-model="classId">
+                        
+                      </select>
+                    </div>
+                  </div>
+                  
+                  <div class="col-md-4" ng-if="showRole(['admin','teacher'])">
+                    <div class="form-group">
+                      <label>Section</label>
+                      <select data-ng-change="populateSubjects(secId)" ng-options="sec.section_id as sec.name for sec in secData" class="form-control select2" style="width: 100%;" ng-model="secId">
+                      </select>
+                    </div>
+                  </div>
+                  
+                  <div class="col-md-4" ng-if="showRole(['admin','teacher','parent'])">
+                      <div class="form-group">
+                        <label>Select Subject</label>                       
+                        <select data-ng-change="populateChapters(subId)" ng-options="sub.subject_id as sub.name for sub in subData" class="form-control select2" ng-model="subId" style="width: 100%;">
+                        </select>
+                      </div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-md-12" ng-if="showRole(['admin','teacher'])">
+                    <button type="submit" class="btn btn-primary pull-right">Select</button>
+                    </div>                  
+                </div>
+                  
+                <div class="box-header with-border" ng-if="showRole(['admin','teacher'])">
+                  <i class="fa fa-plus-square" aria-hidden="true"></i>
+                  <h3 class="box-title">Add Assignments</h3>
+                </div>
+                {{chapterIdVal}}
+                <form name="Assignments" ng-submit="Assignments.$valid && addAssignments(data)" novalidate> 
+                <div class="row">
+                    <div class="col-md-4" ng-if="showRole(['admin','teacher'])">
+                      <div class="form-group" ng-class="{'has-error': Assignments.$submitted  && Assignments.assignmentTitle.$pristine}">
+                        <label>Assignment Title</label>
+                        <input type="text" name="assignmentTitle" ng-model="data.assignment_title" class="form-control" placeholder="Enter ..." required>
+                      </div>
+                    </div>
+                    <div class="col-md-4" ng-if="showRole(['admin','teacher'])">
+                    <div class="form-group">
+                      <label>Select Chapter </label>
+                      <select class="form-control select2" ng-change="getAssignments()" ng-options="chapter.lesson_id as chapter.title for chapter in chapterData" ng-model="chapterIdVal" style="width: 100%;">
+                
+                      </select>
+                    </div>
+                  </div>
+                    <div class="col-md-4" ng-if="showRole(['admin','teacher'])">
+                      <div class="form-group">
+                        <label>Due Date</label>
+                        <div class="input-group date" ng-class="{'has-error': Assignments.$submitted  && Assignments.dueDate.$pristine}">
+                          <div class="input-group-addon">
+                            <i class="fa fa-calendar"></i>
+                          </div>
+                          <!--<input type="text"  ng-model="data.due_date" class="form-control pull-right" id="datepicker">-->
+                           <datepicker date-set="{{today1}}" date-set-hidden="true" date-format="dd-MM-yyyy" style="z-index:999">
+                          <input  class="form-control" name="dueDate" type="text" ng-model="data.due_date" ng-readonly="true" placeholder="Enter ..." required/>
+                      </datepicker>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6" ng-if="showRole(['admin','teacher'])">
+                      <div class="form-group"  ng-class="{'has-error': Assignments.$submitted  && Assignments.description.$pristine}">
+                        <label>Description</label>
+                        <textarea class="form-control" name="description" ng-model="data.description" rows="3" placeholder="Enter ..." required></textarea>
+                      </div>
+                    </div>        
+                </div>
+       
+                <div class="row">
+                    <div class="col-md-12" ng-if="showRole(['admin','teacher'])">
+                        <button type="submit" class="btn btn-primary pull-right">Add Assignment</button>
+                    </div> 
+                </div>
+                </form>
+              </div>
+              
+              
+            </div>
+    
+    <!-- /.content -->
+    
+    <!-- Content List -->
+        <div class="box box-default">
+            <div class="box-header with-border">
+                  <i class="fa fa-th-list" aria-hidden="true"></i>
+                  <h3 class="box-title">Assignments</h3>
+            </div>
+          <div class="box-body">  
+            <div class="tab-content">
+              <div class="tab-pane table-responsive no-padding active" id="tab_1">
+                <table class="table table-striped">
+                  <thead>
+                   <tr>
+                    <th>#</th>
+                    <th>Assignment Title</th>
+                    <th>Chapter Name</th>
+                    <th>Due Date</th>
+                    <th>Description</th>
+                    <th class="pull-right">Action</th>
+                   </tr>
+                  </thead>
+                  <tbody>
+                   <tr ng-repeat="assignment in assignmentsData">
+                    <td>{{$index+1}}</td>
+                    <td>{{assignment.assignment_title}}</td>
+                    <td>{{assignment.lesson_id}}</td>  
+                    <td>{{assignment.due_date}}</td>
+                    <td>{{assignment.description}}</td>
+                    <td class="pull-right">
+                      <a href="" class="btn btn-default btn-xs" data-toggle="modal" data-target="#myModal" title="Edit">
+                        <i class="fa fa-pencil"></i>
+                      </a>
+                      <a href="" class="btn btn-default btn-xs" data-toggle="tooltip" title="Delete">
+                        <i class="fa fa-trash" aria-hidden="true"></i>
+                      </a>
+                    </td>
+                   </tr>
+                 </tbody>
+                </table>
+              </div>                       
+            </div>
+          </div>
+        </div>
+    </section>
+ 
+ <!--Edit values modal Starts here-->
+ <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog modal-md">
+      <div class="modal-content">
+        <form name="employeeDetails" ng-submit="addEmployee(data)" novalidate>
+         <div class="modal-header">
+            <h3>Edit Assignments</h3>
+        </div>
+        <div class="modal-body">
+       
+        <!-- /.box-header -->
+         <!-- /.box-header -->
+  
+                <div class="row">
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label>Assignment Title</label>
+                        <input type="text" class="form-control" placeholder="Enter ...">
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Select Chapter</label>
+                      <select class="form-control select2" style="width: 100%;">
+                        <option selected="selected">--Select--</option>
+                        <option>Chapter 1</option>
+                        <option>Chapter 2</option>
+                        <option>Chapter 3</option>
+                        <option>Chapter 4</option>
+                        <option>Chapter 5</option>
+                        <option>Chapter 6</option>
+                        <option>Chapter 7</option>
+                        <option>Chapter 8</option>
+                      </select>
+                    </div>
+                  </div>
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label>Due Date</label>
+                        <div class="input-group date">
+                          <div class="input-group-addon">
+                            <i class="fa fa-calendar"></i>
+                          </div>
+                          <input type="text" class="form-control pull-right" id="datepicker">
+                        </div>
+                      </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label>Description</label>
+                        <textarea class="form-control" rows="3" placeholder="Enter ..."></textarea>
+                      </div>
+                    </div>        
+                </div>
+              </div>
+
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Add Assignment</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+              </div>
+        
+        </div>
+       
+     </form>
+      </div>
+    </div>
+  </div>
