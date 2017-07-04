@@ -37,9 +37,7 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label>Class</label>
-                        <select class="form-control select2" data-ng-change="populateSections(classId)" style="width: 100%;" ng-model="classId">
-                        <option selected="selected">--Select--</option>
-                        <option ng-repeat="class in classDatanew" value="{{class.class_id}}">{{class.name}}</option>
+                        <select class="form-control select2" ng-options="class.class_id as class.name for class in classDatanew" data-ng-change="populateSections(classId)" style="width: 100%;" ng-model="classId">
                       </select>
                     </div>
                 </div>
@@ -47,10 +45,9 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label>Section</label>
-                        <select class="form-control select2" style="width: 100%;" ng-model="secId">
-                       <option selected="selected">--Select--</option>
-                        <option ng-repeat="sec in secData" value="{{sec.section_id}}">{{sec.name}}</option>
-                      </select>
+                        <select class="form-control select2" ng-options="sec.section_id as sec.name for sec in secData" data-ng-change="getStudents(secId)" style="width: 100%;" ng-model="secId">                    
+                        </select>
+
                     </div>
                 </div>
 
@@ -90,7 +87,7 @@
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <button type="button" class="btn btn-primary pull-right">
+                    <button type="button" class="btn btn-primary pull-right" ng-click="submitBulkAttendance()">
                 <i class="fa fa-save"></i>
                 Submit Attendance
                 </button>
@@ -105,7 +102,7 @@
                                 <th>#</th>
                                 <th>
                                     <div class="squaredFour">
-                                        <input type="checkbox" value="None" id="squaredFour" data-ng-change="attendanceStatus()" ng-model="check" name="check" />
+                                        <input type="checkbox" value="None" id="squaredFour" data-ng-change="tickAll(check)" ng-model="check" name="check" />
                                         <label for="squaredFour"></label>
                                     </div>
                                     <span class="selection">All</span>
@@ -114,13 +111,13 @@
                                 <th>Roll No</th>
                                 <th>Name</th>
                                 <th>Attendance
-                                    <select ng-if="check" class="select2" style="font-weight:normal;margin-left:15px;">
+                                    <select ng-if="check" class="select2" style="font-weight:normal;margin-left:15px;" ng-change="markAttendance(attendVal)" ng-model="attendVal">
                                   <option selected="selected">--Select--</option>
-                                  <option>Present</option>
-                                  <option>Late with excuse</option>
-                                  <option>Late</option>
-                                  <option>Absent</option>
-                                  <option>On Leave</option>
+                                  <option value="Present">Present</option>
+                                  <option value="Late with excuse">Late with excuse</option>
+                                  <option value="Late">Late</option>
+                                  <option value="Absent">Absent</option>
+                                  <option value="On Leave">On Leave</option>
                                 </select>
                                 </th>
                                 <th>Actions</th>
@@ -131,11 +128,12 @@
                         </thead>
                         <tbody>
 
-                            <tr ng-repeat="student in studentData">
+                            <tr ng-repeat="student in attendanceBox">
+
                                 <td>{{$index+1}}</td>
                                 <td>
                                     <div class="squaredFour">
-                                        <input type="checkbox" value="None" id="squaredFour{{$index}}" name="check" ng-checked="check" />
+                                        <input type="checkbox" value="None" id="squaredFour{{$index}}" name="check" ng-model="student.selected" />
                                         <label for="squaredFour{{$index}}"></label>
                                     </div>
                                 </td>
@@ -143,30 +141,29 @@
                                 <td>{{student.roll_no}}</td>
                                 <td>{{student.first_name}} {{student.last_name}}</td>
                                 <td>
-
                                     <div class="radio radio-info radio-inline">
-                                        <input ng-change="attn(student,attend)" type="radio" ng-model="attend" value="Present" id="attendencetype+{{$index}}" name="attendencetype+{{$index}}">
+                                        <input ng-change="attn(student,attend)" type="radio" ng-model="student.status" value="Present" id="attendencetype+{{$index}}" name="attendencetype+{{$index}}">
                                         <label for="inlineRadio1"> Present </label>
                                     </div>
                                     <div class="radio radio-info radio-inline">
-                                        <input ng-change="attn(student,attend)" type="radio" ng-model="attend" value="Late with excuse" name="attendencetype+{{$index}}">
+                                        <input ng-change="attn(student,attend)" type="radio" ng-model="student.status" value="Late with excuse" name="attendencetype+{{$index}}">
                                         <label for="inlineRadio1"> Late with excuse </label>
                                     </div>
                                     <div class="radio radio-info radio-inline">
-                                        <input ng-change="attn(student,attend)" type="radio" ng-model="attend" value="Late" name="attendencetype+{{$index}}">
+                                        <input ng-change="attn(student,attend)" type="radio" ng-model="student.status" value="Late" name="attendencetype+{{$index}}">
                                         <label for="inlineRadio1"> Late </label>
                                     </div>
                                     <div class="radio radio-info radio-inline">
-                                        <input ng-change="attn(student,attend)" type="radio" ng-model="attend" value="Absent" name="attendencetype+{{$index}}">
+                                        <input ng-change="attn(student,attend)" type="radio" ng-model="student.status" value="Absent" name="attendencetype+{{$index}}">
                                         <label for="inlineRadio1"> Absent </label>
                                     </div>
                                     <div class="radio radio-info radio-inline">
-                                        <input ng-change="attn(student,attend)" type="radio" ng-model="attend" value="On Leave" name="attendencetype+{{$index}}">
+                                        <input ng-change="attn(student,attend)" type="radio" ng-model="student.status" value="On Leave" name="attendencetype+{{$index}}">
                                         <label for="inlineRadio1"> On Leave </label>
                                     </div>
                                 </td>
 
-                                <td><button ng-click="addAttendance(student,attend)" class="btn btn-primary smallButton" type="button" value="add">Add</button></td>
+                                <td><button ng-click="addAttendance(student,student.status)" class="btn btn-primary smallButton" type="button" value="add">Add</button></td>
                             </tr>
                         </tbody>
                     </table>
