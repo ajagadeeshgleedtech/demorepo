@@ -20,18 +20,14 @@ router.use(function(req, res, next) {
     next(); // make sure we go to the next routes and don't stop here
 });
 
-router.route('/examsgraph/:examination_title/:subject_id/:class_id/:section_id')
+router.route('/examevaluation/:exam_paper_id')
  .get(function(req, res, next) {
- 	  var examination_title = req.params.examination_title;
-      var subject_id = req.params.subject_id;
-      var class_id = req.params.class_id;
-      var section_id = req.params.section_id;
-
-        var resultArray = [];
+ 	  var exam_paper_id = req.params.exam_paper_id;
+      var resultArray = [];
         mongo.connect(url, function(err, db) {
             assert.equal(null, err);
-            var cursor = db.collection('exams').find({examination_title,subject_id,class_id,section_id});
-            cursor.forEach(function(doc, err) {
+            var cursor = db.collection('exam_evaluation').find({exam_paper_id:exam_paper_id });
+             cursor.forEach(function(doc, err) {
                 assert.equal(null, err);
                 resultArray.push(doc);
             }, function() {
@@ -44,17 +40,14 @@ router.route('/examsgraph/:examination_title/:subject_id/:class_id/:section_id')
     });
 
 
- router.route('/exams/:examination_title/:student_id/:class_id/:section_id')
+ router.route('/examevaluationlistbystudentid/:exam_paper_id/:student_id/')
  .get(function(req, res, next) {
- 	  var examination_title = req.params.examination_title;
+ 	  var exam_paper_id = req.params.exam_paper_id;
       var student_id = req.params.student_id;
-      var class_id = req.params.class_id;
-      var section_id = req.params.section_id;
-
-        var resultArray = [];
+            var resultArray = [];
         mongo.connect(url, function(err, db) {
             assert.equal(null, err);
-            var cursor = db.collection('exams').find({examination_title,student_id,class_id,section_id});
+            var cursor = db.collection('exam_evaluation').find({exam_paper_id,student_id});
             cursor.forEach(function(doc, err) {
                 assert.equal(null, err);
                 resultArray.push(doc);

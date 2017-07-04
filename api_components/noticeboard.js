@@ -18,9 +18,9 @@ router.use(function(req, res, next) {
     next(); // make sure we go to the next routes and don't stop here
 });
 
-// Add Schools
+// Add Notice board messages
 
-router.route('/timetable/:noticeboard')
+router.route('/noticeboard/:school_id')
     .post(function(req, res, next) {
         var status = 1;
         var school_id = req.params.school_id;
@@ -28,12 +28,12 @@ router.route('/timetable/:noticeboard')
         var item = {
             messages_id: 'getauto',          
             messages: req.body.messages,
+            school_id:school_id,
             date:req.body.date,
-           
-
-        };
+            status: status
+           };
         mongo.connect(url, function(err, db) {
-            autoIncrement.getNextSequence(db, function(err, autoIndex) {
+            autoIncrement.getNextSequence(db,'noticeboard', function(err, autoIndex) {
                 var collection = db.collection('noticeboard');
                 collection.ensureIndex({
                     "messages_id": 1,
@@ -52,10 +52,10 @@ router.route('/timetable/:noticeboard')
                                 res.end('false');
                             }
                             collection.update({
-                                messages_id: item._id
+                                _id: item._id
                             }, {
                                 $set: {
-                                    _id: 'MESSAGES-'+autoIndex
+                                    messages_id: 'MESSAGES-'+autoIndex
                                 }
                             }, function(err, result) {
                                 db.close();
@@ -69,13 +69,10 @@ router.route('/timetable/:noticeboard')
     })
     .get(function(req, res, next) {
         var resultArray = [];
-            messages= req.params.messages,
-            date=req.params.date,
-           
-
-        mongo.connect(url, function(err, db) {
+         school_id= req.params.school_id,
+      mongo.connect(url, function(err, db) {
             assert.equal(null, err);
-            var cursor = db.collection('noticeboard').find({messages,date});
+            var cursor = db.collection('noticeboard').find({school_id});
             cursor.forEach(function(doc, err) {
                 assert.equal(null, err);
                 resultArray.push(doc);

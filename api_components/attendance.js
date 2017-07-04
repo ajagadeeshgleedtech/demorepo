@@ -41,7 +41,7 @@ router.route('/attendance/:student_id')
             student_id: student_id,
             class_id: req.body.class_id,
             section_id: req.body.section_id,
-            date: d.getDate() + '-' + month + '-' + d.getFullYear(),
+            date: new Date (d.getDate() + '-' + month + '-' + d.getFullYear()),
             session : session,
             status: req.body.status
         };
@@ -131,7 +131,7 @@ router.route('/attendancebulk/:class_id/:section_id/:school_id')
                     class_id: class_id,
                     section_id: section_id,
                     scholl_id:school_id,
-                    date: d.getDate() + '-' + month + '-' + d.getFullYear(),
+                    date: new Date(),
                     session : session,
                     status: key.status
                     };
