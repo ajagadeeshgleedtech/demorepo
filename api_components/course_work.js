@@ -26,11 +26,10 @@ router.route('/course_works/:subject_id')
         var status = 1;
         subjects = [];
         var item = {
-            lesson_id: 'getauto'
+            lesson_id: 'getauto',
             subject_id: subject_id,
-            subject_name:req.body.subject_name,
             title: req.body.title,
-            chapter_code: req.body.chapter_code,
+            code: req.body.code,
             no_of_topics: req.body.no_of_topics,
             description: req.body.description,
             status: status,
