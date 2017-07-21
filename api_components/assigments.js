@@ -30,7 +30,9 @@ router.route('/assignment/:section_id/:lesson_id')
             assignment_id: 'getauto',
             assignment_title: req.body.assignment_title,
             section_id: section_id,
-            lesson_id: lesson_id,
+            lesson_id: lesson_id,                     
+            chapter_name: req.body.chapter_name,
+            subject_name:req.body.subject_name,            
             due_date: req.body.due_date,
             description: req.body.description,
         };
