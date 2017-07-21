@@ -26,7 +26,7 @@ router.route('/course_works/:subject_id')
         var status = 1;
         subjects = [];
         var item = {
-            lesson_id: 'getauto'
+            lesson_id: 'getauto',
             subject_id: subject_id,
             subject_name:req.body.subject_name,
             title: req.body.title,
@@ -39,7 +39,7 @@ router.route('/course_works/:subject_id')
             autoIncrement.getNextSequence(db, 'courseworks', function(err, autoIndex) {
                 var collection = db.collection('courseworks');
                 collection.ensureIndex({
-                    "lesson_id": 1,
+                    "lesson_id": 1
                 }, {
                     unique: true
                 }, function(err, result) {
