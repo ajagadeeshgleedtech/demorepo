@@ -35,7 +35,7 @@ router.route('/book/:school_id')
             rack_number: req.body.rack_number,
             inward_date: req.body.inward_date,
             book_description: req.body.book_description,
-            subject: req.body.subject,
+            subject_name: req.body.subject_name,
 
         };
         mongo.connect(url, function(err, db) {

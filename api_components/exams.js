@@ -30,6 +30,7 @@ router.route('/exams/:subject_id/:exam_sch_id')
             exam_paper_id: 'getauto',
             subject_id: subject_id,
             exam_sch_id: exam_sch_id,
+            subject_name:req.body.subject_name,
             exam_paper_title: req.body.exam_paper_title,
             date: req.body.date,
             start_time: req.body.start_time,
@@ -141,13 +142,15 @@ router.route('/exams/:subject_id/:exam_sch_id')
                 paper_result_id: 'getauto',
                 exam_paper_id: exam_paper_id,
                 student_id: student_id,
+                student_name:req.body.student_name,
+                exam_paper_title:req.body.exam_paper_title,
                 marks: req.body.marks,
                 percentage: req.body.percentage,
                 conduct: req.body.conduct,
                 comment: req.body.comment,
                 date: date,
                 status: status,
-            };
+            }
             mongo.connect(url, function(err, db) {
                 autoIncrement.getNextSequence(db, 'exam_evaluation', function(err, autoIndex) {
                   var count = db.collection('exam_evaluation').find({ $and: [{exam_paper_id, student_id}]}).count(function (e, count){
