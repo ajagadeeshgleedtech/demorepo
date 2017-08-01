@@ -37,7 +37,7 @@ router.route('/examevaluation/:exam_paper_id')
                     { "$unwind": "$student_doc" },
                     { "$redact": { 
                         "$cond": [
-                            { "$eq": [ "$student_id", "$student_doc.student_id" ] }, 
+                            { "$eq": [ "$exam_paper_id", exam_paper_id ] }, 
                             "$$KEEP", 
                             "$$PRUNE"
                         ]
@@ -77,7 +77,17 @@ router.route('/examevaluation/:exam_paper_id')
             var resultArray = [];
         mongo.connect(url, function(err, db) {
             assert.equal(null, err);
-            var cursor = db.collection('exam_evaluation').find({exam_paper_id,student_id});
+            // var cursor = db.collection('exam_evaluation').find({exam_paper_id,student_id});
+            var cursor = db.collection('exam_schedule').aggregate([
+                    { "$lookup": { 
+                        "from": "exams", 
+                        "localField": "exam_sch_id", 
+                        "foreignField": "exam_sch_id", 
+                        "as": "exams"
+                    }}, 
+                    { "$unwind": "$exams" }
+                 
+                ])
             cursor.forEach(function(doc, err) {
                 assert.equal(null, err);
                 resultArray.push(doc);
