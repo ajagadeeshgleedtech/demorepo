@@ -22,14 +22,16 @@ router.use(function(req, res, next) {
  
 router.route('/attendancechartbydate/:select_date/:class_id/:section_id')
  .get(function(req, res, next) {
-      var select_date = req.params.select_date;
+      var select_date = new Date (req.params.select_date);
       var section_id = req.params.section_id;
       var class_id = req.params.class_id;
+      var endDate = new Date(select_date);
+      endDate.setDate(endDate.getDate()+ 1)
       
         var resultArray = [];
         mongo.connect(url, function(err, db) {
             assert.equal(null, err);
-            var cursor = db.collection('attendance').find({date:select_date,section_id:section_id,class_id:class_id});
+            var cursor = db.collection('attendance').find({date:{$gte: new Date(select_date.toISOString()), $lt: new Date(endDate.toISOString()) },section_id:section_id,class_id:class_id});
             cursor.forEach(function(doc, err) {
                 assert.equal(null, err);
                 resultArray.push(doc);
@@ -46,22 +48,22 @@ router.route('/attendancechartbydate/:select_date/:class_id/:section_id')
 
 
 
-router.route('/attendancechartbymonth/:select_month/:class_id/:section_id/:student_id')
+router.route('/attendancechartbymonth/:select_month/:student_id')
  .get(function(req, res, next) {
  	  var select_month = req.params.select_month;
-      var section_id = req.params.section_id;
-      var class_id = req.params.class_id;
+    //   var section_id = req.params.section_id;
+    //   var class_id = req.params.class_id;
       var student_id = req.params.student_id;
      var date = new Date();
      
         var firstDay = new Date(date.getFullYear(), select_month-1, 1);
         var lastDay = new Date(date.getFullYear(), select_month, 0);
-         console.log(firstDay);
-         console.log(lastDay);
+        //  console.log(firstDay);
+        //  console.log(lastDay);
         var resultArray = [];
         mongo.connect(url, function(err, db) {
             assert.equal(null, err);
-            var cursor = db.collection('attendance').find({date:{$gte: firstDay, $lt: lastDay}, section_id:section_id,class_id:class_id,student_id:student_id});
+            var cursor = db.collection('attendance').find({date:{$gte: firstDay, $lt: lastDay}, student_id:student_id});
             cursor.forEach(function(doc, err) {
                 assert.equal(null, err);
                 resultArray.push(doc);
