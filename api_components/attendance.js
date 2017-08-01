@@ -41,10 +41,11 @@ router.route('/attendance/:student_id')
             student_id: student_id,
             class_id: req.body.class_id,
             section_id: req.body.section_id,
-            date: new Date (d.getDate() + '-' + month + '-' + d.getFullYear()),
+            date: new Date (d.getFullYear() + '-' + month + '-' +d.getDate() ),
             session : session,
             status: req.body.status
         };
+        // console.log(item.date)
         mongo.connect(url, function(err, db) {
             autoIncrement.getNextSequence(db, 'attendance', function(err, autoIndex) {
                 var collection = db.collection('attendance');

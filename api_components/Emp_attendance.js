@@ -39,7 +39,7 @@ router.route('/employee_attendance/:employee_id')
         var item = {
             attendance_id: 'getauto',
             employee_id: employee_id,
-            date: d.getDate() + '-' + month + '-' + d.getFullYear(),
+            date: new Date (d.getFullYear() + '-' + month + '-' +d.getDate() ),
             session:session,
             status: req.body.status,
         };
