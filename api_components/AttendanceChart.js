@@ -8,6 +8,7 @@ var autoIncrement = require("mongodb-autoincrement");
 var assert = require('assert');
 var port = process.env.PORT || 4005;
 var router = express.Router();
+
 // var fixtureData = require('./fixture_data.json');
 // app.locals.barChartHelper = require('./bar_chart_helper');
 var url = 'mongodb://' + config.dbhost + ':27017/s_erp_data';
