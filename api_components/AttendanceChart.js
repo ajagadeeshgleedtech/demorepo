@@ -27,6 +27,10 @@ router.route('/attendancechartbydate/:select_date/:class_id/:section_id')
       var section_id = req.params.section_id;
       var class_id = req.params.class_id;
       var endDate = new Date(select_date);
+      if ( isNaN( select_date.getTime()  ) ) {  // d.valueOf() could also work
+       
+          res.send('null');
+       }else{
       endDate.setDate(endDate.getDate()+ 1)
       
         var resultArray = [];
@@ -43,6 +47,7 @@ router.route('/attendancechartbydate/:select_date/:class_id/:section_id')
                 });
             });
         });
+       }
     });
 
 
