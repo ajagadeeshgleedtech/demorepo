@@ -110,7 +110,10 @@ router.route('/attendancebulk/:class_id/:section_id/:school_id')
         var d = new Date();
         var month = d.getMonth() + 1;
         var time = d.getHours();
-        if (class_id == null || section_id == null || school_id == null ) {
+        // if(!req.body.students){
+        //     res.end('null');
+        // }
+        if (class_id == null || section_id == null || school_id == null || !req.body.students ) {
           res.end('null');
         } else { 
             var count = 0;
