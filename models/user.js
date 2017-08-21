@@ -8,7 +8,10 @@ const userSchema = new Schema({
 		password: String,
 		uniqueId: String,
 		role: String,
-		school_id: String
+		school_id: String,
+		users:{
+            type:'array'
+        }
 });
 
 // On save Hook, encrypt password
