@@ -25,10 +25,11 @@ function tokenForUser(user) {
 exports.signin = function (req, res, next) {
 	// User has already had their email and password auth'd
 	// we just need to give them a token
+ 
 	if (req.user.role == 'parent') {
 		 
 		if (req.user.users.length > 0) {
-	 
+	  
 			var resultArray = [];
 			var count = 0;
 			mongo.connect(url, function (err, db) {
@@ -46,6 +47,7 @@ exports.signin = function (req, res, next) {
 								role: req.user.role,
 								uniqueId: req.user.uniqueId,
 								school_id: req.user.school_id,
+								_id : req.user._id,
 								users: resultArray
 							});
 						}
@@ -62,6 +64,7 @@ exports.signin = function (req, res, next) {
 				role: req.user.role,
 				uniqueId: req.user.uniqueId,
 				school_id: req.user.school_id,
+				_id : req.user._id,
 				users: req.user.users
 			});
 
@@ -73,7 +76,8 @@ exports.signin = function (req, res, next) {
 			token: tokenForUser(req.user),
 			role: req.user.role,
 			uniqueId: req.user.uniqueId,
-			school_id: req.user.school_id
+			school_id: req.user.school_id,
+			_id : req.user._id
 		});
 	}
 
