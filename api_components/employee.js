@@ -206,4 +206,63 @@ router.route('/employee_permanent_address/:employee_id')
       });
     });
 
+
+ router.route('/edit_employee/:employee_id')
+        .put(function(req, res, next){
+          var myquery = {employee_id:req.params.employee_id};
+        //  var req_first_name = req.body.first_name;
+        //  var req_last_name = req.body.last_name;
+        //  var req_dob = req.body.dob;
+          var req_gender = req.body.gender;
+        //  var req_qualification = req.body.qualification;
+          var req_job_category = req.body.job_category;
+          var req_experience = req.body.experience;
+          var req_phone = req.body.phone;
+          var req_email = req.body.email;
+         // var req_profile_image = req.body.profile_image;
+        //  var req_website = req.body.website;
+          var req_joined_on = req.body.joined_on;
+          
+          mongo.connect(url, function(err, db){
+                db.collection('employee').update(myquery,{$set:{//first_name:req_first_name,
+                                             // last_name:req_last_name,
+                                             // dob:req_dob,
+                                              gender:req_gender,
+                                            //  qualification:req_qualification,
+                                              job_category:req_job_category,
+                                              experience:req_experience,
+                                              phone:req_phone,
+                                              email:req_email,
+                                            //  profile_image:req_profile_image,
+                                            //  website:req_website,
+                                              joined_on:req_joined_on}}, function(err, result){
+                  assert.equal(null, err);
+                  if(err){
+                     res.send('false'); 
+                  }
+                   db.close();
+                   res.send('true');
+                });
+          });
+        });
+
+
+
+    router.route('/delete_employee/:employee_id')
+        .delete(function(req, res, next){
+          var myquery = {employee_id:req.params.employee_id};
+         
+          mongo.connect(url, function(err, db){
+                db.collection('employee').deleteOne(myquery,function(err, result){
+                  assert.equal(null, err);
+                  if(err){
+                     res.send('false'); 
+                  }
+                   db.close();
+                   res.send('true');
+                });
+          });
+        });
+
+
 module.exports = router;

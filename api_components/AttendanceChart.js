@@ -8,7 +8,6 @@ var autoIncrement = require("mongodb-autoincrement");
 var assert = require('assert');
 var port = process.env.PORT || 4005;
 var router = express.Router();
-
 // var fixtureData = require('./fixture_data.json');
 // app.locals.barChartHelper = require('./bar_chart_helper');
 var url = 'mongodb://' + config.dbhost + ':27017/s_erp_data';
@@ -27,10 +26,6 @@ router.route('/attendancechartbydate/:select_date/:class_id/:section_id')
       var section_id = req.params.section_id;
       var class_id = req.params.class_id;
       var endDate = new Date(select_date);
-      if ( isNaN( select_date.getTime()  ) ) {  // d.valueOf() could also work
-       
-          res.send('null');
-       }else{
       endDate.setDate(endDate.getDate()+ 1)
       
         var resultArray = [];
@@ -47,7 +42,6 @@ router.route('/attendancechartbydate/:select_date/:class_id/:section_id')
                 });
             });
         });
-       }
     });
 
 
@@ -56,7 +50,7 @@ router.route('/attendancechartbydate/:select_date/:class_id/:section_id')
 
 router.route('/attendancechartbymonth/:select_month/:student_id')
  .get(function(req, res, next) {
- 	  var select_month = req.params.select_month;
+      var select_month = req.params.select_month;
     //   var section_id = req.params.section_id;
     //   var class_id = req.params.class_id;
       var student_id = req.params.student_id;

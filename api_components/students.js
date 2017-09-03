@@ -26,11 +26,14 @@ router.route('/students/:section_id')
         var splited = section_id.split("-");
         var school_id = splited[0]+'-'+splited[1];
         var class_id = splited[0]+'-'+splited[1]+'-'+splited[2]+'-'+splited[3];
+       
+
         var status = 1;
         var item = {
             student_id: 'getauto',
             school_id: school_id,
             class_id: class_id,
+          //  class_name : class_name,
             section: section_id,
             surname: req.body.surname,
             first_name: req.body.first_name,
@@ -141,12 +144,48 @@ router.route('/students/:section_id')
         });
 
     })
+router.route('/students/:section_id')
     .get(function(req, res, next) {
-        var section = req.params.section_id;
+        var section_id = req.params.section_id;
+        var splited = section_id.split("-");
+        var school_id = splited[0]+'-'+splited[1];
+        var class_id = splited[0]+'-'+splited[1]+'-'+splited[2]+'-'+splited[3];
         var resultArray = [];
         mongo.connect(url, function(err, db) {
             assert.equal(null, err);
-            var cursor = db.collection('students').find({section});
+            var cursor = db.collection('students').aggregate([
+                    { "$lookup": { 
+                        "from": "school_classes", 
+                        "localField": "class_id", 
+                        "foreignField": "class_id", 
+                        "as": "class_doc"
+                    }}, 
+                    { "$unwind": "$class_doc" },
+
+                    { "$redact": { 
+                        "$cond": [
+                            { "$eq": [ class_id, "$class_doc.class_id" ] }, 
+                            "$$KEEP", 
+                            "$$PRUNE"
+                        ]
+                    }}, 
+                     
+
+                    { "$project": { 
+                        "_id": "$_id",
+                        "first_name": "$first_name",
+                        "last_name": "$last_name", 
+                        "class_id": "$class_id",
+                        "parents[0].parent_name": "$parents[0].parent_name",
+                        "dob": "$dob",
+                        "gender": "$gender",
+                        "category": "$category",
+                        "phone": "$phone",
+                        "name": "$class_doc.name", 
+                       
+                          
+                     }}
+                ])
             cursor.forEach(function(doc, err) {
                 assert.equal(null, err);
                 resultArray.push(doc);
@@ -337,6 +376,69 @@ router.route('/student_permanent_address/:student_id')
         });
       });
     });
+
+
+    router.route('/edit_students/:student_id')
+        .put(function(req, res, next){
+          var myquery = {student_id:req.params.student_id};
+         // var req_class_id = req.body.class_id;
+         // var req_section = req.body.section;         
+         // var req_first_name = req.body.first_name;
+         // var req_last_name = req.body.last_name;          
+          var req_gender = req.body.gender;
+          var req_dob = req.body.dob;
+          var req_phone = req.body.phone;
+         // var req_father_name = req.body.father_name;
+         // var req_email = req.body.email;
+          var req_category = req.body.category;
+         // var req_admission_date = req.body.admission_date;
+         // var req_admission_no = req.body.admission_no;         
+        //  var req_roll_no = req.body.roll_no;
+        //  var splited = req_class_id.split("-");
+        //  var req_class_name = req.body.class_name;
+
+          mongo.connect(url, function(err, db){
+                db.collection('students').update(myquery,{$set:{
+                                              //section:req_section,
+                                            //  class_name:req_class_name,
+                                            //  first_name:req_first_name,
+                                           //   last_name:req_last_name,
+                                              gender:req_gender,
+                                              category:req_category,
+                                              dob:req_dob,
+                                              phone:req_phone,
+                                             // parent_name:req_father_name
+                                            //  email:req_email,
+                                            //  admission_no:req_admission_no,
+                                           //   admission_date:req_admission_date,
+                                              }}, function(err, result){
+                  assert.equal(null, err);
+                  if(err){
+                     res.send('false'); 
+                  }
+                   db.close();
+                   res.send('true');
+                });
+          });
+        });
+   
+
+
+    router.route('/delete_student/:student_id')
+        .delete(function(req, res, next){
+          var myquery = {student_id:req.params.student_id};
+         
+          mongo.connect(url, function(err, db){
+                db.collection('students').deleteOne(myquery,function(err, result){
+                  assert.equal(null, err);
+                  if(err){
+                     res.send('false'); 
+                  }
+                   db.close();
+                   res.send('true');
+                });
+          });
+        });
 
 
 

@@ -25,16 +25,18 @@ router.route('/assignment/:section_id/:lesson_id')
         var status = 1;
         var section_id = req.params.section_id;
         var lesson_id = req.params.lesson_id;
+       // var chapter_name = req.params.chapter_name;
         books = [];
         var item = {
             assignment_id: 'getauto',
-            assignment_title: req.body.assignment_title,
-            section_id: section_id,
-            lesson_id: lesson_id,                     
-            chapter_name: req.body.chapter_name,
+            section_id : section_id,
+           // course_id : course_id,
+            chapter_name : req.body.chapter_name,
+            assignment_title: req.body.assignment_title,           
             subject_name:req.body.subject_name,            
             due_date: req.body.due_date,
             description: req.body.description,
+            status : status,
         };
         mongo.connect(url, function(err, db) {
             autoIncrement.getNextSequence(db, 'assignments', function(err, autoIndex) {
@@ -71,6 +73,8 @@ router.route('/assignment/:section_id/:lesson_id')
             });
         });
     })
+
+    
     .get(function(req, res, next) {
         var resultArray = [];
         mongo.connect(url, function(err, db) {
@@ -120,5 +124,50 @@ router.route('/assignment/:section_id/:lesson_id')
               });
           });
       });
+
+
+
+
+    router.route('/edit_assignments/:assignment_id')
+        .put(function(req, res, next){
+          var myquery = {assignment_id:req.params.assignment_id};
+          var req_assignment_title = req.body.assignment_title;
+          var req_chapter_name = req.body.chapter_name;
+          var req_due_date = req.body.due_date;
+          var req_description = req.body.description;
+          
+          mongo.connect(url, function(err, db){
+                db.collection('assignments').update(myquery,{$set:{assignment_title:req_assignment_title,
+                                              chapter_name:req_chapter_name,
+                                              due_date:req_due_date,
+                                              description:req_description}}, function(err, result){
+                  assert.equal(null, err);
+                  if(err){
+                     res.send('false'); 
+                  }
+                   db.close();
+                   res.send('true');
+                });
+          });
+        });
+
+
+
+  router.route('/delete_assignments/:assignment_id')
+        .delete(function(req, res, next){
+          var myquery = {assignment_id:req.params.assignment_id};
+         
+          mongo.connect(url, function(err, db){
+                db.collection('assignments').deleteOne(myquery,function(err, result){
+                  assert.equal(null, err);
+                  if(err){
+                     res.send('false'); 
+                  }
+                   db.close();
+                   res.send('true');
+                });
+          });
+        });
+
 
 module.exports = router;

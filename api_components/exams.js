@@ -60,7 +60,7 @@ router.route('/exams/:subject_id/:exam_sch_id')
                                 _id: item._id
                             }, {
                                 $set: {
-                                    exam_paper_id: exam_sch_id+'-'+subject_id+'-EXM-'+autoIndex
+                                    exam_paper_id: exam_sch_id+'-EXM-'+autoIndex
                                 }
                             }, function(err, result) {
                                 db.close();
@@ -130,35 +130,39 @@ router.route('/exams/:subject_id/:exam_sch_id')
         });
 
 
-    router.route('/exam_eval/:exam_paper_id/:student_id')
+    router.route('/exam_eval/:exam_sch_id/:exam_paper_id/:student_id/:subject_id')
         .post(function(req, res, next) {
             var status = 1;
             var exam_paper_id = req.params.exam_paper_id;
             var student_id = req.params.student_id;
-            var date = new Date();
-            console.log(date);
+            var exam_sch_id = req.params.exam_sch_id;
+            var subject_id = req.params.subject_id;
+            // var date = new Date();
+           // console.log(date);
             subjects = [];
             var item = {
                 paper_result_id: 'getauto',
+                exam_sch_id : exam_sch_id,
                 exam_paper_id: exam_paper_id,
                 student_id: student_id,
-                student_name:req.body.student_name,
-                exam_paper_title:req.body.exam_paper_title,
+                subject_id : subject_id,
+                // student_name:req.body.student_name,
+                // exam_paper_title:req.body.exam_paper_title,
                 marks: req.body.marks,
                 percentage: req.body.percentage,
                 conduct: req.body.conduct,
-                comment: req.body.comment,
-                date: date,
+                // comment: req.body.comment,
+                // date: date,
                 status: status,
             }
             mongo.connect(url, function(err, db) {
                 autoIncrement.getNextSequence(db, 'exam_evaluation', function(err, autoIndex) {
-                  var count = db.collection('exam_evaluation').find({ $and: [{exam_paper_id, student_id}]}).count(function (e, count){
-                    if (count > 0) {
-                      db.close();
-                      res.end('already submitted');
-                    }
-                  });
+                  // var count = db.collection('exam_evaluation').find({ $and: [{exam_paper_id, student_id}]}).count(function (e, count){
+                  //   if (count > 0) {
+                  //     db.close();
+                  //     res.end('already submitted');
+                  //   }
+                  // });
                     var collection = db.collection('exam_evaluation');
                     collection.ensureIndex({
                         "paper_result_id": 1,
@@ -171,6 +175,9 @@ router.route('/exams/:subject_id/:exam_sch_id')
                             collection.insertOne(item, function(err, result) {
                                 if (err) {
                                     if (err.code == 11000) {
+
+
+                                        
                                         res.end('false');
                                     }
                                     res.end('false');
@@ -179,7 +186,7 @@ router.route('/exams/:subject_id/:exam_sch_id')
                                     _id: item._id
                                 }, {
                                     $set: {
-                                        paper_result_id: exam_paper_id+'-'+student_id+'-EVAL-'+autoIndex
+                                        paper_result_id: exam_paper_id+'-EVAL-'+autoIndex
                                     }
                                 }, function(err, result) {
                                     db.close();
@@ -191,25 +198,106 @@ router.route('/exams/:subject_id/:exam_sch_id')
                 });
             });
 
-        })
-        .get(function(req, res, next) {
-          var exam_paper_id = req.params.exam_paper_id;
-          var student_id = req.params.student_id;
-            var resultArray = [];
-            mongo.connect(url, function(err, db) {
+        });
+
+
+  
+    router.route('/exam_eval/:exam_sch_id/:subject_id')
+       .get(function(req, res, next) {
+      var subject_id = req.params.subject_id;
+      var exam_sch_id = req.params.exam_sch_id;
+        var resultArray = [];
+        mongo.connect(url, function(err, db) {
+            assert.equal(null, err);
+            var cursor = db.collection('exams').find({subject_id, exam_sch_id});
+            cursor.forEach(function(doc, err) {
                 assert.equal(null, err);
-                var cursor = db.collection('exam_evaluation').find({exam_paper_id, student_id});
-                cursor.forEach(function(doc, err) {
-                    assert.equal(null, err);
-                    resultArray.push(doc);
-                }, function() {
-                    db.close();
-                    res.send({
-                        [exam_paper_id+'-'+student_id]: resultArray
-                    });
+                resultArray.push(doc);
+            }, function() {
+                db.close();
+                res.send({
+                    [exam_sch_id+'-'+subject_id]: resultArray
                 });
             });
         });
+    });
+
+
+
+        // .get(function(req, res, next) {
+        //     var exam_paper_id = req.params.exam_paper_id;
+        //     var student_id = req.params.student_id;
+        //     var exam_sch_id = req.params.exam_sch_id;
+        //     var subject_id = req.params.subject_id;
+        //     var resultArray = [];
+        //     mongo.connect(url, function(err, db) {
+        //         assert.equal(null, err);
+                // var cursor = db.collection('exam_evaluation').aggregate([
+                //     { "$lookup": { 
+                //         "from": "subjects", 
+                //         "localField": "subject_id", 
+                //         "foreignField": "subject_id", 
+                //         "as": "subject_doc"
+                //     }}, 
+                //     { "$lookup": { 
+                //         "from": "exam_schedule", 
+                //         "localField": "exam_sch_id", 
+                //         "foreignField": "exam_sch_id", 
+                //         "as": "schedule_doc"
+                //     }}, { "$lookup": { 
+                //         "from": "students", 
+                //         "localField": "student_id", 
+                //         "foreignField": "student_id", 
+                //         "as": "student_doc"
+                //     }}, { "$lookup": { 
+                //         "from": "exams", 
+                //         "localField": "exam_paper_id", 
+                //         "foreignField": "exam_paper_id", 
+                //         "as": "exampaper_doc"
+                //     }}, 
+                //     { "$unwind": "$subject_doc" },
+                //     { "$unwind": "$schedule_doc" },
+                //     { "$unwind": "$student_doc" },
+                //     { "$unwind": "$exampaper_doc" },
+
+                //     { "$redact": { 
+                //         "$cond": [
+                //             { "$eq": [ subject_id, "$subject_doc.subject_id" ] }, 
+                //             { "$eq": [ student_id, "$student_doc.student_id" ] }, 
+                //             { "$eq": [ exam_paper_id, "$exampaper_doc.exam_paper_id" ] }, 
+                //             { "$eq": [ exam_sch_id, "$schedule_doc.exam_sch_id" ] }, 
+                            
+
+                //             "$$KEEP", 
+                //             "$$PRUNE"
+                //         ]
+                //     }}, 
+                      
+
+                //     { "$project": { 
+                //         "_id": "$_id",
+                //         "subject_id": "$subject_doc.subject_id",                         
+                //         "student_id": "$student_doc.student_id",
+                //         "exam_paper_id": "$exampaper_doc.exam_paper_id",
+                //         "exam_sch_id": "$schedule_doc.exam_sch_id",
+                //         "marks": "$marks",
+                //         "percentage": "$percentage", 
+                //         "conduct": "$conduct",
+                       
+                          
+                //      }}
+                // ])
+        //         cursor.forEach(function(doc, err) {
+        //             assert.equal(null, err);
+        //             resultArray.push(doc);
+        //         }, function() {
+        //             db.close();
+        //             res.send({
+        //                 [exam_paper_id+'-'+student_id]: resultArray
+        //             });
+        //         });
+        //     });
+        // });
 
       // router.route('/chk_exam_eval/:exam_paper_id/:student_id')
       // .get(function(req, res, next) {
@@ -231,6 +319,89 @@ router.route('/exams/:subject_id/:exam_sch_id')
       //     });
       // });
 
+
+     router.route('/edit_exam_paper/:exam_paper_id')
+        .put(function(req, res, next){
+          var myquery = {exam_paper_id:req.params.exam_paper_id};
+          var req_subject_name = req.body.subject_name;
+          var req_exam_paper_title = req.body.exam_paper_title;
+          var req_date = req.body.date;
+          var req_start_time= req.body.start_time;
+          var req_end_time = req.body.end_time;
+          var req_max_marks = req.body.max_marks;
+
+          mongo.connect(url, function(err, db){
+                db.collection('exams').update(myquery,{$set:{ subject_name:req_subject_name,
+                                              exam_paper_title:req_exam_paper_title,
+                                              date:req_date,
+                                              start_time:req_start_time,
+                                              end_time:req_end_time,
+                                              max_marks:req_max_marks}}, function(err, result){
+                  assert.equal(null, err);
+                  if(err){
+                     res.send('false'); 
+                  }
+                   db.close();
+                   res.send('true');
+                });
+          });
+        });
+
+
+      router.route('/edit_exam_evalution/:paper_result_id')
+        .put(function(req, res, next){
+          var myquery = {paper_result_id:req.params.paper_result_id};
+          var req_marks = req.body.marks;
+          var req_percentage = req.body.percentage;
+           var req_conduct = req.body.conduct;
+
+          mongo.connect(url, function(err, db){
+                db.collection('exam_evaluation').update(myquery,{$set:{ marks:req_marks,
+                                              percentage:req_percentage,
+                                              conduct:req_conduct}}, function(err, result){
+                  assert.equal(null, err);
+                  if(err){
+                     res.send('false'); 
+                  }
+                   db.close();
+                   res.send('true');
+                });
+          });
+        });
+
+
+    router.route('/delete_exam_paper/:exam_paper_id')
+        .delete(function(req, res, next){
+          var myquery = {paper_id:req.params.paper_id};
+         
+          mongo.connect(url, function(err, db){
+                db.collection('exams').deleteOne(myquery,function(err, result){
+                  assert.equal(null, err);
+                  if(err){
+                     res.send('false'); 
+                  }
+                   db.close();
+                   res.send('true');
+                });
+          });
+        });
+
+
+    router.route('/delete_exam_evalution/:paper_result_id')
+        .delete(function(req, res, next){
+          var myquery = {paper_result_id:req.params.paper_result_id};
+         
+          mongo.connect(url, function(err, db){
+                db.collection('exam_evaluation').deleteOne(myquery,function(err, result){
+                  assert.equal(null, err);
+                  if(err){
+                     res.send('false'); 
+                  }
+                   db.close();
+                   res.send('true');
+                });
+          });
+        });
 
 
 

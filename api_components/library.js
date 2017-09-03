@@ -35,7 +35,7 @@ router.route('/book/:school_id')
             rack_number: req.body.rack_number,
             inward_date: req.body.inward_date,
             book_description: req.body.book_description,
-            subject_name: req.body.subject_name,
+            subject: req.body.subject,
 
         };
         mongo.connect(url, function(err, db) {
@@ -104,7 +104,68 @@ router.route('/book/:school_id')
           });
         });
 
-        
+        //  router.route('/edit_exam_schedule/:exam_sch_id')
+        // .post(function(req, res, next){
+        //   var exam_sch_id = req.params.exam_sch_id;
+        //   var name = req.body.name;
+        //   var value = req.body.value;
+        //   mongo.connect(url, function(err, db){
+        //         db.collection('exam_schedule').update({exam_sch_id},{$set:{[name]: value}}, function(err, result){
+        //           assert.equal(null, err);
+        //            db.close();
+        //            res.send('true');
+        //         });
+        //   });
+        // });
+
+        router.route('/edit_book/:book_id')
+        .put(function(req, res, next){
+          var myquery = {book_id:req.params.book_id};
+          var req_book_title = req.body.book_title;
+          var req_author_name = req.body.author_name;
+          var req_book_price = req.body.book_price;
+          var req_qty = req.body.qty;
+          var req_rack_number = req.body.rack_number;
+          var req_inward_date = req.body.inward_date;
+          var req_book_description = req.body.book_description;          
+          var req_subject_name = req.body.subject;
+
+          mongo.connect(url, function(err, db){
+                db.collection('books').update(myquery,{$set:{book_title:req_book_title,
+                                              author_name:req_author_name,
+                                              book_price:req_book_price,
+                                              qty:req_qty,
+                                              rack_number:req_rack_number,
+                                              inward_date:req_inward_date,
+                                              book_description:req_book_description,
+                                              subject:req_subject_name}}, function(err, result){
+                  assert.equal(null, err);
+                  if(err){
+                     res.send('false'); 
+                  }
+                   db.close();
+                   res.send('true');
+                });
+          });
+        });
+   
+
+     router.route('/delete_book/:book_id')
+        .delete(function(req, res, next){
+          var myquery = {book_id:req.params.book_id};
+         
+          mongo.connect(url, function(err, db){
+                db.collection('books').deleteOne(myquery,function(err, result){
+                  assert.equal(null, err);
+                  if(err){
+                     res.send('false'); 
+                  }
+                   db.close();
+                   res.send('true');
+                });
+          });
+        });
+
 
 
 module.exports = router;
