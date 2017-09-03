@@ -8,6 +8,7 @@ var autoIncrement = require("mongodb-autoincrement");
 var assert = require('assert');
 var port = process.env.PORT || 4005;
 var router = express.Router();
+var forEach = require('async-foreach').forEach;
 // var fixtureData = require('./fixture_data.json');
 // app.locals.barChartHelper = require('./bar_chart_helper');
 var url = 'mongodb://' + config.dbhost + ':27017/s_erp_data';
@@ -70,23 +71,109 @@ router.route('/examevaluation/:exam_paper_id')
     });
 
 
- router.route('/examevaluationlistbystudentid/:exam_paper_id/:student_id/')
- .get(function(req, res, next) {
-      var exam_paper_id = req.params.exam_paper_id;
-      var student_id = req.params.student_id;
-            var resultArray = [];
-        mongo.connect(url, function(err, db) {
+
+router.route('/examevaluationlistbystudentid/:exam_schedule_id/:student_id/')
+    .get(function (req, res, next) {
+        var exam_schedule_id = req.params.exam_schedule_id;
+        var student_id = req.params.student_id;
+        var resultArray = [];
+        mongo.connect(url, function (err, db) {
             assert.equal(null, err);
-            var cursor = db.collection('exam_evaluation').find({exam_paper_id,student_id});
-            cursor.forEach(function(doc, err) {
-                assert.equal(null, err);
-                resultArray.push(doc);
-            }, function() {
-                db.close();
-                res.send({
-                    barchart: resultArray
-                });
-            });
+
+            var cursor = db.collection('exam_schedule').aggregate([{
+                    $match: {
+                        exam_sch_id: exam_schedule_id
+                    }
+                },
+                {
+                    $lookup: {
+                        from: "exams",
+                        localField: "exam_sch_id",
+                        foreignField: "exam_sch_id",
+                        as: "exams"
+                    }
+                },
+                {
+                    $unwind: "$exams"
+                },
+                {
+                    $match: {
+                        "exams.status": 1
+                    }
+                },
+
+                {
+                    $group: {
+                        _id: '$_id',
+                        exam_sch_id: {
+                            "$first": "$exam_sch_id"
+                        },
+                        school_id: {
+                            "$first": "$school_id"
+                        },
+                        exam_title: {
+                            "$first": "$exam_title"
+                        },
+                        exam_classes: {
+                            "$first": "$exam_classes"
+                        },
+                        from_date: {
+                            "$first": "$from_date"
+                        },
+                        exams: {
+                            $push: "$exams"
+                        }
+                    }
+                },
+
+
+            ]).toArray(function (err, results) {
+
+                if (results.length > 0) {
+                    if (results[0].exams.length > 0) {
+                        var count = 0;
+                        forEach(results[0].exams, function (key, value) {
+
+                            key.exam_evaluation = [];
+                            var examEvaluation = db.collection('exam_evaluation').aggregate([{
+                                $match: {
+                                    exam_paper_id: key.exam_paper_id,
+                                    student_id: student_id,
+                                    status: 1
+                                }
+                            }])
+                            examEvaluation.forEach(function (data, err) {
+                                
+                                key.exam_evaluation.push(data);
+                                count++;
+
+                            }, function () {
+                                if (count === results[0].exams.length) {
+                                    db.close();
+                                    res.send({
+                                        barchart: results
+                                    });
+                                }
+                            });
+
+                        })
+                    } else {
+                        db.close();
+                        res.send({
+                            barchart: results
+                        });
+
+                    }
+                } else {
+                    db.close();
+                    res.send({
+                        barchart: results
+                    });
+
+                }
+
+            })
+ 
         });
     });
 
