@@ -77,9 +77,46 @@ router.route('/teachers/:school_id')
 
     .get(function (req, res, next) {
         var resultArray = [];
+        var school_id = req.params.school_id;
         mongo.connect(url, function (err, db) {
             assert.equal(null, err);
-            var cursor = db.collection('teachers').find();
+ 
+            var cursor = db.collection('teachers').aggregate([ 
+                {
+                    "$lookup": {
+                        "from": "employee",
+                        "localField": "employee_id",
+                        "foreignField": "employee_id",
+                        "as": "employee_doc"
+                    }
+                },
+                {
+                    "$unwind": "$employee_doc"
+                },
+                {
+                    "$redact": {
+                        "$cond": [{
+                                "$eq": ["$employee_id", "$employee_doc.employee_id"]
+                            },
+                            "$$KEEP",
+                            "$$PRUNE"
+                        ]
+                    }
+                },
+                {
+                    "$project": {
+                        "_id": "$_id",
+                        "teacher_id": "$teacher_id",
+                        "employee": "$employee_doc"  ,
+                        "school_id": "$school_id",
+                        "employee_id": "$employee_id",
+                        "added_on": "$added_on",
+
+                        "subjects": "$subjects"
+
+                    }
+                }
+            ]);
             cursor.forEach(function (doc, err) {
                 assert.equal(null, err);
                 resultArray.push(doc);
