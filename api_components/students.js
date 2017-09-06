@@ -144,66 +144,117 @@ router.route('/students/:section_id')
         });
 
     })
-router.route('/students/:section_id')
-    .get(function(req, res, next) {
-        var section_id = req.params.section_id;
-        var splited = section_id.split("-");
-        var school_id = splited[0]+'-'+splited[1];
-        var class_id = splited[0]+'-'+splited[1]+'-'+splited[2]+'-'+splited[3];
-        var resultArray = [];
-        mongo.connect(url, function(err, db) {
-            assert.equal(null, err);
-            var cursor = db.collection('students').aggregate([
-                    { "$lookup": { 
-                        "from": "school_classes", 
-                        "localField": "class_id", 
-                        "foreignField": "class_id", 
-                        "as": "class_doc"
-                    }}, 
-                    { "$unwind": "$class_doc" },
+// router.route('/students/:section_id')
+//     .get(function(req, res, next) {
+//         var section_id = req.params.section_id;
+//         var splited = section_id.split("-");
+//         var school_id = splited[0]+'-'+splited[1];
+//         var class_id = splited[0]+'-'+splited[1]+'-'+splited[2]+'-'+splited[3];
+//         var resultArray = [];
+//         mongo.connect(url, function(err, db) {
+//             assert.equal(null, err);
+//             var cursor = db.collection('students').aggregate([
+//                     { "$lookup": { 
+//                         "from": "school_classes", 
+//                         "localField": "class_id", 
+//                         "foreignField": "class_id", 
+//                         "as": "class_doc"
+//                     }}, 
+//                     { "$unwind": "$class_doc" },
 
-                    { "$redact": { 
-                        "$cond": [
-                            { "$eq": [ class_id, "$class_doc.class_id" ] }, 
-                            "$$KEEP", 
-                            "$$PRUNE"
-                        ]
-                    }}, 
+//                     { "$redact": { 
+//                         "$cond": [
+//                             { "$eq": [ class_id, "$class_doc.class_id" ] }, 
+//                             "$$KEEP", 
+//                             "$$PRUNE"
+//                         ]
+//                     }}, 
                      
 
-                    { "$project": { 
-                        "_id": "$_id",
-                        "first_name": "$first_name",
-                        "last_name": "$last_name", 
-                        "class_id": "$class_id",
-                        "parents[0].parent_name": "$parents[0].parent_name",
-                        "dob": "$dob",
-                        "gender": "$gender",
-                        "category": "$category",
-                        "phone": "$phone",
-                        "name": "$class_doc.name", 
-                        "student_id":"student_id"
+//                     { "$project": { 
+//                         "_id": "$_id",
+//                         "first_name": "$first_name",
+//                         "last_name": "$last_name", 
+//                         "class_id": "$class_id",
+//                         "parents[0].parent_name": "$parents[0].parent_name",
+//                         "dob": "$dob",
+//                         "gender": "$gender",
+//                         "category": "$category",
+//                         "phone": "$phone",
+//                         "name": "$class_doc.name", 
+//                         "student_id":"student_id"
                           
-                     }}
-                ])
-            cursor.forEach(function(doc, err) {
-                assert.equal(null, err);
-                resultArray.push(doc);
-            }, function() {
-                db.close();
-                res.send({
-                    students: resultArray
-                });
-            });
-        });
-    });
-router.route('/studentsbysection/:section_id')
+//                      }}
+//                 ])
+//             cursor.forEach(function(doc, err) {
+//                 assert.equal(null, err);
+//                 resultArray.push(doc);
+//             }, function() {
+//                 db.close();
+//                 res.send({
+//                     students: resultArray
+//                 });
+//             });
+//         });
+//     });
+router.route('/students/:section_id')
     .get(function(req, res, next) {
         var section = req.params.section_id;
         var resultArray = [];
         mongo.connect(url, function(err, db) {
             assert.equal(null, err);
-            var cursor = db.collection('students').find({section});
+            var cursor = db.collection('students').aggregate([{
+                    $match: {
+                        section: section
+                    }
+                },
+                {
+                    $lookup: {
+                        from: "school_classes",
+                        localField: "class_id",
+                        foreignField: "class_id",
+                        as: "school_classes"
+                    }
+                },
+                {
+                    $unwind: "$school_classes"
+                },
+                
+              {
+                    $group: {
+                        _id: '$_id',
+                        school_id: {
+                            "$first": "$school_id"
+                        },
+                        first_name: {
+                            "$first": "$first_name"
+                        },
+                        last_name: {
+                            "$first": "$last_name"
+                        },
+                        parents: {
+                            "$first": "$parents"
+                        },
+                        dob: {
+                            "$first": "$dob"
+                        },
+                        gender: {
+                            "$first": "$gender"
+                        },
+                        category: {
+                            "$first": "$category"
+                        },
+                        phone: {
+                            "$first": "$phone"
+                        },
+                        name: {
+                            "$first": "$school_classes.name"
+                        },
+                         
+                        
+                    }
+                }
+                ]);
             cursor.forEach(function(doc, err) {
                 assert.equal(null, err);
                 resultArray.push(doc);
