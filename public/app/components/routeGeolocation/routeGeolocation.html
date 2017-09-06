@@ -1,25 +1,46 @@
+<section class="content-header">
+  <h1>
+    <i class="fa fa-calendar"></i> Route Geolocation
+  </h1>
+</section>
+<!-- /.Content Header -->
 
-    <section class="content-header">
-      <h1>
-        <i class="fa fa-calendar"></i>
-      Route Geolocation
-      </h1>
-    </section>
-    <!-- /.Content Header -->
-
-    <!-- Main content -->
-    <section class="content">
-      <!-- Select Criteria -->
-
-        <div class="box box-default">              
-            <section class="content-header">
-            <div ng-app="mapsApp" ng-controller="MapCtrl">
-            <div id="class" ng-repeat="marker in markers | orderBy : 'title'"></div>
-            </div>
-            <div id="map" style="height:820px;"></div>
-            
-            </section>
+<!-- Main content -->
+<section class="content">
+  <!-- Select Criteria -->
+  <div class="box box-default">
+    <!-- /.box-header -->
+    <div class="box-body">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>Select Vehicle</label>
+            <select ng-options="vehicle.vehicle_code as vehicle.vehicle_name for vehicle in vehicles" class="form-control select2" ng-model="data.vehicle_code"
+              style="width: 100%;">
+                        </select>
+          </div>
         </div>
-                
-    </section>
- 
+      </div>
+    </div>
+
+    <!--<div class="col-md-4">
+      <div class="form-group">
+
+        <label>Select Vehicle</label>
+        <select ng-options="vehicle.vehicle_code as vehicle.vehicle_name for vehicle in vehicles" class="form-control select2" ng-model="data.vehicle_code"
+          style="width: 100%;">
+                        </select>
+      </div>
+    </div>-->
+
+    <div class="box box-default">
+      <section class="content-header">
+        <div ng-app="mapsApp" ng-controller="MapCtrl">
+          <div id="class" ng-repeat="marker in markers | orderBy : 'title'"></div>
+        </div>
+        <div id="map" style="height:820px;"></div>
+
+      </section>
+    </div>
+
+</section>

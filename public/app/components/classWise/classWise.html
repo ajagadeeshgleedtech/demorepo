@@ -1,127 +1,207 @@
-
-    <section class="content-header">
-      <h1>
-        <i class="fa fa-calendar"></i>
-        Timetable
+<section class="content-header">
+    <h1>
+        <i class="fa fa-calendar"></i> Timetable
         <small>class-wise</small>
-      </h1>
-      <ol class="breadcrumb">
+    </h1>
+    <ol class="breadcrumb">
         <li><a href=""><i class="fa fa-dashboard"></i> Home</a></li>
         <li>Timetable</li>
         <li class="active">Class-wise</li>
-      </ol>
-    </section>
-    <!-- /.Content Header -->
+    </ol>
+</section>
+<!-- /.Content Header -->
 
-    <!-- Main content -->
-    <section class="content">
-      <!-- Select Criteria -->
+<!-- Main content -->
+<section class="content">
+    <!-- Select Criteria -->
 
-        <div class="box box-default">
-              
-            <div class="nav-tabs-custom" ng-if="showRole(['admin'])">
-                <ul class="nav nav-tabs">
-                    <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true"><i class="fa fa-calendar-plus-o" aria-hidden="true"></i> Add Timetable </a></li>
-                    <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false"><i class="fa fa-calendar-check-o" aria-hidden="true"></i> View Timetable </a></li>
-                </ul>
-            </div>
-        
-         
-          <div class="box-body">  
+    <div class="box box-default">
+
+        <div class="box-header with-border" ng-if="showRole(['admin'])">
+            <i class="fa fa-search" aria-hidden="true"></i>
+            <h3 class="box-title">Select Criteria</h3>
+        </div>
+
+        <div class="box-body">
             <div class="tab-content">
-              <div class="tab-pane no-padding active" id="tab_1">
-              <div class="row">
-                  <div class="col-md-4" ng-class="{'has-error': Book.$submitted  && Book.selectSubject.$pristine}">
-                      <label>Select Class</label>
-                      <select data-ng-change="populateSections(classId)" name="selectSubject" class="form-control select2" ng-model="classId" style="width: 100%;">
+                <div class="tab-pane no-padding active" id="tab_1">
+                    <div class="row">
+                        <div class="col-md-4" ng-class="{'has-error': Book.$submitted  && Book.selectSubject.$pristine}">
+                            <label>Select Class</label>
+                            <select data-ng-change="populateSections(classId)" name="selectSubject" class="form-control select2" ng-model="classId" style="width: 100%;">
                         <option selected="selected">--Select--</option>
                         <option ng-repeat="class in classData" value="{{class.class_id}}">{{class.name}}</option>
                       </select>
-                  </div>
-                    <div class="col-md-4" ng-class="{'has-error': Book.$submitted  && Book.selectSubject.$pristine}">
-                      <label>Select Section</label>
-                      <select data-ng-change="populateSubjects(secId)" name="selectSubject" class="form-control select2"  ng-model="secId" style="width: 100%;">
+                        </div>
+                        <div class="col-md-4" ng-class="{'has-error': Book.$submitted  && Book.selectSubject.$pristine}">
+                            <label>Select Section</label>
+                            <select data-ng-change="populateSubjects(secId)" name="selectSubject" class="form-control select2" ng-model="secId" style="width: 100%;">
                         <option selected="selected">--Select--</option>
                         <option ng-repeat="sec in secData" value="{{sec.section_id}}">{{sec.name}}</option>
                       </select>
-                  </div>
-                    <div class="col-md-4" ng-class="{'has-error': Book.$submitted  && Book.selectSubject.$pristine}">
-                      <label>Select Subject</label>
-                      <select data-ng-change="getChapters(subId)" name="selectSubject" class="form-control select2" ng-model="subId" style="width: 100%;">
+                        </div>
+                        
+                    </div>
+                    <div class="row" ng-if="showRole(['admin'])">
+                        <div class="col-md-12" style="margin-top:3%">
+                            <button type="submit" class="btn btn-primary pull-right">Select</button>
+
+                        </div>
+                    </div>
+
+                    <div class="box-header with-border" ng-if="showRole(['admin'])">
+                        <i class="fa fa-calendar" aria-hidden="true"></i>
+                        <h3 class="box-title">Class Timetable</h3>
+                    </div>
+
+
+
+
+
+                    <form name="TimeTable" ng-submit="TimeTable.$valid && addTimeTable(data)" novalidate>
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-md-3" ng-class="{'has-error': Book.$submitted  && Book.selectSubject.$pristine}">
+                            <label>Select Subject</label>
+                            <select data-ng-change="getChapters(subId)" name="selectSubject" class="form-control select2" ng-model="subId" style="width: 100%;">
                         <option selected="selected">--Select--</option>
                         <option ng-repeat="sub in subData" value="{{sub.subject_id}}">{{sub.name}}</option>
                       </select>
-                  </div>
-              </div>
-                <div class="row" ng-if="showRole(['admin'])">
-                    <div class="col-md-12">
-                    <button type="submit" class="btn btn-primary pull-right">Select</button>
-                    </div>                  
-                </div>
-                
-                <div class="box-header with-border" ng-if="showRole(['admin'])">
-                  <i class="fa fa-calendar" aria-hidden="true"></i> 
-                  <h3 class="box-title">Class Timetable</h3>
-                </div>
-                  
-                <div class="box-body" ng-if="showRole(['admin'])">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>Day</th>
-                                <th>Start Time</th>
-                                <th>End Time</th>
-                                <th>Room NO</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <th>Monday</th>
-                                <th>
-                                    <div class="form-group" >
+                        </div>
+                                <div class="col-md-3">
+                                    <div class="form-group" ng-class="{'has-error': TimeTable.$submitted && TimeTable.day.$invalid && TimeTable.day.$pristine}">
+                                        <label>Day</label>
+                                        <select ng-change="getMonth(select_month)" name="day" class="form-control select2" style="width: 100%;" ng-model="data.select_day">
+                            <option selected="selected">--Select--</option>
+                            <option ng-repeat="day in days " value="{{day.id}}">{{day.name}}</option>
+                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group" ng-class="{'has-error': TimeTable.$submitted && TimeTable.RoomNo.$invalid && TimeTable.RoomNo.$pristine}">
+                                        <label>Room No</label>
+
+                                        <!--<input class="form-control" name="inwardDate" type="text" ng-model="data.inward_date" ng-readonly="true" placeholder="Enter ..."
+                                                required/>-->
+                                        <input type="text" name="RoomNo" class="form-control" ng-model="data.room_no" placeholder="Enter ...">
+                                    </div>
+                                </div>
+                                <!--</div>
+                            <div class="row">-->
+                                <div class="col-md-3" ng-if="showRole(['admin','teacher'])">
+                                    <div class="form-group" ng-class="{'has-error': TimeTable.$submitted && TimeTable.startTime.$invalid && TimeTable.startTime.$pristine}">
+                                        <label>Time</label>
                                         <div class="input-group">
-                                            <input type="text" class="form-control timepicker">
+                                            <!--<input type="text" name="startTime" ng-model="data.time_from" class="form-control timepicker" required>-->
+                                            <select class="form-control timepicker" ng-model="data.time_from" required>
+                                                <option value="09:30-10:30">09:30-10:30</option>
+                                                <option value="10:30-11:30">10:30-11:30</option>
+                                                <option value="11:30-12:30">11:30-12:30</option>
+                                                <option value="01:30-02:30">01:30-02:30</option>
+                                                <option value="02:30-03:30">02:30-03:30</option>
+                                                <option value="03:30-04:30">03:30-04:30</option>
+                                               
+                                            </select>
                                             <div class="input-group-addon">
                                                 <i class="fa fa-clock-o"></i>
                                             </div>
                                         </div>
                                     </div>
-                                </th>
-                                <th>
-                                    <div class="form-group">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control timepicker">
+                                </div>
+                                <!--<div class="col-md-3" ng-if="showRole(['admin','teacher'])">
+                                    <div class="form-group" ng-class="{'has-error': TimeTable.$submitted && TimeTable.endTime.$invalid && TimeTable.endTime.$pristine}">
+                                        <label>End Time</label>
+                                        <div class="input-group" >
+                                            <input type="text" name="endTime"  ng-init="data.time_to = 04:30" ng-model="data.time_to" class="form-control timepicker" required>
                                             <div class="input-group-addon">
                                                 <i class="fa fa-clock-o"></i>
                                             </div>
                                         </div>
                                     </div>
-                                </th>
-                                <th>
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" placeholder="Enter ...">
+                                </div>-->
+                                <div class="row">
+                                    <div class="col-md-12" ng-if="showRole(['admin'])">
+                                        <button type="submit" class="btn btn-primary pull-right">Submit</button>
                                     </div>
-                                </th>
-                            </tr>
-                        </tbody>
-                    </table>
-                    
-                  <div class="row">
-                    <div class="col-md-12" ng-if="showRole(['admin'])">
-                        <button type="submit" class="btn btn-primary pull-right">Submit</button>
-                    </div>                  
-                  </div>
-                      
+                                </div>
+                            </div>
+                        </div>
+                    </form>
                 </div>
-                  
-              </div> 
-                
-              <div class="tab-pane no-padding active" id="tab_2">
-                <div class="row">
-                  <div class="col-md-6" ng-if="showRole(['admin'])">
-                    <div class="form-group">
-                      <label>Select Class</label>
-                      <select class="form-control select2" style="width: 100%;">
+            </div>
+        </div>
+    </div>
+    <!--<div class="box-body" ng-if="showRole(['admin'])">-->
+    <!--<table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Day</th>
+                                    <th>Start Time</th>
+                                    <th>End Time</th>
+                                    <th>Room NO</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+
+                                    <th>
+
+                                        <select ng-change="getMonth(select_month)" class="form-control select2" style="width: 100%;" ng-model="select_month">
+                            <option selected="selected">--Select--</option>
+                            <option ng-repeat="day in days " value="{{day.id}}">{{day.name}}</option>
+                        </select>
+
+                                    </th>
+                                    <th>
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control timepicker">
+                                                <div class="input-group-addon">
+                                                    <i class="fa fa-clock-o"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control timepicker">
+                                                <div class="input-group-addon">
+                                                    <i class="fa fa-clock-o"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" placeholder="Enter ...">
+                                        </div>
+                                    </th>
+                                </tr>
+                            </tbody>
+                        </table>-->
+
+
+    <!--
+                    </div>-->
+
+    <!--</div>-->
+    <div class="box box-default">
+<!--
+        <div class="box-header with-border" ng-if="showRole(['admin'])">
+            
+            <i class="fa fa-search" aria-hidden="true"></i>
+            <h3 class="box-title">Select Criteria</h3>
+        </div>-->
+
+        <div class="box-body">
+            <div class="tab-content">
+                <!--<div class="tab-pane no-padding active" id="tab_2">
+                    <div class="row">-->
+                        <!--<div class="col-md-6" ng-if="showRole(['admin'])">
+                            <div class="form-group">
+                                <label>Select Class</label>
+                                <select class="form-control select2" style="width: 100%;">
                         <option selected="selected">--Select--</option>
                         <option>1</option>
                         <option>2</option>
@@ -134,232 +214,272 @@
                         <option>9</option>
                         <option>10</option>
                       </select>
-                    </div>
-                  </div>
+                            </div>
+                        </div>
 
-                  <div class="col-md-6" ng-if="showRole(['admin'])">
-                    <div class="form-group">
-                      <label>Select Section</label>
-                      <select class="form-control select2" style="width: 100%;">
+                        <div class="col-md-6" ng-if="showRole(['admin'])">
+                            <div class="form-group">
+                                <label>Select Section</label>
+                                <select class="form-control select2" style="width: 100%;">
                         <option selected="selected">--Select--</option>
                         <option>Section A</option>
                         <option>Section B</option>
                         <option>Section C</option>
                         <option>Section D</option>
                       </select>
+                            </div>
+                        </div>-->
+                        <!--<div class="col-md-4" ng-class="{'has-error': Book.$submitted  && Book.selectSubject.$pristine}">
+                            <label>Select Class</label>
+                            <select data-ng-change="populateSections(classId)" name="selectSubject" class="form-control select2" ng-model="classId" style="width: 100%;">
+                        <option selected="selected">--Select--</option>
+                        <option ng-repeat="class in classData" value="{{class.class_id}}">{{class.name}}</option>
+                      </select>
+                        </div>
+                        <div class="col-md-4" ng-class="{'has-error': Book.$submitted  && Book.selectSubject.$pristine}">
+                            <label>Select Section</label>
+                            <select data-ng-change="populateSubjects(secId)" name="selectSubject" class="form-control select2" ng-model="secId" style="width: 100%;">
+                        <option selected="selected">--Select--</option>
+                        <option ng-repeat="sec in secData" value="{{sec.section_id}}">{{sec.name}}</option>
+                      </select>
+                        </div>
                     </div>
-                  </div>
+
+                    <div class="row">
+                        <div class="col-md-12" ng-if="showRole(['admin'])">
+                            <button type="submit" class="btn btn-primary pull-right">Select</button>
+                            <!--<li style="float:left;list-style-type:none;"><button type="button" data-ng-click="exportAction('excel')" class="btn btn-primary pull-left">Save as Excel</button></li>
+                            <li style="float:left;list-style-type:none;"><button type="button" data-ng-click="exportAction('pdf')" class="btn btn-primary pull-left">Save as PDF</button></li>-->
+                        <!--</div>
+                    </div>
+                </div>-->
+
+                <div class="box-body">
+                    <div class="box-header with-border">
+                    <h3 class="box-title">TimeTable List</h3>
+                    
+                    </div>
+                    <table export-table class="table">
+                        <thead>
+                            <tr >
+                                <th>Time </th>
+
+                                <th class="text text-center">
+                                    Monday
+                                </th>
+                                <th class="text text-center">
+                                    Tuesday
+                                </th>
+                                <th class="text text-center">
+                                    Wednesday
+                                </th>
+                                <th class="text text-center">
+                                    Thursday
+                                </th>
+                                <th class="text text-center">
+                                    Friday
+                                </th>
+                                <th class="text text-center">
+                                    Saturday
+                                </th>
+                                <th class="text text-center">
+                                    Sunday
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr ng-repeat="timetable in timeTableData">
+                                <th>
+                                    <div class="attachment-block clearfix">
+                                        <strong class="text-blue">{{timetable.start_time}}</strong>
+                                        <!--<b class="text text-center">-</b>
+                                        <strong class="text-blue">{{timetable.end_time}}</strong>-->
+                                    </div>
+                                </th>
+                                <td class="text text-center">
+                                    <strong class="text-blue">{{timetable.data.monday}}</strong>
+                                </td>
+                                <td class="text text-center">
+                                    <strong class="text-blue">{{timetable.data.tuesday}}</strong>
+                                </td>
+                                <td class="text text-center">
+                                    <strong class="text-blue">{{timetable.data.wednesday }}</strong>
+                                </td>
+                                <td class="text text-center">
+                                    <strong class="text-blue">{{timetable.data.thursday }}</strong>
+                                </td>
+                                <td class="text text-center">
+                                    <strong class="text-blue">{{timetable.data.friday}}</strong>
+                                </td>
+                                <td class="text text-center">
+                                    <strong class="text-blue">{{timetable.data.saturday }}</strong>
+                                </td>
+                                <td><strong class="text-blue">{{timetable.data.sunday}}</strong></td>
+                                 </tr>
+                                <!--<td class="text text-center">
+                                    <strong class="text-blue">{{timetable.day == "monday"?  timetable.name : "--" }}</strong>
+                                </td>
+                                <td class="text text-center">
+                                    <strong class="text-blue">{{timetable.day == "tuesday"?  timetable.name : "--" }}</strong>
+                                </td>
+                                <td class="text text-center">
+                                    <strong class="text-blue">{{timetable.day == "wednesday"?  timetable.name : "--" }}</strong>
+                                </td>
+                                <td class="text text-center">
+                                    <strong class="text-blue">{{timetable.day == "thursday"?  timetable.name : "--" }}</strong>
+                                </td>
+                                <td class="text text-center">
+                                    <strong class="text-blue">{{timetable.day == "friday"?  timetable.name : "--" }}</strong>
+                                </td>
+                                <td class="text text-center">
+                                    <strong class="text-blue">{{timetable.day == "saturday"?  timetable.name : "--" }}</strong>
+                                </td>
+                                <td><strong class="text-blue">{{timetable.day == "sunday"?  timetable.name : "--" }}</strong></td>-->
+                           
+                            <!--<tr>
+                                <th>
+                                    <div class="attachment-block clearfix">
+                                        <strong class="text-blue">10:00 A.M.</strong>
+                                        <b class="text text-center">-</b>
+                                        <strong class="text-blue">11:00 A.M.</strong>
+                                    </div>
+                                </th>
+                                <td class="text text-center">
+                                    <strong class="text-blue">Subject-2</strong>
+                                </td>
+                                <td class="text text-center">
+                                    <strong class="text-blue">Subject-2</strong>
+                                </td>
+                                <td class="text text-center">
+                                    <strong class="text-blue">Subject-2</strong>
+                                </td>
+                                <td class="text text-center">
+                                    <strong class="text-blue">Subject-2</strong>
+                                </td>
+                                <td class="text text-center">
+                                    <strong class="text-blue">Subject-2</strong>
+                                </td>
+                                <td class="text text-center">
+                                    <strong class="text-blue">Subject-2</strong>
+                                </td>
+                                <td><strong class="text-blue">Holiday</strong></td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    <div class="attachment-block clearfix">
+                                        <strong class="text-blue">11:00 A.M.</strong>
+                                        <b class="text text-center">-</b>
+                                        <strong class="text-blue">12:00 A.M.</strong>
+                                    </div>
+                                </th>
+                                <td class="text text-center">
+                                    <strong class="text-blue">Subject-3</strong>
+                                </td>
+                                <td class="text text-center">
+                                    <strong class="text-blue">Subject-3</strong>
+                                </td>
+                                <td class="text text-center">
+                                    <strong class="text-blue">Subject-3</strong>
+                                </td>
+                                <td class="text text-center">
+                                    <strong class="text-blue">Subject-3</strong>
+                                </td>
+                                <td class="text text-center">
+                                    <strong class="text-blue">Subject-3</strong>
+                                </td>
+                                <td class="text text-center">
+                                    <strong class="text-blue">Subject-3</strong>
+                                </td>
+                                <td><strong class="text-blue">Holiday</strong></td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    <div class="attachment-block clearfix">
+                                        <strong class="text-blue">12:00 A.M.</strong>
+                                        <b class="text text-center">-</b>
+                                        <strong class="text-blue">01:00 P.M.</strong>
+                                    </div>
+                                </th>
+                                <td class="text text-center">
+                                    <strong class="text-blue">Subject-4</strong>
+                                </td>
+                                <td class="text text-center">
+                                    <strong class="text-blue">Subject-4</strong>
+                                </td>
+                                <td class="text text-center">
+                                    <strong class="text-blue">Subject-4</strong>
+                                </td>
+                                <td class="text text-center">
+                                    <strong class="text-blue">Subject-4</strong>
+                                </td>
+                                <td class="text text-center">
+                                    <strong class="text-blue">Subject-4</strong>
+                                </td>
+                                <td class="text text-center">
+                                    <strong class="text-blue">Subject-4</strong>
+                                </td>
+                                <td><strong class="text-blue">Holiday</strong></td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    <div class="attachment-block clearfix">
+                                        <strong class="text-blue">02:00 P.M.</strong>
+                                        <b class="text text-center">-</b>
+                                        <strong class="text-blue">03:00 P.M.</strong>
+                                    </div>
+                                </th>
+                                <td class="text text-center">
+                                    <strong class="text-blue">Subject-5</strong>
+                                </td>
+                                <td class="text text-center">
+                                    <strong class="text-blue">Subject-5</strong>
+                                </td>
+                                <td class="text text-center">
+                                    <strong class="text-blue">Subject-5</strong>
+                                </td>
+                                <td class="text text-center">
+                                    <strong class="text-blue">Subject-5</strong>
+                                </td>
+                                <td class="text text-center">
+                                    <strong class="text-blue">Subject-5</strong>
+                                </td>
+                                <td class="text text-center">
+                                    <strong class="text-blue">Subject-5</strong>
+                                </td>
+                                <td><strong class="text-blue">Holiday</strong></td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    <div class="attachment-block clearfix">
+                                        <strong class="text-blue">03:00 P.M.</strong>
+                                        <b class="text text-center">-</b>
+                                        <strong class="text-blue">04:00 P.M.</strong>
+                                    </div>
+                                </th>
+                                <td class="text text-center">
+                                    <strong class="text-blue">Subject-6</strong>
+                                </td>
+                                <td class="text text-center">
+                                    <strong class="text-blue">Subject-6</strong>
+                                </td>
+                                <td class="text text-center">
+                                    <strong class="text-blue">Subject-6</strong>
+                                </td>
+                                <td class="text text-center">
+                                    <strong class="text-blue">Subject-6</strong>
+                                </td>
+                                <td class="text text-center">
+                                    <strong class="text-blue">Subject-6</strong>
+                                </td>
+                                <td class="text text-center">
+                                    <strong class="text-blue">Subject-6</strong>
+                                </td>
+                                <td><strong class="text-blue">Holiday</strong></td>
+                            </tr>-->
+                        </tbody>
+                    </table>
                 </div>
-                
-                <div class="row">
-                    <div class="col-md-12" ng-if="showRole(['admin'])">
-                    <button type="submit" class="btn btn-primary pull-right">Select</button>
-                    </div>                  
-                </div> 
-              </div>
-                
-              <div class="box-body">
-                  <table class="table">
-                      <thead>
-                        <tr>
-                            <th>Time    </th>
-                            <th class="text text-center">
-                                Monday
-                            </th>
-                            <th class="text text-center">
-                                Tuesday
-                            </th>
-                            <th class="text text-center">
-                                Wednesday
-                            </th>
-                            <th class="text text-center">
-                                Thursday
-                            </th>
-                            <th class="text text-center">
-                                Friday
-                            </th>
-                            <th class="text text-center">
-                                Saturday
-                            </th>
-                            <th class="text text-center">
-                                Sunday
-                            </th>
-                        </tr>
-                      </thead>
-                      
-                      <tbody>
-                        <tr>
-                            <th>
-                                <div class="attachment-block clearfix">
-                                    <strong class="text-blue">09:00 A.M.</strong>
-                                    <b class="text text-center">-</b>
-                                    <strong class="text-blue">10:00 A.M.</strong>
-                                </div>
-                            </th>
-                            <td class="text text-center">
-                                <strong class="text-blue">Subject-1</strong>
-                            </td>
-                            <td class="text text-center">
-                                <strong class="text-blue">Subject-1</strong>
-                            </td>
-                            <td class="text text-center">
-                                <strong class="text-blue">Subject-1</strong>
-                            </td>
-                            <td class="text text-center">
-                                <strong class="text-blue">Subject-1</strong>
-                            </td>
-                            <td class="text text-center">
-                                <strong class="text-blue">Subject-1</strong>
-                            </td>
-                            <td class="text text-center">
-                                <strong class="text-blue">Subject-1</strong>
-                            </td>
-                            <td><strong class="text-blue">Holiday</strong></td>
-                        </tr>
-                        <tr>
-                            <th>
-                                <div class="attachment-block clearfix">
-                                    <strong class="text-blue">10:00 A.M.</strong>
-                                    <b class="text text-center">-</b>
-                                    <strong class="text-blue">11:00 A.M.</strong>
-                                </div>
-                            </th>
-                            <td class="text text-center">
-                                <strong class="text-blue">Subject-2</strong>
-                            </td>
-                            <td class="text text-center">
-                                <strong class="text-blue">Subject-2</strong>
-                            </td>
-                            <td class="text text-center">
-                                <strong class="text-blue">Subject-2</strong>
-                            </td>
-                            <td class="text text-center">
-                                <strong class="text-blue">Subject-2</strong>
-                            </td>
-                            <td class="text text-center">
-                                <strong class="text-blue">Subject-2</strong>
-                            </td>
-                            <td class="text text-center">
-                                <strong class="text-blue">Subject-2</strong>
-                            </td>
-                            <td><strong class="text-blue">Holiday</strong></td>
-                        </tr>
-                        <tr>
-                            <th>
-                                <div class="attachment-block clearfix">
-                                    <strong class="text-blue">11:00 A.M.</strong>
-                                    <b class="text text-center">-</b>
-                                    <strong class="text-blue">12:00 A.M.</strong>
-                                </div>
-                            </th>
-                            <td class="text text-center">
-                                <strong class="text-blue">Subject-3</strong>
-                            </td>
-                            <td class="text text-center">
-                                <strong class="text-blue">Subject-3</strong>
-                            </td>
-                            <td class="text text-center">
-                                <strong class="text-blue">Subject-3</strong>
-                            </td>
-                            <td class="text text-center">
-                                <strong class="text-blue">Subject-3</strong>
-                            </td>
-                            <td class="text text-center">
-                                <strong class="text-blue">Subject-3</strong>
-                            </td>
-                            <td class="text text-center">
-                                <strong class="text-blue">Subject-3</strong>
-                            </td>
-                            <td><strong class="text-blue">Holiday</strong></td>
-                        </tr>
-                        <tr>
-                            <th>
-                                <div class="attachment-block clearfix">
-                                    <strong class="text-blue">12:00 A.M.</strong>
-                                    <b class="text text-center">-</b>
-                                    <strong class="text-blue">01:00 P.M.</strong>
-                                </div>
-                            </th>
-                            <td class="text text-center">
-                                <strong class="text-blue">Subject-4</strong>
-                            </td>
-                            <td class="text text-center">
-                                <strong class="text-blue">Subject-4</strong>
-                            </td>
-                            <td class="text text-center">
-                                <strong class="text-blue">Subject-4</strong>
-                            </td>
-                            <td class="text text-center">
-                                <strong class="text-blue">Subject-4</strong>
-                            </td>
-                            <td class="text text-center">
-                                <strong class="text-blue">Subject-4</strong>
-                            </td>
-                            <td class="text text-center">
-                                <strong class="text-blue">Subject-4</strong>
-                            </td>
-                            <td><strong class="text-blue">Holiday</strong></td>
-                        </tr>
-                        <tr>
-                            <th>
-                                <div class="attachment-block clearfix">
-                                    <strong class="text-blue">02:00 P.M.</strong>
-                                    <b class="text text-center">-</b>
-                                    <strong class="text-blue">03:00 P.M.</strong>
-                                </div>
-                            </th>
-                            <td class="text text-center">
-                                <strong class="text-blue">Subject-5</strong>
-                            </td>
-                            <td class="text text-center">
-                                <strong class="text-blue">Subject-5</strong>
-                            </td>
-                            <td class="text text-center">
-                                <strong class="text-blue">Subject-5</strong>
-                            </td>
-                            <td class="text text-center">
-                                <strong class="text-blue">Subject-5</strong>
-                            </td>
-                            <td class="text text-center">
-                                <strong class="text-blue">Subject-5</strong>
-                            </td>
-                            <td class="text text-center">
-                                <strong class="text-blue">Subject-5</strong>
-                            </td>
-                            <td><strong class="text-blue">Holiday</strong></td>
-                        </tr>
-                        <tr>
-                            <th>
-                                <div class="attachment-block clearfix">
-                                    <strong class="text-blue">03:00 P.M.</strong>
-                                    <b class="text text-center">-</b>
-                                    <strong class="text-blue">04:00 P.M.</strong>
-                                </div>
-                            </th>
-                            <td class="text text-center">
-                                <strong class="text-blue">Subject-6</strong>
-                            </td>
-                            <td class="text text-center">
-                                <strong class="text-blue">Subject-6</strong>
-                            </td>
-                            <td class="text text-center">
-                                <strong class="text-blue">Subject-6</strong>
-                            </td>
-                            <td class="text text-center">
-                                <strong class="text-blue">Subject-6</strong>
-                            </td>
-                            <td class="text text-center">
-                                <strong class="text-blue">Subject-6</strong>
-                            </td>
-                            <td class="text text-center">
-                                <strong class="text-blue">Subject-6</strong>
-                            </td>
-                            <td><strong class="text-blue">Holiday</strong></td>
-                        </tr>
-                      </tbody>
-                  </table>                     
-              </div>    
-          </div>
+            </div>
         </div>
-    </section>
-  
+</section>

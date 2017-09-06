@@ -19,7 +19,12 @@
         <div class="box-header with-border">
           
           <h3 class="box-title">Employee Details</h3>
+<ul class="panel-controls">
+        <li> <input type="file" name="file" class="form-control" onchange="angular.element(this).scope().loadFile(this.files)"
+          /></li>
+        <li> <input type="button" value="Import" class="btn btn-primary" ng-click="handleFile()" /></li>
 
+      </ul>
         </div>
      <form name="employeeDetails" ng-submit="employeeDetails.$valid && addEmployee(data)" novalidate>
         <!-- /.box-header -->

@@ -1,27 +1,85 @@
-
-    <section class="content-header">
+ <section class="content-header">
       <h1>
-        <i class="fa fa-calendar"></i>
-        Online Notice Board
+        Timetable
+        <small>NoticeBoard</small>
       </h1>
       <ol class="breadcrumb">
-        <li><a href=""><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="#">Timetable</a></li>
+        <li class="active">NoticeBoard</li>
       </ol>
     </section>
-    <!-- /.Content Header -->
 
     <!-- Main content -->
     <section class="content">
-      <!-- Select Criteria -->
 
-        <div class="box box-default">
-              
-            <div class="nav-tabs-custom">
-                <ul class="nav nav-tabs">
-                    <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true"><i class="fa fa-calendar-plus-o" aria-hidden="true"></i>  </a></li>
-                </ul> 
+      <div class="row">
+        <div class="col-md-12">
+                            
+          <!-- START NEW RECORD -->
+          <div class="panel panel-default">
+            <div class="panel-body">
+              <h3>What happened?</h3>
+              <form class="form-horizontal" role="form">
+                <div class="form-group">
+                  <div class="col-md-12">
+                    <div class="input-group">
+                      <span class="input-group-addon">Subject:</span>
+                        <input class="form-control" ng-model="data.subject" placeholder="Write something"/>
+                    </div>  <br>
+                     <div class="input-group">
+                      <span class="input-group-addon">Message:</span>
+                        <input class="form-control" ng-model="data.message" placeholder="Write something"/>
+                    </div>                                                                                       
+                  </div>                                        
+                </div>
+                <div class="form-group">
+                  <div class="col-md-12">
+                    <div class="pull-right">
+                      <button class="btn btn-primary" ng-click="addNoticeBoard(data);" ><span class="fa fa-share" ></span> SEND</button>
+                    </div>
+                  </div>
+                </div>
+              </form>
             </div>
+          </div>
+          <!-- END NEW RECORD -->
         </div>
-                
+      </div>
+
+      <!-- row -->
+      <div class="row">
+        <div class="col-md-12" ng-repeat="board in NoticeBoardData" >
+          <!-- The time line -->
+          <ul class="timeline">
+            <!-- timeline time label -->
+            <li class="time-label">
+                <span class="bg-red">
+                 {{board.date}}
+                </span>
+            </li>
+            <!-- /.timeline-label -->
+            <!-- timeline item -->
+            <li>
+              <i class="fa fa-envelope bg-blue"></i>
+
+              <div class="timeline-item"  >
+                <span class="time"><i class="fa fa-clock-o"></i> </span>
+
+                <h3 class="timeline-header">{{board.subject}}</h3>
+
+                <div class="timeline-body">
+                  {{board.messages}}
+                </div>
+
+              </div>
+            </li>
+          
+
+          </ul>
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+
     </section>
- 

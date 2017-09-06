@@ -1,0 +1,109 @@
+<section class="content-header">
+    <h1>
+        <i class="fa fa-file-text"></i> Exam Reports
+        <small>BarChart1</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href=""><i class="fa fa-dashboard"></i> Home</a></li>
+        <li>Exam Reports</li>
+        <li class="active">BarChart1</li>
+    </ol>
+</section>
+<!-- /.Content Header -->
+
+
+
+<section class="content">
+
+
+    <div class="box box-default">
+        <div class="box-header with-border">
+            <i class="fa fa-search" aria-hidden="true"></i>
+            <h3 class="box-title">Select Criteria</h3>
+        </div>
+
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Select Class</label>
+                        <select class="form-control select2" data-ng-change="populateSections(classId)" style="width: 100%;" ng-model="classId">
+                        <option selected="selected">--Select--</option>
+                       <option ng-repeat="class in classDatanew" value="{{class.class_id}}">{{class.name}}</option>
+                      </select>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Select Section</label>
+                        <select class="form-control select2" style="width: 100%;" ng-model="secId">
+                        <option selected="selected">--Select--</option>
+                       <option ng-repeat="sec in secData" value="{{sec.section_id}}">{{sec.name}}</option>
+                        
+                      </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Select Exam Schedule</label>
+                        <select  class="form-control select2" style="width: 100%;" ng-model="examScheduleId">
+                        <option selected="selected">--Select--</option>
+                        <option ng-repeat="exam in examSchedule " value="{{exam.exam_sch_id}}">{{exam.exam_title}}</option>
+                        
+                      </select>
+                    </div>
+                </div>
+                 <div class="col-md-4">
+                      <div class="form-group" >
+                        <label>Paper Title</label>
+                        <select  ng-change="getExamMarks(paperId)" class="form-control select2" style="width: 100%;" ng-model="paperId">
+                            <option selected="selected">--Select--</option>
+                            <option ng-repeat="paper in papers " value="{{paper.exam_paper_id}}">{{paper.exam_paper_title}}</option>
+                            
+                        </select>
+                      </div>
+                    </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Select Subject</label>
+                        <select ng-change="getExamMarks(paperId)" class="form-control select2" data-ng-change="populatePapers(subjectId)"
+                            style="width: 100%;" ng-model="subjectId">
+                            <option selected="selected">--Select--</option>
+                             <option ng-repeat="subject in subjectsData" value="{{subject.subject_id}}">{{subject.name}}</option>
+                        </select>
+                    </div>
+                </div>
+
+                
+
+
+
+                <div class="col-md-12">
+                    <button type="submit" class="btn btn-primary pull-right">Select</button>
+                     <li style="list-style-type:none;"><button type="button" pdf-save-button="idOneGraph" pdf-name="bookList.pdf" class="btn btn-primary pull-left">Save as PDF</button></li>
+                </div>
+
+
+            </div>
+            <div class="box box-success" style="margin-top:10px">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Bar Chart</h3>
+
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                    </div>
+                </div>
+                <div class="box-body" pdf-save-content="idOneGraph">
+                    <div class="chart" style="margin-left:37px">
+                        <zingchart id="myChart" zc-values="chartdata" zc-json="myJson" zc-height=500 zc-width=900></zingchart>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</section>

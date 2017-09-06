@@ -182,10 +182,28 @@ router.route('/students/:section_id')
                         "category": "$category",
                         "phone": "$phone",
                         "name": "$class_doc.name", 
-                       
+                        "student_id":"student_id"
                           
                      }}
                 ])
+            cursor.forEach(function(doc, err) {
+                assert.equal(null, err);
+                resultArray.push(doc);
+            }, function() {
+                db.close();
+                res.send({
+                    students: resultArray
+                });
+            });
+        });
+    });
+router.route('/studentsbysection/:section_id')
+    .get(function(req, res, next) {
+        var section = req.params.section_id;
+        var resultArray = [];
+        mongo.connect(url, function(err, db) {
+            assert.equal(null, err);
+            var cursor = db.collection('students').find({section});
             cursor.forEach(function(doc, err) {
                 assert.equal(null, err);
                 resultArray.push(doc);
