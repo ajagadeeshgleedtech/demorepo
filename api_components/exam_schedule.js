@@ -107,7 +107,7 @@ router.route('/exam_schedule/:school_id')
     });
 
     router.route('/edit_exam_schedule/:exam_sch_id')
-        .post(function(req, res, next){
+        .put(function(req, res, next){
           var exam_sch_id = req.params.exam_sch_id;
           var name = req.body.name;
           var value = req.body.value;
@@ -119,6 +119,47 @@ router.route('/exam_schedule/:school_id')
                 });
           });
         });
+
+
+     router.route('/edit_examschedule/:exam_sch_id')
+        .put(function(req, res, next){
+          var myquery = {exam_sch_id:req.params.exam_sch_id};
+          var req_exam_title = req.body.exam_title;
+          var req_exam_classes = req.body.exam_classes;
+          var req_start_date = req.body.start_date;
+         
+          mongo.connect(url, function(err, db){
+                db.collection('exam_schedule').update(myquery,{$set:{exam_title:req_exam_title,
+                                              exam_classes:req_exam_classes,
+                                              start_date:req_start_date}}, function(err, result){
+                  assert.equal(null, err);
+                  if(err){
+                     res.send('false'); 
+                  }
+                   db.close();
+                   res.send('true');
+                });
+          });
+        });
+
+
+    router.route('/delete_examschedule/:exam_sch_id')
+            .delete(function(req, res, next){
+              var myquery = {exam_sch_id:req.params.exam_sch_id};
+             
+              mongo.connect(url, function(err, db){
+                    db.collection('exam_schedule').deleteOne(myquery,function(err, result){
+                      assert.equal(null, err);
+                      if(err){
+                         res.send('false'); 
+                      }
+                       db.close();
+                       res.send('true');
+                    });
+              });
+            });
+
+
 
 
 module.exports = router;

@@ -237,6 +237,7 @@ body {
     text-align: center;
     font-family: 'Philosopher', sans-serif;
     background: url(../images/school2.png) no-repeat !important;
+    background-size: cover !important;
     position: relative;
 }
 
@@ -278,10 +279,13 @@ body {
 }
 
 #queryid {
-    padding: 1em 4em;
-    margin-left: 25px;
+    width: 30%;
+    height: 42px;
+    padding: 0.7em 2em;
+    font-size: 18px;
+    margin-left: 20px;
     border: none;
-    margin-top: 50px;
+    margin-top: 48px;
     color: rgba(3, 200, 244, 0.69);
 }
 

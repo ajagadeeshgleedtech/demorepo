@@ -25,7 +25,6 @@ var attendance_charts = require("./api_components/AttendanceChart.js");
 var examgraph = require("./api_components/examgraph.js");
 var noticeboard = require("./api_components/noticeboard.js");
 var school_event = require("./api_components/schoolevent.js");
-var parent_student = require("./api_components/parent_student.js");
 const Authentication = require('./controllers/authentication');
 const passportService = require('./services/passport');
 const passport = require('passport');
@@ -63,6 +62,7 @@ router.use(function(req, res, next) {
     // do logging
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Authorization, Content-Type, Accept");
+    res.header("Access-Control-Allow-Methods" , "POST , GET , OPTIONS , DELETE , EDIT, PUT");
     next(); // make sure we go to the next routes and don't stop here
 });
 
@@ -70,6 +70,7 @@ app.use(function(req, res, next) {
     // do logging
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Authorization, Content-Type, Accept");
+    res.header("Access-Control-Allow-Methods" , "POST , GET , OPTIONS , DELETE , EDIT, PUT");
     next(); // make sure we go to the next routes and don't stop here
 });
 
@@ -131,5 +132,4 @@ app.use('/api', attendance_charts);
 app.use('/api', examgraph);
 app.use('/api', noticeboard);
 app.use('/api', school_event);
-app.use('/api', parent_student);
 app.use('/api', router);

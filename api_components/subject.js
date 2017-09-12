@@ -142,4 +142,41 @@ router.route('/subjects/:section_id')
         });
 
 
+    router.route('/edit_subjects/:subject_id')
+        .put(function(req, res, next){
+          var myquery = {subject_id:req.params.subject_id};
+          var req_name = req.body.name;
+          
+          
+          mongo.connect(url, function(err, db){
+                db.collection('subjects').update(myquery,{$set:{name:req_name}}, function(err, result){
+                  assert.equal(null, err);
+                  if(err){
+                     res.send('false'); 
+                  }
+                   db.close();
+                   res.send('true');
+                });
+          });
+        });
+     
+
+    router.route('/delete_subjects/:subject_id')
+        .delete(function(req, res, next){
+          var myquery = {subject_id:req.params.subject_id};
+         
+          mongo.connect(url, function(err, db){
+                db.collection('subjects').deleteOne(myquery,function(err, result){
+                  assert.equal(null, err);
+                  if(err){
+                     res.send('false'); 
+                  }
+                   db.close();
+                   res.send('true');
+                });
+          });
+        });
+
+
+
 module.exports = router;

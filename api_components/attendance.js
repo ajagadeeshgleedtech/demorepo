@@ -41,11 +41,10 @@ router.route('/attendance/:student_id')
             student_id: student_id,
             class_id: req.body.class_id,
             section_id: req.body.section_id,
-            date: new Date (d.getFullYear() + '-' + month + '-' +d.getDate() ),
+            date: new Date (d.getDate() + '-' + month + '-' + d.getFullYear()),
             session : session,
             status: req.body.status
         };
-        // console.log(item.date)
         mongo.connect(url, function(err, db) {
             autoIncrement.getNextSequence(db, 'attendance', function(err, autoIndex) {
                 var collection = db.collection('attendance');
@@ -101,7 +100,6 @@ router.route('/attendance/:student_id')
     });
 
     // add bulk attendance 
-
 router.route('/attendancebulk/:class_id/:section_id/:school_id')
     .post(function(req, res, next) {
         var class_id = req.params.class_id;
@@ -188,6 +186,7 @@ router.route('/attendancebulk/:class_id/:section_id/:school_id')
          
        
     })
+
     .get(function(req, res, next) {
          
         var class_id = req.params.class_id;
@@ -208,6 +207,42 @@ router.route('/attendancebulk/:class_id/:section_id/:school_id')
             });
         });
     });
+
+
+router.route('/AttendenceDayWise')
+    .post(function(req, res, next) {
+        var status = 1;
+        var description = 'Attendence Submitted';
+         var date = new Date();
+        var item = {
+            date : date,
+            description : description,
+            status : status 
+        };
+           mongo.connect(url, function(err, db) {
+                        var collection = db.collection('AttendenceDayWise');
+                        if(item.description == null  ) {
+                            res.end('null');
+                        } else {
+                          collection.insertOne(item, function(err, result) {
+
+                            if (err) {
+
+                                if (err.code == 11000) {
+                                    console.log(err);
+                                    res.end('false');
+                                }
+                                res.end('false');
+                            }
+                            if(result){
+                                db.close();
+                                res.end('true');
+                            }
+                            });
+                         }
+                     });
+         
+    })
      
 
     router.route('/edit_attendance/:attendance_id/:name/:value')

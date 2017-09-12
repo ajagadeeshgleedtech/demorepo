@@ -612,6 +612,7 @@ input:-ms-input-placeholder {
 .home{
 	background:url(../images/school2.png) no-repeat top center;
 	background-size: contain;
+    background-size: cover !important;
 	
 }
 #MainHeading

@@ -19,6 +19,12 @@
         <div class="box-header with-border">
             <i class="fa fa-search" aria-hidden="true"></i>
             <h3 class="box-title">Select Criteria</h3>
+            <ul class="panel-controls">
+                <li> <input type="file" name="file" class="form-control" onchange="angular.element(this).scope().loadFile(this.files)"
+                    /></li>
+                <li> <input type="button" value="Import" class="btn btn-primary" ng-click="handleFile()" /></li>
+
+            </ul>
         </div>
         <!-- /.box-header -->
         <div class="box-body">
@@ -26,7 +32,8 @@
                 <div class="col-md-4" ng-if="showRole(['admin','teacher'])">
                     <div class="form-group">
                         <label>Select Class</label>
-                        <select data-ng-change="populateSections(classId)" ng-options="class.class_id as class.name for class in classData" class="form-control select2" style="width: 100%;" ng-model="classId">
+                        <select data-ng-change="populateSections(classId)" ng-options="class.class_id as class.name for class in classData" class="form-control select2"
+                            style="width: 100%;" ng-model="classId">
                                              
                       </select>
                     </div>
@@ -35,7 +42,8 @@
                 <div class="col-md-4" ng-if="showRole(['admin','teacher'])">
                     <div class="form-group">
                         <label>Select Section</label>
-                        <select ng-options="sec.section_id as sec.name for sec in secData" data-ng-change="populateSubjects(secId)" class="form-control select2" style="width: 100%;" ng-model="secId">
+                        <select ng-options="sec.section_id as sec.name for sec in secData" data-ng-change="populateSubjects(secId)" class="form-control select2"
+                            style="width: 100%;" ng-model="secId">
                                              
                       </select>
                     </div>
@@ -44,7 +52,8 @@
                 <div class="col-md-4" ng-if="showRole(['admin','teacher','parent'])">
                     <div class="form-group">
                         <label>Select Subject</label>
-                        <select ng-options="sub.subject_id as sub.name for sub in subData" data-ng-change="getChapters(subId)" class="form-control select2" style="width: 100%;" ng-model="subId">
+                        <select ng-options="sub.subject_id as sub.name for sub in subData" data-ng-change="getChapters(subId)" class="form-control select2"
+                            style="width: 100%;" ng-model="subId">
                                
                             </select>
                     </div>
@@ -71,7 +80,7 @@
                         <div class="col-md-4">
                             <div class="form-group" ng-class="{'has-error': chapters.$submitted  && chapters.chapterCode.$pristine}">
                                 <label>Chapter Code</label>
-                                <input name="chapterCode" type="text" ng-model="data.code" class="form-control" placeholder="Enter ..." required>
+                                <input name="chapterCode" type="text" ng-model="data.chapter_code" class="form-control" placeholder="Enter ..." required>
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -109,11 +118,13 @@
         <div class="box-header with-border">
             <i class="fa fa-th-list" aria-hidden="true"></i>
             <h3 class="box-title">Chapters List</h3>
+            <li style="float:right;list-style-type:none;"><button type="button" data-ng-click="exportAction('excel')" class="btn btn-primary pull-right">Save as Excel</button></li>
+            <li style="float:right;list-style-type:none;"><button type="button" data-ng-click="exportAction('pdf')" class="btn btn-primary pull-right">Save as PDF</button></li>
         </div>
         <div class="box-body">
             <div class="tab-content">
                 <div class="tab-pane table-responsive no-padding active" id="tab_1">
-                    <table class="table table-striped">
+                    <table export-table class="table table-bordered table-hover table-condensed">
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -122,24 +133,28 @@
                                 <th>Subject</th>
                                 <th>Description</th>
                                 <th>No of Topics</th>
-                                <th class="pull-right">Action</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="chapter in chaptersData">
+                            <tr ng-repeat="chapter in chaptersData" class="editable-row">
                                 <td>{{$index+1}}</td>
-                                <td>{{chapter.title}}</td>
-                                <td>{{chapter.lesson_id}}</td>
-                                <td>{{chapter.subject_id}}</td>
-                                <td>{{chapter.description}}</td>
-                                <td>{{chapter.no_of_topics}}</td>
+                                <td><span editable-text="chapter.title" e-name="chapter.title" onaftersave="EditChapters($index)" e-form="rowform" e-required>{{chapter.title || 'empty' }}</span></td>
+                                <td><span editable-text="chapter.chapter_code" e-name="chapter.chapter_code" onaftersave="EditChapters($index)" e-form="rowform" e-required>{{chapter.chapter_code || 'empty' }}</span></td>
+                                <td><span editable-text="chapter.subject_name" e-name="chapter.subject_name" onaftersave="EditChapters($index)" e-form="rowform" e-required>{{chapter.subject_name || 'empty' }}</span></td>
+                                <td><span editable-text="chapter.description" e-name="chapter.description" onaftersave="EditChapters($index)" e-form="rowform" e-required>{{chapter.description || 'empty' }}</span></td>
+                                <td><span editable-text="chapter.no_of_topics" e-name="chapter.no_of_topics" onaftersave="EditChapters($index)" e-form="rowform" e-required>{{chapter.no_of_topics || 'empty' }}</span></td>
                                 <td class="pull-right">
-                                    <a href="" class="btn btn-default btn-xs" data-toggle="modal" data-target="#myModal" title="Edit">
-                                        <i class="fa fa-pencil"></i>
-                                    </a>
-                                    <a href="" class="btn btn-default btn-xs" data-toggle="tooltip" title="Delete">
-                                        <i class="fa fa-trash" aria-hidden="true"></i>
-                                    </a>
+                                  <form editable-form name="rowform" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == chapter">
+                                    <button type="submit" ng-click="EditChapters($index)" ng-disabled="rowform.$waiting" class="btn btn-primary editable-table-button btn-xs">Save</button>
+                                    <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-default editable-table-button btn-xs">Cancel</button>
+                                  </form>
+
+                                  <div class="buttons" ng-show="!rowform.$visible">
+                                    <button class="btn btn-primary editable-table-button btn-xs" ng-click="rowform.$show()">Edit</button>
+                                    <button class="btn btn-default btn-xs" data-toggle="tooltip" confirmed-click="DeleteChapters($index)" ng-confirm-click="Are you sure you want to delete this item?">Delete</button>
+                                    <!--<button class="btn btn-danger editable-table-button btn-xs" ng-click="removeUser($index)">Delete</button>-->
+                                  </div>
                                 </td>
                             </tr>
                         </tbody>

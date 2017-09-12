@@ -55,6 +55,7 @@ router.route('/transport_stations/:school_id')
                             }, {
                                 $set: {
                                     station_id: 'STN-'+autoIndex
+
                                 }
                             }, function(err, result) {
                                 db.close();
@@ -84,8 +85,43 @@ router.route('/transport_stations/:school_id')
         });
     });
 
+ router.route('/edit_station/:station_id')
+        .put(function(req, res, next){
+          var myquery = {station_id:req.params.station_id};
+          var req_station_name = req.body.station_name;
+          var req_station_code = req.body.station_code;
+          var req_station_geolocation = req.body.station_geo_location; 
+   
+          mongo.connect(url, function(err, db){
+                db.collection('transport').update(myquery,{$set:{station_name:req_station_name,station_code:req_station_code,station_geo_location:req_station_geolocation}}, function(err, result){
+                  assert.equal(null, err);
+                  if(err){
+                     res.send('false'); 
+                  }
+                   db.close();
+                   res.send('true');
+                });
+          });
+        });
 
 
+    router.route('/delete_station/:station_id')
+        .delete(function(req, res, next){
+          var myquery = {station_id:req.params.station_id};
+         
+          mongo.connect(url, function(err, db){
+                db.collection('transport').deleteOne(myquery,function(err, result){
+                  assert.equal(null, err);
+                  if(err){
+                     res.send('false'); 
+                  }
+                   db.close();
+                   res.send('true');
+                });
+          });
+        });
 
 
 module.exports = router;
+
+

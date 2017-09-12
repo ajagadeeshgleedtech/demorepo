@@ -1,139 +1,145 @@
+<section class="content-header">
+  <h1>
+    <i class="fa fa-graduation-cap" aria-hidden="true"></i> Academics
+    <small>Assign Subjects 2</small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href=""><i class="fa fa-dashboard"></i> Home</a></li>
+    <li>Academics</li>
+    <li class="active">Assign Subjects</li>
+  </ol>
+</section>
+<!-- /.Content Header -->
 
-    <section class="content-header">
-      <h1>
-        <i class="fa fa-graduation-cap" aria-hidden="true"></i>
-        Academics
-        <small>Assign Subjects 2</small>
-      </h1>
-      <ol class="breadcrumb">
-        <li><a href=""><i class="fa fa-dashboard"></i> Home</a></li>
-        <li>Academics</li>
-        <li class="active">Assign Subjects</li>
-      </ol>
-    </section>
-    <!-- /.Content Header -->
+<!-- Main content -->
+<section class="content">
+  <!-- Select Criteria -->
 
-    <!-- Main content -->
-    <section class="content">
-      <!-- Select Criteria -->
+  <div class="box box-default">
+    <div class="box-header with-border" ng-if="showRole(['admin','teacher'])">
+      <i class="fa fa-search" aria-hidden="true"></i>
+      <h3 class="box-title">Select Criteria</h3>
+      <ul class="panel-controls">
+        <li> <input type="file" name="file" class="form-control" onchange="angular.element(this).scope().loadFile(this.files)"
+          /></li>
+        <li> <input type="button" value="Import" class="btn btn-primary" ng-click="handleFile()" /></li>
 
-            <div class="box box-default">
-              <div class="box-header with-border" ng-if="showRole(['admin','teacher'])">
-                  <i class="fa fa-search" aria-hidden="true"></i> 
-                  <h3 class="box-title">Select Criteria</h3>
-              </div>
-              <!-- /.box-header -->
-              <div class="box-body">
-                <div class="row">
-                     <div class="col-md-5" ng-if="showRole(['admin','teacher'])"
-                     
-                     >
-                    <div class="form-group">
-                      <label>Select Class</label>
-                      <select class="form-control select2" ng-options="class.class_id as class.name for class in classDatanew"  data-ng-change="populateSections(classId)" style="width: 100%;" ng-model="classId">
+      </ul>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body">
+      <div class="row">
+        <div class="col-md-5" ng-if="showRole(['admin','teacher'])">
+          <div class="form-group">
+            <label>Select Class</label>
+            <select class="form-control select2" ng-options="class.class_id as class.name for class in classDatanew" data-ng-change="populateSections(classId)"
+              style="width: 100%;" ng-model="classId">
                       
                       </select>
-                    </div>
-                  </div>
+          </div>
+        </div>
 
-                  <div class="col-md-5"  ng-if="showRole(['admin','teacher'])">
-                    <div class="form-group">
-                      <label>Select Section</label>
-                      <select class="form-control select2" style="width: 100%;" ng-options="sec.section_id as sec.name for sec in secData" ng-model="secId">
+        <div class="col-md-5" ng-if="showRole(['admin','teacher'])">
+          <div class="form-group">
+            <label>Select Section</label>
+            <select class="form-control select2" style="width: 100%;" ng-options="sec.section_id as sec.name for sec in secData" ng-model="secId">
                               
                       </select>
-                    </div>
-                  </div>
+          </div>
+        </div>
 
-                </div>
-                <div class="row">
-                    <div class="col-md-12"  ng-if="showRole(['admin','teacher'])">
-                    <button type="submit" class="btn btn-primary pull-right">Select</button>
-                    </div>                  
-                </div>
-                  
-                <div class="box-header with-border"  ng-if="showRole(['admin','teacher'])">
-                  <i class="fa fa-plus-square" aria-hidden="true"></i>
-                  <h3 class="box-title">Assign Subjects</h3>
-                </div>
-                <form ng-submit="addTeacher(data)">
-                <div class="row">
-                    <div class="col-md-5"  ng-if="showRole(['admin','teacher'])">
-                      <div class="form-group">
-                          <h4><b>Subject Name</b></h4>
-                      </div>
-                    </div>
-                    <div class="col-md-5"  ng-if="showRole(['admin','teacher'])">
-                      <div class="form-group">
-                          <h4><b>Teacher</b></h4>
-                      </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-5" ng-if="showRole(['admin','teacher','parent'])">
-                      <div class="form-group">
-                           <select  class="form-control select2"  style="width: 100%;" ng-options="sub.subject_id as sub.name for sub in subjectsData"  ng-model="data.subjectObj">
+      </div>
+      <div class="row">
+        <div class="col-md-12" ng-if="showRole(['admin','teacher'])">
+          <button type="submit" class="btn btn-primary pull-right">Select</button>
+        </div>
+      </div>
 
-                          </select>
-                      </div>
-                    </div>
-                    <div class="col-md-5" ng-if="showRole(['admin','teacher','parent'])">
-                   
-                      <div class="form-group">
-                          <select class="form-control select2" style="width: 100%;" ng-options="teacher.employee_id as teacher.first_name for teacher in employeeData" ng-model="data.teachId">
-                     
-                          </select>
-                      </div>
-                    </div>
-                    <div class="col-md-2" ng-if="showRole(['admin','teacher','parent'])">
-                      <div class="form-group">
-                       <button class="btn btn-primary" type="submit" value="add">Add</button>
-                      </div>
-                    </div>
-                </div>
-                </form>
-              </div>
-
-              
+      <div class="box-header with-border" ng-if="showRole(['admin','teacher'])">
+        <i class="fa fa-plus-square" aria-hidden="true"></i>
+        <h3 class="box-title">Assign Subjects</h3>
+      </div>
+      <form ng-submit="addTeacher(data)">
+        <div class="row">
+          <div class="col-md-5" ng-if="showRole(['admin','teacher'])">
+            <div class="form-group">
+              <h4><b>Subject Name</b></h4>
             </div>
-    
-    <!-- /.content -->
-            <div class="box box-default">
-            <div class="nav-tabs-custom">
-                <ul class="nav nav-tabs">
-                    <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true"><i class="fa fa-list"></i> List  View</a></li>
-                    <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false"><i class="fa fa-newspaper-o"></i> Details View</a></li>
-                </ul>
-            </div>
-           
-          <div class="box-body">  
-            <div class="tab-content">
-              <div class="tab-pane table-responsive no-padding active" id="tab_1">
-                <table class="table table-striped">
-                  <thead>
-                   <tr>
-                    <th>#</th>
-                    <th>Subject Name</th>
-                    <th>Teacher Name</th>
-                    <th>Actions</th>
-                   </tr>
-                  </thead>
-                 <tbody>
-                   <tr ng-repeat="AssignSubDetails in AssignData" >
-                    <td>{{index+1}}</td>
-                    <td>{{AssignSubDetails.subject_id}}</td>
-                    <td>{{AssignSubDetails.teacher_id}}</td>
-                    <td class="pull-right">
-                      <a class="btn btn-default btn-xs"  data-toggle="modal" data-target="#myModal" title="Edit">
-                        <i class="fa fa-pencil"></i>
-                      </a>
-                    </td>
-                   </tr>
-                 </tbody>
-                </table>
-              </div>                       
+          </div>
+          <div class="col-md-5" ng-if="showRole(['admin','teacher'])">
+            <div class="form-group">
+              <h4><b>Teacher</b></h4>
             </div>
           </div>
         </div>
-    </section>
-  
+        <div class="row">
+          <div class="col-md-5" ng-if="showRole(['admin','teacher','parent'])">
+            <div class="form-group">
+              <select class="form-control select2" style="width: 100%;" ng-options="sub as sub.name for sub in subjectsData"
+                ng-model="data.subjectObj">
+
+                          </select>
+            </div>
+          </div>
+          <div class="col-md-5" ng-if="showRole(['admin','teacher','parent'])">
+
+            <div class="form-group">
+              <select class="form-control select2" style="width: 100%;" ng-options="teacher.employee_id as teacher.first_name for teacher in employeeData"
+                ng-model="data.teachId">
+                     
+                          </select>
+            </div>
+          </div>
+          <div class="col-md-2" ng-if="showRole(['admin','teacher','parent'])">
+            <div class="form-group">
+              <button class="btn btn-primary" type="submit" value="add">Add</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+
+  </div>
+
+  <!-- /.content -->
+  <div class="box box-default">
+    <div class="nav-tabs-custom">
+      <ul class="nav nav-tabs">
+        <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true"><i class="fa fa-list"></i> List  View</a></li>
+        <!--<li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false"><i class="fa fa-newspaper-o"></i> Details View</a></li>-->
+        <li style="float:right"><button type="button" data-ng-click="exportAction('excel')" class="btn btn-primary pull-right">Save as Excel</button></li>
+        <li style="float:right"><button type="button" data-ng-click="exportAction('pdf')" class="btn btn-primary pull-right">Save as PDF</button></li>
+      </ul>
+    </div>
+
+    <div class="box-body">
+      <div class="tab-content">
+        <div class="tab-pane table-responsive no-padding active" id="tab_1">
+          <table export-table class="table table-striped">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Subject Name</th>
+                <th>Teacher Name</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="teachers in teacherData">
+                <td>{{$index+1}}</td>
+                <td>{{teachers.subjects[0].subject_name}}</td>
+                <td>{{teachers.teacher_id}}</td>
+                <td>
+                  <a class="btn btn-default btn-xs" data-toggle="modal" data-target="#myModal" title="Edit">
+                        <i class="fa fa-pencil"></i>
+                      </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

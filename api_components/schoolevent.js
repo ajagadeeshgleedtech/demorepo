@@ -25,7 +25,7 @@ router.route('/schoolevents/:school_id')
         var school_id = req.params.school_id;
         
         var item = {
-            school_events_id: 'getauto',
+            school_event_id: 'getauto',
             school_id: school_id,
             event_title: req.body.event_title,
             date:req.body.date,

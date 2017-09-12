@@ -1,0 +1,99 @@
+<section class="content-header">
+    <h1>
+        <i class="fa fa-file-text"></i> Attendance Reports
+        <small>Report2</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href=""><i class="fa fa-dashboard"></i> Home</a></li>
+        <li>Attendance Reports</li>
+        <li class="active">Report2</li>
+    </ol>
+</section>
+<!-- /.Content Header -->
+
+
+
+<section class="content">
+
+
+    <div class="box box-default">
+        <div class="box-header with-border">
+            <i class="fa fa-search" aria-hidden="true"></i>
+            <h3 class="box-title">Select Criteria</h3>
+        </div>
+
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Select Class</label>
+                        <select class="form-control select2" data-ng-change="populateSections(classId)" style="width: 100%;" ng-model="classId">
+                        <option selected="selected">--Select--</option>
+                       <option ng-repeat="class in classDatanew" value="{{class.class_id}}">{{class.name}}</option>
+                      </select>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Select Section</label>
+                        <select class="form-control select2" style="width: 100%;" ng-model="secId">
+                        <option selected="selected">--Select--</option>
+                       <option ng-repeat="sec in secData" value="{{sec.section_id}}">{{sec.name}}</option>
+                        
+                      </select>
+                    </div>
+                </div>
+
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Select Student</label>
+                        <select ng-change="getEvaluation(paperId ,studentId)" class="form-control select2" style="width: 100%;" ng-model="studentId">
+                            <option selected="selected">--Select--</option>
+      
+                            <option ng-repeat="student in students " value="{{student.student_id}}">{{student.first_name}} {{student.last_name}}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Select Month</label>
+                        <select ng-change="getMonth(select_month)" class="form-control select2" style="width: 100%;" ng-model="select_month">
+                            <option selected="selected">--Select--</option>
+                            <option ng-repeat="month in months " value="{{month.id}}">{{month.name}}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <button type="submit" class="btn btn-primary pull-right">Select</button>
+                    <li style="list-style-type:none;"><button type="button" pdf-save-button="idOneGraph" pdf-name="bookList.pdf" class="btn btn-primary pull-left">Save as PDF</button></li>
+                </div>
+                <!--<canvas id="bar" class="chart chart-bar" chart-data="data" chart-labels="labels"> chart-series="series"
+                </canvas>-->
+
+            </div>
+
+            <div class="box box-success" style="margin-top:10px">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Donut Chart</h3>
+
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                    </div>
+                </div>
+                <div class="box-body"  pdf-save-content="idOneGraph">
+                    <div class="chart" style="margin-left:130px">
+                        <!--<div id='myChart'></div>-->
+                        <zingchart id="myChart" zc-values="chartdata" zc-json="myJson" zc-height=400 zc-width=100%></zingchart>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
