@@ -110,6 +110,7 @@ router.route('/employee_attendancebulk/:school_id')
           res.end('null');
         } else { 
             var count = 0;
+            
             if(req.body.employees.length > 0){
                   forEach(req.body.employees, function (key,value) {
               

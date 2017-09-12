@@ -73,20 +73,22 @@ router.route('/exams/:subject_id/:exam_sch_id')
         });
 
     })
+
+ router.route('/exams/:exam_sch_id')
     .get(function(req, res, next) {
-      var subject_id = req.params.subject_id;
+     
       var exam_sch_id = req.params.exam_sch_id;
         var resultArray = [];
         mongo.connect(url, function(err, db) {
             assert.equal(null, err);
-            var cursor = db.collection('exams').find({subject_id, exam_sch_id});
+            var cursor = db.collection('exams').find({exam_sch_id});
             cursor.forEach(function(doc, err) {
                 assert.equal(null, err);
                 resultArray.push(doc);
             }, function() {
                 db.close();
                 res.send({
-                    [exam_sch_id+'-'+subject_id]: resultArray
+                    resultArray
                 });
             });
         });
