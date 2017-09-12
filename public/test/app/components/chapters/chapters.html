@@ -1,0 +1,221 @@
+<section class="content-header">
+    <h1>
+        <i class="fa fa-graduation-cap" aria-hidden="true"></i> Academics
+        <small>Chapters</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href=""><i class="fa fa-dashboard"></i> Home</a></li>
+        <li>Academics</li>
+        <li class="active">Chapters</li>
+    </ol>
+</section>
+<!-- /.Content Header -->
+
+<!-- Main content -->
+<section class="content">
+    <!-- Select Criteria -->
+
+    <div class="box box-default">
+        <div class="box-header with-border">
+            <i class="fa fa-search" aria-hidden="true"></i>
+            <h3 class="box-title">Select Criteria</h3>
+            <ul class="panel-controls">
+                <li> <input type="file" name="file" class="form-control" onchange="angular.element(this).scope().loadFile(this.files)"
+                    /></li>
+                <li> <input type="button" value="Import" class="btn btn-primary" ng-click="handleFile()" /></li>
+
+            </ul>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-4" ng-if="showRole(['admin','teacher'])">
+                    <div class="form-group">
+                        <label>Select Class</label>
+                        <select data-ng-change="populateSections(classId)" ng-options="class.class_id as class.name for class in classData" class="form-control select2"
+                            style="width: 100%;" ng-model="classId">
+                                             
+                      </select>
+                    </div>
+                </div>
+
+                <div class="col-md-4" ng-if="showRole(['admin','teacher'])">
+                    <div class="form-group">
+                        <label>Select Section</label>
+                        <select ng-options="sec.section_id as sec.name for sec in secData" data-ng-change="populateSubjects(secId)" class="form-control select2"
+                            style="width: 100%;" ng-model="secId">
+                                             
+                      </select>
+                    </div>
+                </div>
+
+                <div class="col-md-4" ng-if="showRole(['admin','teacher','parent'])">
+                    <div class="form-group">
+                        <label>Select Subject</label>
+                        <select ng-options="sub.subject_id as sub.name for sub in subData" data-ng-change="getChapters(subId)" class="form-control select2"
+                            style="width: 100%;" ng-model="subId">
+                               
+                            </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <button type="submit" class="btn btn-primary pull-right">Select</button>
+                </div>
+            </div>
+            <div ng-if="showRole(['admin','teacher'])">
+                <div class="box-header with-border">
+                    <i class="fa fa-plus-square" aria-hidden="true"></i>
+                    <h3 class="box-title">Add Chapters</h3>
+                </div>
+                <form name="chapters" ng-submit="chapters.$valid && addChapters(data)" novalidate>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group" ng-class="{'has-error': chapters.$submitted  && chapters.chapterName.$pristine}">
+                                <label>Chapter Name</label>
+                                <input type="text" name="chapterName" ng-model="data.title" class="form-control" placeholder="Enter ..." required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group" ng-class="{'has-error': chapters.$submitted  && chapters.chapterCode.$pristine}">
+                                <label>Chapter Code</label>
+                                <input name="chapterCode" type="text" ng-model="data.chapter_code" class="form-control" placeholder="Enter ..." required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group" ng-class="{'has-error': chapters.$submitted  && chapters.NumOfTopics.$pristine}">
+                                <label>Number of Topics</label>
+                                <input name="NumOfTopics" type="text" ng-model="data.no_of_topics" class="form-control" placeholder="Enter ..." required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group" ng-class="{'has-error': chapters.$submitted  && chapters.chapterDescription.$pristine}">
+                                <label>Chapter Description</label>
+                                <textarea name="chapterDescription" class="form-control" ng-model="data.description" rows="3" placeholder="Enter ..." required></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <button type="submit" class="btn btn-primary pull-right">Add Chapter</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+    </div>
+
+    <!-- /.content -->
+
+    <!-- Content List -->
+    <div class="box box-default">
+        <div class="box-header with-border">
+            <i class="fa fa-th-list" aria-hidden="true"></i>
+            <h3 class="box-title">Chapters List</h3>
+            <li style="float:right;list-style-type:none;"><button type="button" data-ng-click="exportAction('excel')" class="btn btn-primary pull-right">Save as Excel</button></li>
+            <li style="float:right;list-style-type:none;"><button type="button" data-ng-click="exportAction('pdf')" class="btn btn-primary pull-right">Save as PDF</button></li>
+        </div>
+        <div class="box-body">
+            <div class="tab-content">
+                <div class="tab-pane table-responsive no-padding active" id="tab_1">
+                    <table export-table class="table table-bordered table-hover table-condensed">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Chapter Name</th>
+                                <th>Chapter Code</th>
+                                <th>Subject</th>
+                                <th>Description</th>
+                                <th>No of Topics</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="chapter in chaptersData" class="editable-row">
+                                <td>{{$index+1}}</td>
+                                <td><span editable-text="chapter.title" e-name="chapter.title" onaftersave="EditChapters($index)" e-form="rowform" e-required>{{chapter.title || 'empty' }}</span></td>
+                                <td><span editable-text="chapter.chapter_code" e-name="chapter.chapter_code" onaftersave="EditChapters($index)" e-form="rowform" e-required>{{chapter.chapter_code || 'empty' }}</span></td>
+                                <td><span editable-text="chapter.subject_name" e-name="chapter.subject_name" onaftersave="EditChapters($index)" e-form="rowform" e-required>{{chapter.subject_name || 'empty' }}</span></td>
+                                <td><span editable-text="chapter.description" e-name="chapter.description" onaftersave="EditChapters($index)" e-form="rowform" e-required>{{chapter.description || 'empty' }}</span></td>
+                                <td><span editable-text="chapter.no_of_topics" e-name="chapter.no_of_topics" onaftersave="EditChapters($index)" e-form="rowform" e-required>{{chapter.no_of_topics || 'empty' }}</span></td>
+                                <td class="pull-right">
+                                  <form editable-form name="rowform" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == chapter">
+                                    <button type="submit" ng-click="EditChapters($index)" ng-disabled="rowform.$waiting" class="btn btn-primary editable-table-button btn-xs">Save</button>
+                                    <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-default editable-table-button btn-xs">Cancel</button>
+                                  </form>
+
+                                  <div class="buttons" ng-show="!rowform.$visible">
+                                    <button class="btn btn-primary editable-table-button btn-xs" ng-click="rowform.$show()">Edit</button>
+                                    <button class="btn btn-default btn-xs" data-toggle="tooltip" confirmed-click="DeleteChapters($index)" ng-confirm-click="Are you sure you want to delete this item?">Delete</button>
+                                    <!--<button class="btn btn-danger editable-table-button btn-xs" ng-click="removeUser($index)">Delete</button>-->
+                                  </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--Edit values modal Starts here-->
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <form name="employeeDetails" ng-submit="addEmployee(data)" novalidate>
+                <div class="modal-header">
+                    <h3>Add Chapters</h3>
+                </div>
+                <div class="modal-body">
+
+                    <!-- /.box-header -->
+                    <!-- /.box-header -->
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Chapter Name</label>
+                                <input type="text" ng-model="editdata.title" class="form-control" placeholder="Enter ...">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Chapter Code</label>
+                                <input type="text" ng-model="editdata.code" class="form-control" placeholder="Enter ...">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Number of Topics</label>
+                                <input type="text" ng-model="editdata.no_of_topics" class="form-control" placeholder="Enter ...">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Chapter Description</label>
+                                <textarea class="form-control" ng-model="editdata.description" rows="3" placeholder="Enter ..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Add Chapter</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+
+
+
+        </div>
+
+        </form>
+    </div>
+</div>
+</div>

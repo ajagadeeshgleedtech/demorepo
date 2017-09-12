@@ -1,0 +1,281 @@
+<section class="content-header">
+  <h1>
+    <i class="fa fa-users"></i> Student Information
+    <small>Students</small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href=""><i class="fa fa-dashboard"></i> Home</a></li>
+    <li>Student Information</li>
+    <li class="active">Students</li>
+  </ol>
+</section>
+<!-- /.Content Header -->
+
+<!-- Main content -->
+<section class="content">
+  <!-- Select Criteria -->
+
+  <div class="box box-default" ng-if="showRole(['admin','teacher'])">
+    <div class="box-header with-border" ng-if="showRole(['admin','teacher'])">
+      <i class="fa fa-search" aria-hidden="true"></i>
+      <h3 class="box-title">Select Criteria</h3>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body">
+      <div class="row">
+        <!--<div class="col-md-3" ng-if="showRole(['admin','teacher'])">
+          <div class="form-group">
+            <label>Batch Year</label>
+            <select class="form-control select2" style="width: 100%;">
+                        <option selected="selected">--Select--</option>
+                        <option>2017-2018</option>
+                        <option>2018-2019</option>
+                      </select>
+          </div>
+        </div>-->
+
+        <div class="col-md-5" ng-if="showRole(['admin','teacher'])">
+          <div class="form-group">
+            <label>Class</label>
+            <select class="form-control select2" ng-options="class.class_id as class.name for class in classData" data-ng-change="populateSections(classId)"
+              style="width: 100%;" ng-model="classId">
+                        <!--<option ng-repeat="class in classData" value="{{class.class_id}}">{{class.name}}</option>-->
+                      </select>
+          </div>
+        </div>
+
+        <div class="col-md-5" ng-if="showRole(['admin','teacher'])">
+          <div class="form-group">
+            <label>Section</label>
+            <select class="form-control select2" ng-options="sec.section_id as sec.name for sec in secData" data-ng-change="getStudentValue(secId)"
+              style="width: 100%;" ng-model="secId">                    
+                        <!--<option ng-repeat="sec in secData" value="{{sec.section_id}}">{{sec.name}}</option>-->
+                      </select>
+          </div>
+        </div>
+
+        <div class="col-md-3" ng-if="showRole(['admin','teacher'])">
+          <div class="form-group">
+            <label>Search by keyword</label>
+            <input type="text" name="search_text" class="form-control" ng-model="searchstudent" placeholder="Search...">
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="box-footer" ng-if="showRole(['admin','teacher'])">
+      <button ng-click="getStudentValue(secId)" class="btn btn-primary pull-right">Search</button>
+    </div>
+  </div>
+
+  <!-- /.content -->
+
+  <!-- Content List -->
+  <div class="box box-default">
+    <div class="nav-tabs-custom">
+      <ul class="nav nav-tabs">
+        <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true"><i class="fa fa-list"></i> List  View</a></li>
+        <!--<li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false"><i class="fa fa-newspaper-o"></i> Details View</a></li>-->
+        <li style="float:right"><button type="button" data-ng-click="exportAction('excel')" class="btn btn-primary pull-right">Save as Excel</button></li>
+        <li style="float:right"><button type="button" data-ng-click="exportAction('pdf')" class="btn btn-primary pull-right">Save as PDF</button></li>
+      </ul>
+
+    </div>
+
+    <div class="box-body">
+      <div class="tab-content">
+        <div class="tab-pane table-responsive no-padding active studentDetails" id="tab_1">
+          <table export-table class="table rwd-table table-striped">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Student Name</th>
+                <th>Class</th>
+                <th>Father Name</th>
+                <th>Date Of Birth</th>
+                <th>Gender</th>
+                <th>Category</th>
+                <th>Mobile No</th>
+                <th class="pull-right">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="student in studentData | filter:searchstudent">
+                <td>{{$index+1}}</td>
+                <td><a href="">{{student.first_name}} {{student.last_name}}</a></td>
+                <td>
+                  <!--<span editable-text="student.class_id" e-name="student.class_id" onaftersave="EditStudent($index)" e-form="rowform" e-required>-->
+                   <a href=""> {{student.name || 'empty' }}</a></td>
+                <td>
+                  <!--<span editable-text="student.parent_name" e-name="student.parents[0].parent_name" onaftersave="EditStudent($index)" e-form="rowform" e-required>-->
+                   <a href=""> {{student.parents[0].parent_name || 'empty' }}</td>
+                <td><span editable-text="student.dob" e-name="student.dob" onaftersave="EditStudent($index)" e-form="rowform" e-required>{{student.dob || 'empty' }}</span></td>
+                <td><span editable-text="student.gender" e-name="student.gender" onaftersave="EditStudent($index)" e-form="rowform" e-required>{{student.gender || 'empty' }}</span></td>
+                <td><span editable-text="student.category" e-name="student.category" onaftersave="EditStudent($index)" e-form="rowform" e-required>{{student.category || 'empty' }}</span></td>
+                <td><span editable-text="student.phone" e-name="student.phone" onaftersave="EditStudent($index)" e-form="rowform" e-required>{{student.phone || 'empty' }}</span></td>
+                <td class="pull-right">
+                  <form editable-form name="rowform" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == student">
+                    <button type="submit" ng-click="EditStudent($index)" ng-disabled="rowform.$waiting" class="btn btn-primary editable-table-button btn-xs">Save</button>
+                    <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-default editable-table-button btn-xs">Cancel</button>
+                  </form>
+
+                  <div class="buttons" ng-show="!rowform.$visible">
+                    <button class="btn btn-primary editable-table-button btn-xs" ng-click="rowform.$show()">Edit</button>
+                    <button class="btn btn-default btn-xs" data-toggle="tooltip" confirmed-click="DeleteStudent($index)" ng-confirm-click="Are you sure you want to delete this item?">Delete</button>
+                    <!--<button class="btn btn-danger editable-table-button btn-xs" ng-click="removeUser($index)">Delete</button>-->
+                  </div>
+                </td>
+              </tr>  
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!--Edit values modal Starts here-->
+<div class="modal fade" id="myModal" role="dialog">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <form name="studentDetails" ng-submit="studentAdmission.$valid && EditStudent(data)" novalidate>
+        <div class="modal-header">
+          <h3>Edit Students</h3>
+        </div>
+        <div class="modal-body">
+
+          <!-- /.box-header -->
+          <!-- /.box-header -->
+          <div class="box-body">
+            <div class="row">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Admission No</label>
+                  <input type="text" name="admissionNo" ng-model="editdata.admission_no" class="form-control" placeholder="Enter ..." required>
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Roll No</label>
+                  <input type="text" name="admissionNo" ng-model="editdata.roll_no" class="form-control" placeholder="Enter ..." required>
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Class</label>
+                  <select class="form-control select2" ng-options="class.class_id as class.name for class in classData" data-ng-change="populateSections(classId)"
+                    style="width: 100%;" ng-model="classId">
+                        <!--<option ng-repeat="class in classData" value="{{class.class_id}}">{{class.name}}</option>-->
+                      </select>
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Section</label>
+                  <select class="form-control select2" ng-options="sec.section_id as sec.name for sec in secData" data-ng-change="getStudentValue(secId)"
+                    style="width: 100%;" ng-model="secId">                    
+                        <!--<option ng-repeat="sec in secData" value="{{sec.section_id}}">{{sec.name}}</option>-->
+                      </select>
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>First Name</label>
+                  <input type="text" name="firstName" ng-model="editdata.first_name" class="form-control" placeholder="Enter ..." required>
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Last Name</label>
+                  <input type="text" name="firstName" ng-model="editdata.last_name" class="form-control" placeholder="Enter ..." required>
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Gender</label>
+                  <select name="gender" ng-model="editdata.gender" class="form-control select2" style="width: 100%;">
+                        <option selected="selected">--Select--</option>
+                        <option>Male</option>
+                        <option>Female</option>
+                      </select>
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Date of Birth</label>
+                  <datepicker date-set="{{today1}}" date-set-hidden="true" date-format="dd-MM-yyyy" style="z-index:999">
+                    <input name="dob" class="form-control" type="text" ng-model="editdata.dob" ng-readonly="true" placeholder="Enter ..." required/>
+                  </datepicker>
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Category</label>
+                  <select class="form-control select2" ng-model="editdata.category" style="width: 100%;">
+                        <option selected="selected">--Select--</option>
+                        <option>General</option>
+                        <option>OBC</option>
+                        <option>Minority</option>
+                      </select>
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Religion</label>
+                  <input type="text" ng-model="editdata.religion" class="form-control" placeholder="Enter ...">
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Contact No</label>
+                  <input type="text" ng-model="editdata.phone" class="form-control" placeholder="Enter ...">
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Email</label>
+                  <input type="text" ng-model="editdata.email" class="form-control" placeholder="Enter ...">
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Admission Date</label>
+                  <datepicker date-set="{{today1}}" date-set-hidden="true" date-format="dd-MM-yyyy" style="z-index:999">
+                    <input class="form-control" name="startDate" type="text" ng-model="editdata.admission_date" ng-readonly="true" placeholder="Enter ..."
+                      required/>
+                  </datepicker>
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Student Photo</label>
+                  <input type="file" name="first_doc" id="doc1">
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Submit</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

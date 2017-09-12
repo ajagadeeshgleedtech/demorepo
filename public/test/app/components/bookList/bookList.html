@@ -1,0 +1,242 @@
+<section class="content-header">
+  <h1>
+    <i class="fa fa-book"></i> Library
+    <small>Book List</small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href=""><i class="fa fa-dashboard"></i> Home</a></li>
+    <li>Library</li>
+    <li class="active">Book List</li>
+
+  </ol>
+</section>
+<!-- /.Content Header -->
+
+<!-- Main content -->
+<section class="content">
+  <!-- Select Criteria -->
+
+  <!--<div class="page-title">
+    
+    <h2><span class="fa fa-arrow-circle-o-left"></span> Book List</h2>
+  </div>-->
+
+  <!--<div class="row">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <i class="fa fa-th-list" aria-hidden="true"></i>
+          <h3 class="panel-title">Projects</h3>
+
+
+          <ul class="panel-controls">
+
+
+            <li>&nbsp;&nbsp;<button type="button" pdf-save-button="idOneGraph" pdf-name="projects.pdf" class="btn btn-info ">Save as PDF</button></li>
+          </ul>
+
+        </div>
+        <div class="panel-body" pdf-save-content="idOneGraph">
+          <table class="table table-hover">
+            
+            <thead>
+            <tr>
+              <th>#</th>
+              <th>Book Title</th>
+              <th>Author</th>
+              <th>Subject</th>
+              <th>Book Price</th>
+              <th>Quantity</th>
+              <th>Rack Number</th>
+              <th>Inward Date</th>
+              <th class="pull-right">Action</th>
+            </tr>
+            </thead>
+            <tr ng-repeat="books in data">
+              <td>{{$index+1}}</td>
+              <td>{{books.book_title}}</td>
+              <td>{{books.author_name}}</td>
+              <td>{{books.subject_name}}</td>
+              <td>{{books.book_price}}</td>
+              <td>{{books.qty}}</td>
+              <td>{{books.rack_number}}</td>
+              <td>{{books.inward_date}}</td>
+
+              <td class="pull-right">
+                <a href="" class="btn btn-default btn-xs" ng-click="EditBook($index)" data-toggle="modal" data-target="#myModal" title="Edit">
+                            <i class="fa fa-pencil"></i>
+                        </a>
+                <a href="" class="btn btn-default btn-xs" data-toggle="tooltip" title="Delete">
+                            <i class="fa fa-trash" aria-hidden="true"></i>
+                        </a>
+              </td>
+            </tr>
+
+          
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>-->
+
+
+  <div class="box box-default">
+    <div class="box-header with-border">
+      <i class="fa fa-th-list" aria-hidden="true"></i>
+      <h3 class="box-title">Book List</h3>
+      <!--<li style="list-style-type:none;"><button type="button" pdf-save-button="idOneGraph" pdf-name="bookList.pdf" class="btn btn-primary pull-right">Save as PDF</button></li>-->
+      <li style="list-style-type:none;"><button type="button" data-ng-click="exportAction('excel')" class="btn btn-primary pull-right">Save as Excel</button></li>
+      <li style="list-style-type:none;"><button type="button" data-ng-click="exportAction('pdf')" class="btn btn-primary pull-right">Save as PDF</button></li>
+
+      <div class="panel-body">
+        <!--//pdf-save-content="idOneGraph"-->
+        <table export-table class="table table-bordered table-hover table-condensed" style="width: 100%; margin-top: 20px">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Book Title</th>
+              <th>Author</th>
+              <th>Subject</th>
+              <th>Book Price</th>
+              <th>Quantity</th>
+              <th>Rack Number</th>
+              <th>Inward Date</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tr ng-repeat="books in data" class="editable-row">
+            <td>{{$index+1}}</td>
+            <td><span editable-text="books.book_title" e-name="editdata.book_title" onaftersave="EditBook($index)" e-form="rowform"
+                e-required>{{books.book_title || 'empty' }}</span></td>
+            <td><span editable-text="books.author_name" e-name="editdata.author_name" onaftersave="EditBook($index)" e-form="rowform"
+                e-required>{{books.author_name || 'empty' }}</span></td>
+            <td class="select-td">
+              <span editable-select="books.subject" e-name="subject" e-form="rowform" onaftersave="EditBook($index)" e-selectpicker e-ng-options="sub.name as sub.name for sub in subData">
+                {{ books.subject}}
+              </span>
+            </td>
+            <td><span editable-text="books.book_price" e-name="editdata.book_price" onaftersave="EditBook($index)" e-form="rowform"
+                e-required>{{books.book_price || 'empty' }}</span></td>
+            <td><span editable-text="books.qty" e-name="editdata.qty" onaftersave="EditBook($index)" e-form="rowform" e-required>{{books.qty || 'empty' }}</span></td>
+            <td><span editable-text="books.rack_number" e-name="editdata.rack_number" onaftersave="EditBook($index)" e-form="rowform"
+                e-required>{{books.rack_number || 'empty' }}</span></td>
+            <td><span editable-text="books.inward_date" e-name="editdata.inward_date" onaftersave="EditBook($index)" e-form="rowform"
+                e-required>{{books.inward_date || 'empty' }}</span></td>
+
+            <td>
+              <form editable-form name="rowform" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == books">
+                <button type="submit" ng-click="EditBook($index)" ng-disabled="rowform.$waiting" class="btn btn-primary editable-table-button btn-xs">Save</button>
+                <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-default editable-table-button btn-xs">Cancel</button>
+              </form>
+
+              <div class="buttons" ng-show="!rowform.$visible">
+                <button class="btn btn-primary editable-table-button btn-xs" ng-click="rowform.$show()">Edit</button>
+                <button class="btn btn-default btn-xs" data-toggle="tooltip" confirmed-click="DeleteBook($index)" ng-confirm-click="Are you sure you want to delete this item?">Delete</button>
+                <!--<button class="btn btn-danger editable-table-button btn-xs" ng-click="removeUser($index)">Delete</button>-->
+              </div>
+            </td>
+          </tr>
+
+
+          <tbody>
+
+          </tbody>
+        </table>
+        <!--<export-to-pdf elem-id="table"></export-to-pdf>-->
+
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!--Edit values modal Starts here-->
+<form ng-show="!showTheForm" name="BookList" ng-submit="Book.$valid && addEdittBook(editdata)" novalidate>
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog modal-md">
+
+      <div class="modal-content">
+
+        <div class="modal-header">
+          <h3>Edit Book</h3>
+        </div>
+
+        <div class="modal-body">
+
+          <!-- /.box-header -->
+          <!-- /.box-header -->
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Book Title</label>
+                <input type="text" ng-model="editdata.book_title" class="form-control" placeholder="Enter ...">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Author Name</label>
+                <input type="text" ng-model="editdata.author_name" class="form-control" placeholder="Enter ...">
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-3">
+              <div class="form-group">
+                <label>Book Price</label>
+                <input type="text" ng-model="editdata.book_price" class="form-control" placeholder="Enter ...">
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label>Quantity</label>
+                <input type="text" ng-model="editdata.qty" class="form-control" placeholder="Enter ...">
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label>Rack Number</label>
+                <input type="text" ng-model="editdata.rack_number" class="form-control" placeholder="Enter ...">
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label>Inward Date</label>
+                <input type="text" ng-model="editdata.inward_date" class="form-control" placeholder="Enter ...">
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <label>Book Description</label>
+              <textarea class="form-control" ng-model="editdata.book_description" rows="3" placeholder="Enter ..."></textarea>
+            </div>
+            <div class="col-md-4">
+              <label>Select Subject</label>
+
+              <select class="form-control select2" data-ng-change="getChapters(subId)" name="selectSubject" ng-options="sub.name as sub.name for sub in subData"
+                ng-model="editdata.subject" style="width: 100%;">
+                
+                      </select>
+            </div>
+          </div>
+
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" ng-click="addEdittBook(editdata)" class="btn btn-primary" ng-click="showForm = false">Add Book</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        </div>
+
+      </div>
+
+
+
+    </div>
+  </div>
+</form>
