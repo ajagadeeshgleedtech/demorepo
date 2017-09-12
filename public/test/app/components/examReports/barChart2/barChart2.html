@@ -1,0 +1,274 @@
+<section class="content-header">
+    <h1>
+        <i class="fa fa-file-text"></i> Exam Reports
+        <small>BarChart2</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href=""><i class="fa fa-dashboard"></i> Home</a></li>
+        <li>Exam Reports</li>
+        <li class="active">BarChart2</li>
+    </ol>
+</section>
+<!-- /.Content Header -->
+
+
+
+<section class="content">
+
+
+    <div class="box box-default">
+        <div class="box-header with-border">
+            <i class="fa fa-search" aria-hidden="true"></i>
+            <h3 class="box-title">Select Criteria</h3>
+        </div>
+
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Select Class</label>
+                        <select class="form-control select2" data-ng-change="populateSections(classId)" style="width: 100%;" ng-model="classId">
+                        <option selected="selected">--Select--</option>
+                       <option ng-repeat="class in classDatanew" value="{{class.class_id}}">{{class.name}}</option>
+                      </select>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Select Section</label>
+                        <select class="form-control select2" style="width: 100%;" ng-model="secId">
+                        <option selected="selected">--Select--</option>
+                       <option ng-repeat="sec in secData" value="{{sec.section_id}}">{{sec.name}}</option>
+                        
+                      </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Select Exam Schedule</label>
+                        <select class="form-control select2" style="width: 100%;" ng-model="examScheduleId">
+                        <option selected="selected">--Select--</option>
+                        <option ng-repeat="exam in examSchedule " value="{{exam.exam_sch_id}}">{{exam.exam_title}}</option>
+                        
+                      </select>
+                    </div>
+                </div>
+
+                <!--<div class="col-md-4">
+                    <div class="form-group">
+                        <label>Paper Title</label>
+                        <select ng-change="getEvaluation(paperId ,studentId)" class="form-control select2" style="width: 100%;" ng-model="paperId">
+                            <option selected="selected">--Select--</option>
+                            <option ng-repeat="paper in papers " value="{{paper.exam_paper_id}}">{{paper.exam_paper_title}}</option>
+                            
+                        </select>
+                    </div>
+                </div>-->
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Select Student</label>
+                        <select ng-change="getEvaluation(paperId ,studentId)" class="form-control select2" style="width: 100%;" ng-model="studentId">
+                            <option selected="selected">--Select--</option>
+      
+                            <option ng-repeat="student in students " value="{{student.student_id}}">{{student.first_name}} {{student.last_name}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <button type="submit" ng-click="getDataWithService()" class="btn btn-primary pull-right">Select</button>
+                    <li style="list-style-type:none;"><button type="button" pdf-save-button="idOneGraph" pdf-name="bookList.pdf" class="btn btn-primary pull-left">Save as PDF</button></li>
+                </div>
+                <!--<canvas id="bar" class="chart chart-bar" chart-data="data" chart-labels="labels"> chart-series="series"
+                </canvas>-->
+
+            </div>
+
+            <div class="box box-success" style="margin-top:10px">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Bar Chart</h3>
+
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                    </div>
+                </div>
+                <div class="box-body" pdf-save-content="idOneGraph">
+                    <div class="chart">
+                        <zingchart id="myChart" zc-values="chartdata" zc-json="myJson" zc-height=500 zc-width=900></zingchart>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!--<div class="row" style="margin-top:20px">
+    <div class="col-md-12">
+        <div class="box box-success">
+            <div class="box-header with-border">
+                <h3 class="box-title">Bar Chart</h3>
+
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+                    <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                </div>
+            </div>-->
+<!--<div class="box-body">
+                            <div class="chart">
+                                <canvas id="barChart" style="height:530px"></canvas>
+                            </div>
+                        </div>-->
+
+<!--<div class="graph-display">
+                        <div class="bar-chart-box" ng-repeat="module in ocw.modules">Bar Graph
+                            <canvas id="bar{{$index}}" class="chart chart-bar" data="module.data" labels="module.labels" series="module.series"></canvas>
+                        </div>
+                    </div>-->
+<!-- START DEFAULT DATATABLE -->
+
+<!--<zingchart id="myChart" zc-json="myJson" zc-height=5 00 zc-width=6 00></zingchart>-->
+
+<!--<div>
+
+                                        <canvas id="chart-{{$index}}" class="chart chart-doughnut" chart-data="data" chart-labels="labels"></canvas>
+                                    </div>-->
+
+<!--<div class="graph-display">
+                            <div class="bar-chart-box" ng-repeat="module in ocw.modules">Bar Graph
+                                <canvas id="bar{{$index}}" class="chart chart-bar" data="module.data" labels="module.labels" series="module.series"></canvas>
+                            </div>
+                            <canvas id="bar" class="chart chart-bar" data="data" labels="labels"></canvas>
+                        </div>-->
+<!--<div class="graph-display" >
+                            <div class="bar-chart-box" ng-repeat="module in ocw.modules">Bar Graph
+                                <canvas id="bar{{$index}}" class="chart chart-bar" data="module.data" labels="module.labels" series="module.series"></canvas>
+                            </div>
+
+                        </div>-->
+
+<!--</div>
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+</section>-->
+<!--<script>
+    $(function () {
+        /* ChartJS
+         * -------
+         * Here we will create a few charts using ChartJS
+         */
+
+
+
+        var areaChartData = {
+            labels: ["January", "February", "March", "April", "May", "June", "July"],
+            datasets: [
+                {
+                    label: "Electronics",
+                    fillColor: "rgba(210, 214, 222, 1)",
+                    strokeColor: "rgba(210, 214, 222, 1)",
+                    pointColor: "rgba(210, 214, 222, 1)",
+                    pointStrokeColor: "#c1c7d1",
+                    pointHighlightFill: "#fff",
+                    pointHighlightStroke: "rgba(220,220,220,1)",
+                    data: [65, 59, 80, 81, 56, 55, 40]
+                },
+                {
+                    label: "Digital Goods",
+                    fillColor: "rgba(60,141,188,0.9)",
+                    strokeColor: "rgba(60,141,188,0.8)",
+                    pointColor: "#3b8bba",
+                    pointStrokeColor: "rgba(60,141,188,1)",
+                    pointHighlightFill: "#fff",
+                    pointHighlightStroke: "rgba(60,141,188,1)",
+                    data: [28, 48, 40, 19, 86, 27, 90]
+                }
+            ]
+        };
+
+        //-------------
+        //- BAR CHART -
+        //-------------
+        var barChartCanvas = $("#barChart").get(0).getContext("2d");
+        var barChart = new Chart(barChartCanvas);
+        var barChartData = areaChartData;
+        barChartData.datasets[1].fillColor = "#00a65a";
+        barChartData.datasets[1].strokeColor = "#00a65a";
+        barChartData.datasets[1].pointColor = "#00a65a";
+        var barChartOptions = {
+            //Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
+            scaleBeginAtZero: true,
+            //Boolean - Whether grid lines are shown across the chart
+            scaleShowGridLines: true,
+            //String - Colour of the grid lines
+            scaleGridLineColor: "rgba(0,0,0,.05)",
+            //Number - Width of the grid lines
+            scaleGridLineWidth: 1,
+            //Boolean - Whether to show horizontal lines (except X axis)
+            scaleShowHorizontalLines: true,
+            //Boolean - Whether to show vertical lines (except Y axis)
+            scaleShowVerticalLines: true,
+            //Boolean - If there is a stroke on each bar
+            barShowStroke: true,
+            //Number - Pixel width of the bar stroke
+            barStrokeWidth: 2,
+            //Number - Spacing between each of the X value sets
+            barValueSpacing: 5,
+            //Number - Spacing between data sets within X values
+            barDatasetSpacing: 1,
+            //String - A legend template
+            legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
+            //Boolean - whether to make the chart responsive
+            responsive: true,
+            maintainAspectRatio: true
+        };
+
+        barChartOptions.datasetFill = false;
+        barChart.Bar(barChartData, barChartOptions);
+    });
+
+</script>-->
+<!--<canvas id="bar" class="chart chart-bar" chart-data="data" chart-labels="labels"> chart-series="series"
+</canvas>-->
+<!-- Main content -->
+<!--<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+           
+
+         
+            <div class="box box-success">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Bar Chart</h3>
+
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <div class="chart">
+                        <canvas id="barChart" style="height:230px"></canvas>
+                    </div>
+                </div>
+               
+            </div>
+           
+
+        </div>
+        
+    </div>
+    
+
+</section>-->
+<!-- /.content -->

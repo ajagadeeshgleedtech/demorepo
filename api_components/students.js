@@ -250,6 +250,9 @@ router.route('/students/:section_id')
                         name: {
                             "$first": "$school_classes.name"
                         },
+                        student_id: {
+                            "$first": "$student_id"
+                        },
                          
                         
                     }

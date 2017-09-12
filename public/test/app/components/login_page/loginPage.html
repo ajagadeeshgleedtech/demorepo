@@ -1,0 +1,56 @@
+
+<link rel="stylesheet" href="../../../dist/login/web/css/style.css" type="text/css" media="all" />
+
+
+<link rel="stylesheet" href="../../../dist/login/web/css/font-awesome.css">
+
+
+<div>
+    <div class="center-container">
+
+        
+        <div class="header-w3l">
+
+        </div>
+       
+        <div class="main-content-agile">
+            <div class="wthree-pro">
+                <h2>PROSchool Login</h2>
+            </div>
+
+            <div class="sub-main-w3">
+                <form name="loginform" ng-submit="loginform.$valid && login(datab)" novalidate>
+                    <input ng-class="{'has-error': loginform.$submitted  && loginform.username.$pristine}" ng-model="datab.username" name="username" placeholder="E-mail" name="mail" type="email" required="">
+                    <span class="icon1"><i class="fa fa-user" aria-hidden="true"></i></span>
+                    <input ng-class="{'has-error': loginform.$submitted  && loginform.passsword.$pristine}" ng-model="datab.password" name="passsword" placeholder="Password" name="Password" type="password" required="">
+                    <span class="icon2"><i class="fa fa-unlock" aria-hidden="true"></i></span>
+                    <div class="rem-w3">
+                        <span class="check-w3"><input type="checkbox" />Remember Me</span>
+                        <a href="#">Forgot Password?</a>
+                        <div class="clear"></div>
+                    </div>
+                    <div class="container container-fluid">
+
+                      
+
+                    </div>
+                    <input type="submit"   value="Login">
+
+                </form>
+                <a href="../../../dist/login/web/query.html"> <button id="queryid" > Query</button></a>
+            </div>
+
+        </div>
+
+     
+        <div class="footer"> </div>
+     
+</div>
+
+<script type="text/javascript" src="../../../dist/login/web/js/jquery-2.1.4.min.js"></script>
+
+<!-- //js -->
+  <!-- <span><button type="button" class="btn btn-lg" id="adminbtn">Admin</span>
+								<span><button type="button" class="btn btn-lg" id="teacherbtn">Teacher</span>
+								<span><button type="button" class="btn btn-lg" id="parentbtn">Parent</span> 
+								 -->

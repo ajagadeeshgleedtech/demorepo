@@ -1,0 +1,208 @@
+<section class="content-header">
+  <h1>
+    <i class="fa fa-bus"></i> Transport
+    <small>Add Station</small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href=""><i class="fa fa-dashboard"></i> Home</a></li>
+    <li>Transport</li>
+    <li class="active">Add Station</li>
+  </ol>
+</section>
+<!-- /.Content Header -->
+
+<!-- Main content -->
+<section class="content">
+  <!-- Select Criteria -->
+  <form name="Stations" ng-submit="Stations.$valid && addStation(data)" novalidate>
+    <div class="box box-default">
+      <div class="box-header with-border">
+        <h3 class="box-title">Create Station</h3>
+      </div>
+      <!-- /.box-header -->
+      <div class="box-body">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group" ng-class="{'has-error': Stations.$submitted  && Stations.stationName.$pristine}">
+              <label>Station Name</label>
+              <input name="stationName" type="text" ng-model="data.station_name" class="form-control" placeholder="Enter ..." required>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group" ng-class="{'has-error': Stations.$submitted  && Stations.stationCode.$pristine}">
+              <label>Station Code</label>
+              <input name="stationCode" type="text" ng-model="data.station_code" class="form-control" placeholder="Enter ..." required>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group" ng-class="{'has-error': Stations.$submitted  && Stations.stationGeo-Locatio.$pristine}">
+              <label>Station Geo-Location</label>
+              <input name="stationGeo-Locatio" type="text" ng-model="data.station_geo_location" class="form-control" placeholder="Enter ..."
+                required>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="box-footer">
+        <button type="submit" class="btn btn-primary pull-right">Add Station</button>
+      </div>
+    </div>
+  </form>
+  <!-- /.content -->
+
+  <!-- Content List -->
+  <div class="box box-default">
+    <div class="box-header with-border">
+      <h3 class="box-title">Station List</h3>
+    </div>
+    <div class="box-body">
+
+      <div class="tab-content">
+        <div class="mailbox-controls">
+          <div class="pull-right">
+
+          </div>
+          <!-- /.pull-right -->
+        </div>
+
+        <div class="table-responsive mailbox-messages">
+          <!--<table class="table table-hover table-striped">
+                  <thead>
+                    <tr>
+                      <th>#</th>  
+                      <th>Station Name</th>
+                      <th>Station Code</th>
+                      <th>Station Geo-Location </th>
+                      <th class="pull-right">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>  
+                    <tr ng-repeat="station in data">
+                      <td class="mailbox-name"> {{$index+1}}</td>
+                      <td class="mailbox-name"> {{station.station_name}}</td>
+                      <td class="mailbox-name"> {{station.station_code}}</td>
+                       <td class="mailbox-name"> {{station.station_geo_location}}</td>                     
+                      <td class="mailbox-date pull-right">                    
+                        <a href="" class="btn btn-default btn-xs" ng-click="EditStation($index)" data-toggle="modal" data-target="#myModal" title="Edit">
+                            <i class="fa fa-pencil"></i>
+                        </a>
+                        <a href="" class="btn btn-default btn-xs" data-toggle="tooltip" title="Delete"  confirmed-click="DeleteStation($index)" ng-confirm-click="Are you sure you want to delete this item?" data-original-title="Delete">
+                      
+                           <i class="fa fa-trash" aria-hidden="true"></i>
+                        </a>                                                                
+                      </td>      
+                    </tr>
+                  </tbody>
+                </table>-->
+
+          <table class="table table-bordered table-hover table-condensed">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Station Name</th>
+                <th>Station Code</th>
+                <th>Station Geo-Location </th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="station in data" class="editable-row">
+              <td>
+                {{$index+1}}
+              </td>
+              <td>
+                <span editable-text="station.station_name" e-name="editdata.station_name" onaftersave="EditStation($index)" e-form="rowform" e-required>{{station.station_name || 'empty' }}</span>
+              </td>
+              <td>
+                <span editable-text="station.station_code" e-name="editdata.station_code" onaftersave="EditStation($index)" e-form="rowform" e-required>{{station.station_code || 'empty' }}</span>
+              </td>
+              <td>
+                <span editable-text="station.station_geo_location" e-name="editdata.station_geo_location" onaftersave="EditStation($index)" e-form="rowform" e-required>{{station.station_geo_location || 'empty' }}</span>
+              </td>
+              <!--<td class="select-td">
+                <span editable-select="station.station_code" e-name="station_code" e-form="rowform" e-selectpicker e-ng-options="s.value as s.text for s in statuses">
+                {{ showStatus(user) }}
+              </span>
+                    </td>
+                    <td class="select-td">
+                      <span editable-select="station.station_geo_location" e-name="station_geo_location" onshow="loadGroups()" e-form="rowform" e-selectpicker e-ng-options="g.id as g.text for g in groups">
+                {{ showGroup(user) }}
+              </span>
+                    </td>-->
+                <td>
+                  <form editable-form name="rowform" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == station">
+                    <button type="submit" ng-click="EditStation($index)" ng-disabled="rowform.$waiting" class="btn btn-primary editable-table-button btn-xs">Save</button>
+                    <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-default editable-table-button btn-xs">Cancel</button>
+                  </form>
+
+                  <div class="buttons" ng-show="!rowform.$visible">
+                    <button class="btn btn-primary editable-table-button btn-xs" ng-click="rowform.$show()">Edit</button>
+                    <button class="btn btn-default btn-xs" data-toggle="tooltip" confirmed-click="DeleteStation($index)" ng-confirm-click="Are you sure you want to delete this item?">Delete</button>
+                    <!--<button class="btn btn-danger editable-table-button btn-xs" ng-click="removeUser($index)">Delete</button>-->
+                  </div>
+                </td>
+              </tr>
+            </tbody> 
+          </table>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<!--Edit values modal Starts here-->
+<!--<div class="modal fade" id="myModal" role="dialog">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <form name="stationsList" ng-submit="Stations.$valid && addEditStation(editdata)" novalidate>
+        <div class="modal-header">
+          <h3>Edit Station</h3>
+        </div>
+        <div class="modal-body">
+
+         
+
+
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Station Name</label>
+                <input type="text" ng-model="editdata.station_name" class="form-control" placeholder="Enter ...">
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Station Code</label>
+                <input type="text" ng-model="editdata.station_code" class="form-control" placeholder="Enter ...">
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Station Geo-Location</label>
+                <input type="text" ng-model="editdata.station_geo_location" class="form-control" placeholder="Enter ...">
+              </div>
+            </div>
+
+          </div>
+
+
+          <div class="modal-footer">
+            <button type="submit" ng-click="addEditStation(editdata)" class="btn btn-primary">Add Station</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+          </div>
+
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>-->

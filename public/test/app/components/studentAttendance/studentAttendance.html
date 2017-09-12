@@ -1,0 +1,174 @@
+<section class="content-header">
+    <h1>
+        <i class="fa fa-calendar-check-o"></i> Attendance
+        <small>Students</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href=""><i class="fa fa-dashboard"></i> Home</a></li>
+        <li>Attendance</li>
+        <li class="active">Student Attendance</li>
+    </ol>
+</section>
+<!-- /.Content Header -->
+
+<!-- Main content -->
+<section class="content">
+    <!-- Select Criteria -->
+
+    <div class="box box-default">
+        <div class="box-header with-border">
+            <i class="fa fa-search" aria-hidden="true"></i>
+            <h3 class="box-title">Select Criteria</h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Batch Year</label>
+                        <select class="form-control select2" style="width: 100%;">
+                        <option selected="selected">--Select--</option>
+                        <option>2017-2018</option>
+                        <option>2018-2019</option>
+                      </select>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Class</label>
+                        <select class="form-control select2" ng-options="class.class_id as class.name for class in classDatanew" data-ng-change="populateSections(classId)" style="width: 100%;" ng-model="classId">
+                      </select>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Section</label>
+                        <select class="form-control select2" ng-options="sec.section_id as sec.name for sec in secData" data-ng-change="getStudents(secId)" style="width: 100%;" ng-model="secId">                    
+                        </select>
+
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Search by keyword</label>
+                        <input type="text" name="search_text" class="form-control" placeholder="Search...">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="box-footer">
+            <button type="submit" class="btn btn-primary pull-right">Search</button>
+        </div>
+    </div>
+
+    <!-- /.content -->
+<!--{{attendanceBox}}-->
+    <!-- Content List -->
+    <div class="box box-default">
+        <div class="box-header with-border">
+            <i class="fa fa-users" aria-hidden="true"></i>
+            <h3 class="box-title">Student List</h3>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mailbox-controls">
+                        <button type="button" class="btn btn-primary pull-left">
+                <i class="state-icon glyphicon glyphicon-unchecked"></i>
+                &nbsp;
+                Mark as holiday
+                </button>
+                        <input type="checkbox" class="hidden" name="holiday" value="checked">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <button type="button" class="btn btn-primary pull-right" ng-click="submitBulkAttendance()">
+                <i class="fa fa-save"></i>
+                Submit Attendance
+                </button>
+                </div>
+            </div>
+
+            <div class="tab-content">
+                <div class="tab-pane table-responsive no-padding active" id="tab_1">
+                    <table class="table table-hover table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>
+                                    <div class="squaredFour">
+                                        <input type="checkbox" value="None" id="squaredFour" data-ng-change="tickAll(check)" ng-model="check" name="check" />
+                                        <label for="squaredFour"></label>
+                                    </div>
+                                    <span class="selection">All</span>
+                                </th>
+                                <th>Admission No</th>
+                                <th>Roll No</th>
+                                <th>Name</th>
+                                <th>Attendance
+                                    <select ng-if="check" class="select2" style="font-weight:normal;margin-left:15px;" ng-change="markAttendance(attendVal)" ng-model="attendVal">
+                                  <option selected="selected">--Select--</option>
+                                  <option value="Present">Present</option>
+                                  <option value="Late with excuse">Late with excuse</option>
+                                  <option value="Late">Late</option>
+                                  <option value="Absent">Absent</option>
+                                  <option value="On Leave">On Leave</option>
+                                </select>
+                                </th>
+                                <th>Actions</th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <tr ng-repeat="student in attendanceBox">
+
+                                <td>{{$index+1}}</td>
+                                <td>
+                                    <div class="squaredFour">
+                                        <input type="checkbox" value="None" id="squaredFour{{$index}}" name="check" ng-model="student.selected" />
+                                        <label for="squaredFour{{$index}}"></label>
+                                    </div>
+                                </td>
+                                <td>{{student.admission_no}}</td>
+                                <td>{{student.roll_no}}</td>
+                                <td>{{student.first_name}} {{student.last_name}}</td>
+                                <td>
+                                    <div class="radio radio-info radio-inline">
+                                        <input ng-change="attn(student,attend)" type="radio" ng-model="student.status" value="Present" id="attendencetype+{{$index}}" name="attendencetype+{{$index}}">
+                                        <label for="inlineRadio1"> Present </label>
+                                    </div>
+                                    <!--<div class="radio radio-info radio-inline">
+                                        <input ng-change="attn(student,attend)" type="radio" ng-model="student.status" value="Late with excuse" name="attendencetype+{{$index}}">
+                                        <label for="inlineRadio1"> Late with excuse </label>
+                                    </div>-->
+                                    <!--<div class="radio radio-info radio-inline">
+                                        <input ng-change="attn(student,attend)" type="radio" ng-model="student.status" value="Late" name="attendencetype+{{$index}}">
+                                        <label for="inlineRadio1"> Late </label>
+                                    </div>-->
+                                    <div class="radio radio-info radio-inline">
+                                        <input ng-change="attn(student,attend)" type="radio" ng-model="student.status" value="Absent" name="attendencetype+{{$index}}">
+                                        <label for="inlineRadio1"> Absent </label>
+                                    </div>
+                                    <div class="radio radio-info radio-inline">
+                                        <input ng-change="attn(student,attend)" type="radio" ng-model="student.status" value="On Leave" name="attendencetype+{{$index}}">
+                                        <label for="inlineRadio1"> On Leave </label>
+                                    </div>
+                                </td>
+
+                                <td><button ng-click="addAttendance(student,student.status)" class="btn btn-primary smallButton" type="button" value="add">Add</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

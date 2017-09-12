@@ -1,0 +1,276 @@
+<section class="content-header">
+  <h1>
+    <i class="fa fa-calendar"></i> Timetable
+    <small>School Events</small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href=""><i class="fa fa-dashboard"></i> Home</a></li>
+    <li>Timetable</li>
+    <li class="active">School Events</li>
+  </ol>
+</section>
+<!-- /.Content Header -->
+
+<!-- Main content -->
+<section class="content">
+  <!-- Select Criteria -->
+
+  <div class="box box-default" style="height:100%">
+
+    <!--<div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true"><i class="fa fa-calendar-plus-o" aria-hidden="true"></i> Timeline View </a></li>
+                    <li><a href="#tab_2" data-toggle="tab" aria-expanded="true"><i class="fa fa-calendar-times-o" aria-hidden="true"></i> Calendar View </a></li>
+                </ul> 
+            </div>-->
+    <form name="events" ng-submit="events.$valid && addEvent(data)" novalidate>
+      <!-- /.box-header -->
+      <div class="box-body">
+        <div class="box-header with-border" style="width: 23%;">
+      <i class="fa fa-th-list" aria-hidden="true"></i>
+      <h3 class="box-title">Add Events</h3>
+      </div>
+        <div class="row">
+          <div class="col-md-3">
+            <div class="form-group" ng-class="{'has-error': events.$submitted && events.event_name.$invalid && events.event_name.$pristine}">
+              <label>Event Title</label>
+              <input type="text" name="event_name" class="form-control" ng-model="data.event_name" placeholder="Enter ..." required>
+            </div>
+
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-3">
+            <div class="form-group" ng-class="{'has-error': events.$submitted && events.date.$invalid && events.date.$pristine}">
+              <label>Event Date</label>
+              <div class="input-group date">
+                <div class="input-group-addon">
+                  <i class="fa fa-calendar"></i>
+                </div>
+                <!--<input type="text" class="form-control pull-right" ng-model="data.exam_classes" id="datepicker">-->
+                <datepicker date-format="yyyy-MM-dd" style="z-index:999">
+                  <input name="Date" class="form-control" type="text" ng-readonly="true" ng-model="data.date" placeholder="Enter ..." required/>
+                </datepicker>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div class="row">
+
+          <div class="col-md-3">
+            <div class="form-group" ng-class="{'has-error': events.$submitted && events.time.$invalid && events.time.$pristine}">
+              <label>Event Time</label>
+              <div class="input-group">
+                <!--<circulartimepicker input type="text" name="Time" ng-model="data.time" class="form-control timepicker" required></circulartimepicker>-->
+                <input type="text" name="Time" ng-model="data.time" class="form-control timepicker" required>
+                <div class="input-group-addon">
+                  <i class="fa fa-clock-o"></i>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-3">
+            <div class="form-group" ng-class="{'has-error': events.$submitted && events.description.$invalid && events.description.$pristine}">
+
+              <label>Description</label>
+              <input type="text" name="Description" class="form-control" ng-model="data.description" placeholder="Enter ..." required>
+
+            </div>
+
+          </div>
+        </div>
+        <div class="row">
+          <div class="row">
+            <div class="col-md-3">
+              <button type="submit" class="btn btn-primary pull-right">Add Event</button>
+            </div>
+          </div>
+          
+        </div>
+    </form>
+    <div class="row">
+      <div class="col-md-3">
+        <!--<form name="events" ng-submit="events.$valid && addEvent(data)" novalidate>
+          <div class="row">
+            <div class="col-md-9">
+              <div class="form-group" ng-class="{'has-error': events.$submitted  && events.event_name.$pristine}">
+                <label>Event Title</label>
+                <input type="text" name="event_name" class="form-control" ng-model="data.event_name" placeholder="Enter ..." required>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="form-group" ng-class="{'has-error': events.$submitted  && events.Date.$pristine}">
+              <label>Event Date</label>
+              <div class="input-group date">
+                <div class="input-group-addon">
+                  <i class="fa fa-calendar"></i>
+                </div>
+              
+                <datepicker date-format="yyyy-MM-dd" style="z-index:999">
+                  <input name="Date" class="form-control" type="text" ng-readonly="true" ng-model="data.date" placeholder="Enter ..." required/>
+                </datepicker>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="form-group" ng-class="{'has-error': events.$submitted && events.Time.$invalid && events.Time.$pristine}">
+              <label>Event Time</label>
+              <div class="input-group">
+                <input type="text" name="Time" ng-model="data.time" class="form-control timepicker" required>
+                <div class="input-group-addon">
+                  <i class="fa fa-clock-o"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-9">
+              <div class="form-group" ng-class="{'has-error': events.$submitted  && events.Description.$pristine}">
+                <label>Description</label>
+                <input type="text" name="Description" class="form-control" ng-model="data.Description" placeholder="Enter ..." required>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-5">
+              <button type="submit" class="btn btn-primary pull-right">Add Event</button>
+            </div>
+          </div>
+        </form>-->
+
+        <!--<div class="box box-solid">
+                    <div class="box-header with-border">
+                        <h4 class="box-title">Draggable Events</h4>
+                    </div>
+                    
+                    <div class="box-body"> 
+                      <div id="external-events">
+                        <div class="external-event bg-green">School Fest</div>
+                        <div class="external-event bg-blue">Independence Day</div>
+                        <div class="checkbox">
+                          <label for="drop-remove">
+                            <input type="checkbox" id="drop-remove">
+                            remove after drop
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                </div>-->
+        <!-- /. box -->
+        <!--<div class="box box-solid">
+                  <div class="box-header with-border">
+                    <h3 class="box-title">Create Event</h3>
+                  </div>
+                  <div class="box-body">
+                    <div class="btn-group" style="width: 100%; margin-bottom: 10px;">-->
+        <!--<button type="button" id="color-chooser-btn" class="btn btn-info btn-block dropdown-toggle" data-toggle="dropdown">Color <span class="caret"></span></button>-->
+        <!--<ul class="fc-color-picker" id="color-chooser">
+                        <li><a class="text-aqua" href=""><i class="fa fa-square"></i></a></li>
+                        <li><a class="text-blue" href=""><i class="fa fa-square"></i></a></li>
+                        <li><a class="text-light-blue" href=""><i class="fa fa-square"></i></a></li>
+                        <li><a class="text-teal" href=""><i class="fa fa-square"></i></a></li>
+                        <li><a class="text-yellow" href=""><i class="fa fa-square"></i></a></li>
+                        <li><a class="text-orange" href=""><i class="fa fa-square"></i></a></li>
+                        <li><a class="text-green" href=""><i class="fa fa-square"></i></a></li>
+                        <li><a class="text-lime" href=""><i class="fa fa-square"></i></a></li>
+                        <li><a class="text-red" href=""><i class="fa fa-square"></i></a></li>
+                        <li><a class="text-purple" href=""><i class="fa fa-square"></i></a></li>
+                        <li><a class="text-fuchsia" href=""><i class="fa fa-square"></i></a></li>
+                        <li><a class="text-muted" href=""><i class="fa fa-square"></i></a></li>
+                        <li><a class="text-navy" href=""><i class="fa fa-square"></i></a></li>
+                      </ul>
+                    </div>-->
+        <!-- /btn-group -->
+        <!--<div class="input-group">
+                      <input id="new-event" type="text" class="form-control" placeholder="Event Title">
+
+                      <div class="input-group-btn">
+                        <button id="add-new-event" type="button" class="btn btn-primary btn-flat">Add</button>
+                      </div>-->
+        <!-- /btn-group -->
+        <!--</div>-->
+        <!-- /input-group -->
+        <!--</div>
+                </div>-->
+      </div>
+
+      <div class="col-md-9" style="margin-top: -36%;">
+        <div class="box box-primary">
+          <div class="box-body no-padding">
+            <!-- THE CALENDAR -->
+            <!--<div id="calendar">
+                     <div ui-calendar="uiConfig.calendar" class="span8 calendar" ng-model="eventSources"></div>
+               
+                    </div>
+                    </div>-->
+            <div class="span8">
+              <tabset>
+                <!--<tab select="renderCalendar('myCalendar1');">
+                              <tab-heading>
+                               <i class="glyphicon glyphicon-bell"></i> Calendar One
+                              </tab-heading>
+                              <div class="alert-success calAlert" ng-show="alertMessage != undefined && alertMessage != ''">
+                                <h4>{{alertMessage}}</h4>
+                              </div>
+                              <div class="btn-toolbar">
+                                <p class="pull-right lead">Calendar One View Options</p>
+                                <div class="btn-group">
+                                    <button class="btn btn-success" ng-click="changeView('agendaDay', 'myCalendar1')">AgendaDay</button>
+                                    <button class="btn btn-success" ng-click="changeView('agendaWeek', 'myCalendar1')">AgendaWeek</button>
+                                    <button class="btn btn-success" ng-click="changeView('month', 'myCalendar1')">Month</button>
+                                </div>
+                              </div>
+                            
+                            <div class="calendar" ng-model="eventSources" calendar="myCalendar1" ui-calendar="uiConfig.calendar"></div>
+                           </tab>-->
+                <!--<tab select="renderCalendar('myCalendar2');">
+                            <tab-heading>
+                              <i class="glyphicon glyphicon-bell"></i> Calendar Two
+                            </tab-heading>
+                              <div class="alert-success calAlert" ng-show="alertMessage != undefined && alertMessage != ''">
+                                <h4>{{alertMessage}}</h4>
+                              </div>
+                              <div class="btn-toolbar">
+                                <p class="pull-right lead">Calendar Two View Options</p>
+                                <div class="btn-group">
+                                    <button class="btn btn-success" ng-click="changeView('agendaDay', 'myCalendar2')">AgendaDay</button>
+                                    <button class="btn btn-success" ng-click="changeView('agendaWeek', 'myCalendar2')">AgendaWeek</button>
+                                    <button class="btn btn-success" ng-click="changeView('month', 'myCalendar2')">Month</button>
+                                </div>
+                              </div>
+                            <div class="calendar" ng-model="eventSources" calendar="myCalendar2" ui-calendar="uiConfig.calendar"></div>
+                           </tab>-->
+                <tab select="renderCalendar('myCalendar3');">
+                  <!--<tab-heading>
+                              <i class="glyphicon glyphicon-bell"></i> Calendar Three
+                            </tab-heading>-->
+                  <!--<div class="alert-success calAlert">
+                                <h4>This calendar uses the extended form</h4>
+                              </div>-->
+                  <div class="btn-toolbar">
+                    <!--<p class="pull-right lead">Calendar Three View Options</p>-->
+                    <div class="btn-group" style="margin-top: 1%;">
+                      <button class="btn btn-success" ng-click="changeView('agendaDay', 'myCalendar3')">AgendaDay</button>
+                      <button class="btn btn-success" ng-click="changeView('agendaWeek', 'myCalendar3')">AgendaWeek</button>
+                      <button class="btn btn-success" ng-click="changeView('month', 'myCalendar3')">Month</button>
+                    </div>
+                  </div>
+                  <div class="calendar" ng-model="eventSources2" calendar="myCalendar3" ui-calendar="uiConfig.calendar"></div>
+                </tab>
+              </tabset>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /. box -->
+        </div>
+      </div>
+    </div>
+
+    </div>
+</section>
