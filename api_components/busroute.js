@@ -74,13 +74,140 @@ router.route('/bus_route/:school_id')
     })
 
 
-router.route('/bus_route/:school_id')
-    .get(function(req, res, next) {         
+// router.route('/bus_route/:school_id')
+//     .get(function(req, res, next) {         
+//         var school_id = req.params.school_id;
+//         var resultArray = [];
+//         mongo.connect(url, function(err, db) {
+//             assert.equal(null, err);
+//             var cursor = db.collection('bus_routes').find({school_id});
+//             cursor.forEach(function(doc, err) {
+//                 assert.equal(null, err);
+//                 resultArray.push(doc);
+//             }, function() {
+//                 db.close();
+//                 res.send({
+//                     bus_routes: resultArray
+//                 });
+//             });
+//         });
+//     });
+     
+     //Modified
+    //Add Or Update Stations to Bus-Route-*********
+  
+   router.route('/addorupdatestationstobusroute/:school_id')
+    .post(function (req, res, next) {
+        var status = 1;
         var school_id = req.params.school_id;
+        var vehicle_code = req.body.vehicle_code;
+        var route_title = req.body.route_title;
+        stations = [];
+        var item = {
+            route_id: 'getauto',
+            school_id: school_id,
+            vehicle_code: req.body.vehicle_code,
+            route_title : req.body.route_title,
+            status: status,
+        };
+        var stations = {
+           // station_id: req.body.station_id,
+            station_name: req.body.station_name,
+            pickup_time: req.body.pickup_time,
+            drop_time: req.body.drop_time,
+
+        };
+
+        mongo.connect(url, function (err, db) {
+            var collection = db.collection('bus_routes');
+
+            collection.find({
+                "vehicle_code": vehicle_code,
+                "route_title":route_title,
+            }).toArray(function (err, results) {
+                if (err) {
+                    res.send('false')
+                }
+
+
+                if (results.length == 0) {
+
+
+                    autoIncrement.getNextSequence(db, 'bus_routes', function (err, autoIndex) {
+
+                        collection.ensureIndex({
+                            "route_id": 1,
+                        }, {
+                            unique: true
+                        }, function (err, result) {
+                            if (item.school_id == null || item.vehicle_code == null || stations.station_name == null) {
+                                res.end('null');
+                            } else {
+                                collection.insertOne(item, function (err, result) {
+                                    if (err) {
+                                        if (err.code == 11000) {
+                                            res.end('false');
+                                        }
+                                        res.end('false');
+                                    }
+                                    collection.update({
+                                        _id: item._id
+                                    }, {
+                                        $set: {
+                                            route_id: 'ROUTE-' + autoIndex
+                                        },
+                                        $push: {
+                                            stations
+                                        }
+                                    }, function (err, result) {
+                                        db.close();
+                                        res.end('true');
+                                    });
+                                });
+                            }
+                        });
+                    });
+
+
+                } else {
+
+                    collection.update({
+                            "vehicle_code": vehicle_code
+                        }, {
+                            "$addToSet": {
+                                "stations": {
+                                    station_id: req.body.station_id,
+                                    station_name: req.body.station_name,
+                                    pickup_time: req.body.pickup_time,
+                                    drop_time: req.body.drop_time,
+                                }
+                            }
+                        },
+                        function (err, numAffected) {
+                            if (err) {
+                                res.send('false')
+                            }
+
+                            if (numAffected.result.nModified == 1) {
+                                res.send('true')
+                            } else {
+                                res.send('false')
+                            }
+                        });
+                    // res.send('false')
+                }
+            });
+
+
+        });
+    });
+router.route('/bus_route/:vehicle_code')
+    .get(function(req, res, next) {         
+        var vehicle_code = req.params.vehicle_code;
         var resultArray = [];
         mongo.connect(url, function(err, db) {
             assert.equal(null, err);
-            var cursor = db.collection('bus_routes').find({school_id});
+            var cursor = db.collection('bus_routes').find({vehicle_code});
             cursor.forEach(function(doc, err) {
                 assert.equal(null, err);
                 resultArray.push(doc);
@@ -92,8 +219,7 @@ router.route('/bus_route/:school_id')
             });
         });
     });
-
-
+  
   
     router.route('/edit_bus_route/:route_id')
         .put(function(req, res, next){
