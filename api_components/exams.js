@@ -115,7 +115,7 @@ router.route('/exams/:subject_id/:exam_sch_id/:class_id')
             "end_time": {"$first": "$end_time"},
             "max_marks": {"$first": "$max_marks"},
             "subject_name":{"$first": "$subjects.name"},
-                "classId":{"$first":"$classId"}     
+                "class_id":{"$first":"$class_id"}     
                          
                         
                     }
