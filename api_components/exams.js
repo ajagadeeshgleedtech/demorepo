@@ -20,11 +20,12 @@ router.use(function(req, res, next) {
 
 // Add Exams
 
-router.route('/exams/:subject_id/:exam_sch_id')
+router.route('/exams/:subject_id/:exam_sch_id/:class_id')
     .post(function(req, res, next) {
         var status = 1;
         var subject_id = req.params.subject_id;
         var exam_sch_id = req.params.exam_sch_id;
+        var class_id = req.params.class_id;
         subjects = [];
         var item = {
             exam_paper_id: 'getauto',
@@ -36,6 +37,7 @@ router.route('/exams/:subject_id/:exam_sch_id')
             start_time: req.body.start_time,
             end_time: req.body.end_time,
             max_marks: req.body.max_marks,
+            class_id:class_id,
             status: status,
         };
         mongo.connect(url, function(err, db) {
@@ -112,8 +114,8 @@ router.route('/exams/:subject_id/:exam_sch_id')
             "start_time": {"$first": "$start_time"},
             "end_time": {"$first": "$end_time"},
             "max_marks": {"$first": "$max_marks"},
-            "subject_name":{"$first": "$subjects.name"}
-                     
+            "subject_name":{"$first": "$subjects.name"},
+                "classId":{"$first":"$classId"}     
                          
                         
                     }
