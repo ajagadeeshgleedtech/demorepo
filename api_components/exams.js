@@ -81,7 +81,44 @@ router.route('/exams/:subject_id/:exam_sch_id')
         var resultArray = [];
         mongo.connect(url, function(err, db) {
             assert.equal(null, err);
-            var cursor = db.collection('exams').find({exam_sch_id});
+            // var cursor = db.collection('exams').find({exam_sch_id});
+                  var cursor = db.collection('exams').aggregate([{
+                    $match: {
+                        exam_sch_id: exam_sch_id,
+                        status:1
+                    }
+                },
+                {
+                    $lookup: {
+                        from: "subjects",
+                        localField: "subject_id",
+                        foreignField: "subject_id",
+                        as: "subjects"
+                    }
+                },
+                {
+                    $unwind: "$subjects"
+                },
+                
+              {
+                    $group: {
+                        _id: '$_id',
+                         
+            "exam_paper_id": {"$first": "$exam_paper_id"},
+            "subject_id": {"$first": "$subject_id"},
+            "exam_sch_id": {"$first": "$exam_sch_id"},
+            "exam_paper_title":{"$first":  "$exam_paper_title"},
+            "date": {"$first": "$date"},
+            "start_time": {"$first": "$start_time"},
+            "end_time": {"$first": "$end_time"},
+            "max_marks": {"$first": "$max_marks"},
+            "subject_name":{"$first": "$subjects.name"}
+                     
+                         
+                        
+                    }
+                }
+                ]);
             cursor.forEach(function(doc, err) {
                 assert.equal(null, err);
                 resultArray.push(doc);
