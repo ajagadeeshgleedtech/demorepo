@@ -76,10 +76,11 @@ router.route('/exams/:subject_id/:exam_sch_id/:class_id')
 
     })
 
- router.route('/exams/:exam_sch_id')
+ router.route('/exams/:exam_sch_id/:class_id')
     .get(function(req, res, next) {
      
       var exam_sch_id = req.params.exam_sch_id;
+      var class_id = req.params.class_id;
         var resultArray = [];
         mongo.connect(url, function(err, db) {
             assert.equal(null, err);
@@ -87,6 +88,7 @@ router.route('/exams/:subject_id/:exam_sch_id/:class_id')
                   var cursor = db.collection('exams').aggregate([{
                     $match: {
                         exam_sch_id: exam_sch_id,
+                        class_id: class_id,
                         status:1
                     }
                 },
