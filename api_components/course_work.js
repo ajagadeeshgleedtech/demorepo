@@ -244,9 +244,9 @@ router.route('/course_works/:subject_id')
 
 
 
-    router.route('/edit_course_work/:lesson_id')
+    router.route('/edit_course_work/:lession_id')
         .put(function(req, res, next){
-          var myquery = {lesson_id:req.params.lesson_id};
+          var myquery = {lession_id:req.params.lession_id};
           var req_title = req.body.title;
           var req_chapter_code = req.body.chapter_code;
           var req_no_of_topics = req.body.no_of_topics;          
