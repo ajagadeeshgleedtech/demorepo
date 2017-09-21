@@ -141,7 +141,7 @@ router.route('/exams/:subject_id/:exam_sch_id/:class_id/:section_id')
     .get(function(req, res, next) {
      
       var exam_sch_id = req.params.exam_sch_id;
-      var class_id = req.params.class_id;
+      var section_id = req.params.section_id;
         var resultArray = [];
         mongo.connect(url, function(err, db) {
             assert.equal(null, err);
