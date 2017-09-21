@@ -20,12 +20,13 @@ router.use(function(req, res, next) {
 
 // Add Exams
 
-router.route('/exams/:subject_id/:exam_sch_id/:class_id')
+router.route('/exams/:subject_id/:exam_sch_id/:class_id/:section_id')
     .post(function(req, res, next) {
         var status = 1;
         var subject_id = req.params.subject_id;
         var exam_sch_id = req.params.exam_sch_id;
         var class_id = req.params.class_id;
+        var section_id = req.params.section_id;
         subjects = [];
         var item = {
             exam_paper_id: 'getauto',
@@ -37,6 +38,7 @@ router.route('/exams/:subject_id/:exam_sch_id/:class_id')
             start_time: req.body.start_time,
             end_time: req.body.end_time,
             max_marks: req.body.max_marks,
+            section_id:section_id,
             class_id:class_id,
             status: status,
         };
@@ -135,6 +137,64 @@ router.route('/exams/:subject_id/:exam_sch_id/:class_id')
         });
     });
 
+ router.route('/examsbysectionid/:exam_sch_id/:section_id')
+    .get(function(req, res, next) {
+     
+      var exam_sch_id = req.params.exam_sch_id;
+      var class_id = req.params.class_id;
+        var resultArray = [];
+        mongo.connect(url, function(err, db) {
+            assert.equal(null, err);
+            // var cursor = db.collection('exams').find({exam_sch_id});
+                  var cursor = db.collection('exams').aggregate([{
+                    $match: {
+                        exam_sch_id: exam_sch_id,
+                        section_id: section_id,
+                        status:1
+                    }
+                },
+                {
+                    $lookup: {
+                        from: "subjects",
+                        localField: "subject_id",
+                        foreignField: "subject_id",
+                        as: "subjects"
+                    }
+                },
+                {
+                    $unwind: "$subjects"
+                },
+                
+              {
+                    $group: {
+                        _id: '$_id',
+                         
+            "exam_paper_id": {"$first": "$exam_paper_id"},
+            "subject_id": {"$first": "$subject_id"},
+            "exam_sch_id": {"$first": "$exam_sch_id"},
+            "exam_paper_title":{"$first":  "$exam_paper_title"},
+            "date": {"$first": "$date"},
+            "start_time": {"$first": "$start_time"},
+            "end_time": {"$first": "$end_time"},
+            "max_marks": {"$first": "$max_marks"},
+            "subject_name":{"$first": "$subjects.name"},
+                "class_id":{"$first":"$class_id"}     
+                         
+                        
+                    }
+                }
+                ]);
+            cursor.forEach(function(doc, err) {
+                assert.equal(null, err);
+                resultArray.push(doc);
+            }, function() {
+                db.close();
+                res.send({
+                    resultArray
+                });
+            });
+        });
+    });
     router.route('/get_exam/:exam_paper_id')
     .get(function(req, res, next) {
       var exam_paper_id = req.params.exam_paper_id;

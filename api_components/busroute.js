@@ -74,6 +74,77 @@ router.route('/bus_route/:school_id')
     })
 
 
+  // Modifeid
+  // create new collection to bus_route and vehicle_code
+
+
+router.route('/bus_route_title/:school_id')
+    .post(function(req, res, next) {
+        var status = 1;
+         var school_id = req.params.school_id;
+        var item = {
+            bus_route_id : 'getauto',
+            vehicle_code: req.body.vehicle_code,
+            route_title: req.body.route_title,
+            school_id: school_id,
+            status : status 
+        };
+     
+            mongo.connect(url, function(err, db) {
+                autoIncrement.getNextSequence(db, 'Bus-Route', function(err, autoIndex) {
+                    var collection = db.collection('Bus-Route');
+                    collection.ensureIndex({
+                        "bus_route_id": 1,
+                    }, {
+                        unique: true
+                    }, function(err, result) {
+                        if (item.vehicle_code == null || item.route_title == null || item.school_id == null) {
+                            res.end('null');
+                        } else {
+                            collection.insertOne(item, function(err, result) {
+                                if (err) {
+                                    if (err.code == 11000) {
+                                        res.end('false');
+                                    }
+                                    res.end('false');
+                                }
+                                collection.update({
+                                    _id: item._id
+                                }, {
+                                    $set: {
+                                        bus_route_id: 'BUS-RTE-'+autoIndex
+                                    }
+                                }, function(err, result) {
+                                    db.close();
+                                    res.end('true');
+                                });
+                            });
+                        }
+                    });
+                });
+            });
+    })
+    .get(function(req, res, next) {
+        var school_id= req.params.school_id;
+        var status = 1;
+        var resultArray = [];
+          mongo.connect(url, function(err, db) {
+            assert.equal(null, err);
+            var cursor = db.collection('Bus-Route').find({school_id,status});
+            cursor.forEach(function(doc, err) {
+                assert.equal(null, err);
+                resultArray.push(doc);
+            }, function() {
+                db.close();
+                res.send({
+                    Bus_Route: resultArray
+                });
+            });
+        });
+    });
+
+
+
 // router.route('/bus_route/:school_id')
 //     .get(function(req, res, next) {         
 //         var school_id = req.params.school_id;
@@ -93,25 +164,29 @@ router.route('/bus_route/:school_id')
 //         });
 //     });
      
+
+
+     
      //Modified
     //Add Or Update Stations to Bus-Route-*********
+
   
-   router.route('/addorupdatestationstobusroute/:school_id')
+   router.route('/addorupdatestationstobusroute/:bus_route_id')
     .post(function (req, res, next) {
         var status = 1;
-        var school_id = req.params.school_id;
-        var vehicle_code = req.body.vehicle_code;
-        var route_title = req.body.route_title;
+        var bus_route_id = req.params.bus_route_id;
+        // var vehicle_code = req.body.vehicle_code;
+        // var route_title = req.body.route_title;
         stations = [];
         var item = {
-            route_id: 'getauto',
-            school_id: school_id,
-            vehicle_code: req.body.vehicle_code,
-            route_title : req.body.route_title,
+            // route_id: 'getauto',
+            bus_route_id: bus_route_id,
+            // vehicle_code: req.body.vehicle_code,
+            // route_title : req.body.route_title,
             status: status,
         };
         var stations = {
-           // station_id: req.body.station_id,
+            station_id: 'getauto',
             station_name: req.body.station_name,
             pickup_time: req.body.pickup_time,
             drop_time: req.body.drop_time,
@@ -122,8 +197,8 @@ router.route('/bus_route/:school_id')
             var collection = db.collection('bus_routes');
 
             collection.find({
-                "vehicle_code": vehicle_code,
-                "route_title":route_title,
+                "bus_route_id": bus_route_id,
+                // "route_title":route_title,
             }).toArray(function (err, results) {
                 if (err) {
                     res.send('false')
@@ -136,11 +211,11 @@ router.route('/bus_route/:school_id')
                     autoIncrement.getNextSequence(db, 'bus_routes', function (err, autoIndex) {
 
                         collection.ensureIndex({
-                            "route_id": 1,
+                            "station_id": 1,
                         }, {
                             unique: true
                         }, function (err, result) {
-                            if (item.school_id == null || item.vehicle_code == null || stations.station_name == null) {
+                            if (item.bus_route_id == null || stations.station_name == null) {
                                 res.end('null');
                             } else {
                                 collection.insertOne(item, function (err, result) {
@@ -153,11 +228,10 @@ router.route('/bus_route/:school_id')
                                     collection.update({
                                         _id: item._id
                                     }, {
-                                        $set: {
-                                            route_id: 'ROUTE-' + autoIndex
-                                        },
-                                        $push: {
+                                       push: {
                                             stations
+                                        }, $set: {
+                                            station_id: 'STN-' + autoIndex
                                         }
                                     }, function (err, result) {
                                         db.close();
@@ -171,12 +245,21 @@ router.route('/bus_route/:school_id')
 
                 } else {
 
+                   autoIncrement.getNextSequence(db, 'bus_routes', function (err, autoIndex) {
+
+                        collection.ensureIndex({
+                            "station_id": 1,
+                        }, {
+                            unique: true
+                        }, function(err, result) {
+
                     collection.update({
-                            "vehicle_code": vehicle_code
+                            "bus_route_id": bus_route_id
                         }, {
                             "$addToSet": {
                                 "stations": {
-                                    station_id: req.body.station_id,
+
+                                    station_id : 'STN-' + autoIndex,
                                     station_name: req.body.station_name,
                                     pickup_time: req.body.pickup_time,
                                     drop_time: req.body.drop_time,
@@ -194,6 +277,8 @@ router.route('/bus_route/:school_id')
                                 res.send('false')
                             }
                         });
+                    });
+                });
                     // res.send('false')
                 }
             });
@@ -201,13 +286,13 @@ router.route('/bus_route/:school_id')
 
         });
     });
-router.route('/bus_route/:vehicle_code')
+router.route('/addorupdatestationstobusroute/:bus_route_id')
     .get(function(req, res, next) {         
-        var vehicle_code = req.params.vehicle_code;
+        var bus_route_id = req.params.bus_route_id;
         var resultArray = [];
         mongo.connect(url, function(err, db) {
             assert.equal(null, err);
-            var cursor = db.collection('bus_routes').find({vehicle_code});
+            var cursor = db.collection('bus_routes').find({bus_route_id});
             cursor.forEach(function(doc, err) {
                 assert.equal(null, err);
                 resultArray.push(doc);
@@ -221,19 +306,17 @@ router.route('/bus_route/:vehicle_code')
     });
   
   
-    router.route('/edit_bus_route/:route_id')
+    router.route('/edit_bus_route/:station_id')
         .put(function(req, res, next){
-          var myquery = {route_id:req.params.route_id};
-          var req_route_title = req.body.route_title;
-          var req_vehicle_code = req.body.vehicle_code;
-          var req_station = req.body.station;
+          var myquery = {station_id:req.params.station_id};
+          // var req_route_title = req.body.route_title;
+          // var req_vehicle_code = req.body.vehicle_code;
+          var req_station_name = req.body.station;
           var req_pickup_time = req.body.pickup_time;
           var req_drop_time = req.body.drop_time;
           
           mongo.connect(url, function(err, db){
-                db.collection('bus_routes').update(myquery,{$set:{route_title:req_route_title,
-                                              vehicle_code:req_vehicle_code,
-                                              station:req_station,
+                db.collection('bus_routes').update(myquery,{$set:{station_name:req_station_name,
                                               pickup_time:req_pickup_time,
                                               drop_time:req_drop_time}}, function(err, result){
                   assert.equal(null, err);
@@ -245,14 +328,64 @@ router.route('/bus_route/:vehicle_code')
                 });
           });
         });
- 
+
+
+    // 
 
     router.route('/delete_bus_route/:route_id')
         .delete(function(req, res, next){
-          var myquery = {route_id:req.params.route_id};
+          var myquery = {station_id:req.params.station_id};
          
           mongo.connect(url, function(err, db){
                 db.collection('bus_routes').deleteOne(myquery,function(err, result){
+                  assert.equal(null, err);
+                  if(err){
+                     res.send('false'); 
+                  }
+                   db.close();
+                   res.send('true');
+                });
+          });
+        });
+
+        //modified
+        //Edit Bus_Route
+
+    router.route('/edit_bus_route_title/:bus_route_id')
+
+        .put(function(req, res, next){
+          var myquery = {bus_route_id:req.params.bus_route_id};
+          var req_route_title = req.body.route_title;
+          var req_vehicle_code = req.body.vehicle_code;
+          // var req_station = req.body.station;
+          // var req_pickup_time = req.body.pickup_time;
+          // var req_drop_time = req.body.drop_time;
+          
+          mongo.connect(url, function(err, db){
+                db.collection('Bus-Route').update(myquery,{$set:{route_title:req_route_title,
+                                              vehicle_code:req_vehicle_code}}, function(err, result){
+                  assert.equal(null, err);
+                  if(err){
+                     res.send('false'); 
+                  }
+                   db.close();
+                   res.send('true');
+                });
+          });
+        });
+
+
+        // Modified
+        // Delete Bus_Route
+        
+ 
+
+    router.route('/delete_bus_route_title/:bus_route_id')
+        .delete(function(req, res, next){
+          var myquery = {bus_route_id:req.params.bus_route_id};
+         
+          mongo.connect(url, function(err, db){
+                db.collection('Bus-Route').deleteOne(myquery,function(err, result){
                   assert.equal(null, err);
                   if(err){
                      res.send('false'); 
