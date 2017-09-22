@@ -233,13 +233,14 @@ router.route('/exams/:subject_id/:exam_sch_id/:class_id/:section_id')
         });
 
 
-    router.route('/exam_eval/:exam_sch_id/:exam_paper_id/:student_id/:subject_id')
+    router.route('/exam_eval/:exam_sch_id/:exam_paper_id/:student_id/:section_id/:class_id')
         .post(function(req, res, next) {
             var status = 1;
             var exam_paper_id = req.params.exam_paper_id;
             var student_id = req.params.student_id;
             var exam_sch_id = req.params.exam_sch_id;
-            var subject_id = req.params.subject_id;
+            var section_id = req.params.section_id;
+            var class_id = req.params.class_id;
             // var date = new Date();
            // console.log(date);
             subjects = [];
@@ -248,7 +249,8 @@ router.route('/exams/:subject_id/:exam_sch_id/:class_id/:section_id')
                 exam_sch_id : exam_sch_id,
                 exam_paper_id: exam_paper_id,
                 student_id: student_id,
-                subject_id : subject_id,
+                class_id:class_id,
+                section_id:section_id,
                 // student_name:req.body.student_name,
                 // exam_paper_title:req.body.exam_paper_title,
                 marks: req.body.marks,
