@@ -313,7 +313,7 @@ router.route('/exams/:subject_id/:exam_sch_id/:class_id/:section_id')
                     }, {
                         unique: true
                     }, function(err, result) {
-                        if (item.exam_paper_id == null || item.student_id == null || item.marks == null || item.comment == null) {
+                        if (item.exam_paper_id == null || item.student_id == null || item.marks == null ) {
                             res.end('null');
                         } else {
                             collection.insertOne(item, function(err, result) {
