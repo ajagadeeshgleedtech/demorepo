@@ -260,14 +260,53 @@ router.route('/exams/:subject_id/:exam_sch_id/:class_id/:section_id')
                 // date: date,
                 status: status,
             }
+            // mongo.connect(url, function(err, db) {
+            //     autoIncrement.getNextSequence(db, 'exam_evaluation', function(err, autoIndex) {
+            //       // var count = db.collection('exam_evaluation').find({ $and: [{exam_paper_id, student_id}]}).count(function (e, count){
+            //       //   if (count > 0) {
+            //       //     db.close();
+            //       //     res.end('already submitted');
+            //       //   }
+            //       // });
+            //         var collection = db.collection('exam_evaluation');
+            //         collection.ensureIndex({
+            //             "paper_result_id": 1,
+            //         }, {
+            //             unique: true
+            //         }, function(err, result) {
+            //             if (item.exam_paper_id == null || item.student_id == null || item.marks == null || item.comment == null) {
+            //                 res.end('null');
+            //             } else {
+            //                 collection.insertOne(item, function(err, result) {
+            //                     if (err) {
+            //                         if (err.code == 11000) {
+            //                            res.end('false');
+            //                         }
+            //                         res.end('false');
+            //                     }
+            //                     collection.update({
+            //                         _id: item._id
+            //                     }, {
+            //                         $set: {
+            //                             paper_result_id: exam_paper_id+'-EVAL-'+autoIndex
+            //                         }
+            //                     }, function(err, result) {
+            //                         db.close();
+            //                         res.end('true');
+            //                     });
+            //                 });
+            //             }
+            //         });
+            //     });
+            // });
             mongo.connect(url, function(err, db) {
                 autoIncrement.getNextSequence(db, 'exam_evaluation', function(err, autoIndex) {
-                  // var count = db.collection('exam_evaluation').find({ $and: [{exam_paper_id, student_id}]}).count(function (e, count){
-                  //   if (count > 0) {
-                  //     db.close();
-                  //     res.end('already submitted');
-                  //   }
-                  // });
+                  var count = db.collection('exam_evaluation').find({ $and: [{exam_paper_id, student_id}]}).count(function (e, count){
+                    if (count > 0) {
+                      db.close();
+                      res.end('already submitted');
+                    }
+                  });
                     var collection = db.collection('exam_evaluation');
                     collection.ensureIndex({
                         "paper_result_id": 1,
@@ -280,9 +319,6 @@ router.route('/exams/:subject_id/:exam_sch_id/:class_id/:section_id')
                             collection.insertOne(item, function(err, result) {
                                 if (err) {
                                     if (err.code == 11000) {
-
-
-                                        
                                         res.end('false');
                                     }
                                     res.end('false');
@@ -291,7 +327,7 @@ router.route('/exams/:subject_id/:exam_sch_id/:class_id/:section_id')
                                     _id: item._id
                                 }, {
                                     $set: {
-                                        paper_result_id: exam_paper_id+'-EVAL-'+autoIndex
+                                        paper_result_id: exam_paper_id+'-'+student_id+'-EVAL-'+autoIndex
                                     }
                                 }, function(err, result) {
                                     db.close();
