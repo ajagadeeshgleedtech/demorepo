@@ -27,36 +27,75 @@ router.route('/examevaluation/:exam_paper_id')
       var resultArray = [];
         mongo.connect(url, function(err, db) {
             assert.equal(null, err);
+            //commented and replaced old code
         //    var cursor = db.collection('exam_evaluation').find({exam_paper_id:exam_paper_id });
-        var cursor = db.collection('exam_evaluation').aggregate([
-                    { "$lookup": { 
-                        "from": "students", 
-                        "localField": "student_id", 
-                        "foreignField": "student_id", 
+        // var cursor = db.collection('exam_evaluation').aggregate([
+        //             { "$lookup": { 
+        //                 "from": "students", 
+        //                 "localField": "student_id", 
+        //                 "foreignField": "student_id", 
+        //                 "as": "student_doc"
+        //             }}, 
+        //             { "$unwind": "$student_doc" },
+        //             { "$redact": { 
+        //                 "$cond": [
+        //                     { "$eq": [ "$student_id", "$student_doc.student_id" ] }, 
+        //                     "$$KEEP", 
+        //                     "$$PRUNE"
+        //                 ]
+        //             }}, 
+        //             { "$project": { 
+        //                 "_id": "$_id",
+        //                 "paper_result_id": "$paper_result_id",
+        //                  "exam_paper_id": "$exam_paper_id", 
+        //                 "student_id": "$student_id",
+        //                 "marks": "$marks",
+        //                 "comment": "$comment",
+        //                 "date": "$date",
+        //                 "status": "$status",
+        //                 "student_name": "$student_doc.first_name", 
+        //                 "roll_no": "$student_doc.roll_no" 
+                          
+        //             }}
+        //         ])
+
+         var cursor = db.collection('exam_evaluation').aggregate([{
+                    "$lookup": {
+                        "from": "students",
+                        "localField": "student_id",
+                        "foreignField": "student_id",
                         "as": "student_doc"
-                    }}, 
-                    { "$unwind": "$student_doc" },
-                    { "$redact": { 
-                        "$cond": [
-                            { "$eq": [ "$student_id", "$student_doc.student_id" ] }, 
-                            "$$KEEP", 
+                    }
+                },
+                {
+                    "$unwind": "$student_doc"
+                },
+                {
+                    "$redact": {
+                        "$cond": [{
+                                "$eq": ["$exam_paper_id", exam_paper_id]
+                            },
+                            "$$KEEP",
                             "$$PRUNE"
                         ]
-                    }}, 
-                    { "$project": { 
+                    }
+                },
+                {
+                    "$project": {
                         "_id": "$_id",
                         "paper_result_id": "$paper_result_id",
-                         "exam_paper_id": "$exam_paper_id", 
+                        "exam_paper_id": "$exam_paper_id",
                         "student_id": "$student_id",
                         "marks": "$marks",
                         "comment": "$comment",
                         "date": "$date",
                         "status": "$status",
-                        "student_name": "$student_doc.first_name", 
-                        "roll_no": "$student_doc.roll_no" 
-                          
-                    }}
-                ])
+                        "student_name": "$student_doc.first_name",
+                        "roll_no": "$student_doc.roll_no"
+
+                    }
+                }
+            ])
  
              cursor.forEach(function(doc, err) {
                 assert.equal(null, err);
