@@ -210,6 +210,40 @@ router.route('/teachers/:school_id')
         });
     });
 
+// delete subjects from teacher
+
+router.route('/deleteassignedsubjects/:subject_id/:teacher_id')
+    .put(function (req, res, next) {
+        var teacher_id = req.params.teacher_id;
+        var subject_id = req.params.subject_id;
+          mongo.connect(url, function (err, db) {
+            var collection = db.collection('teachers');
+ 
+            collection.update({
+                    "teacher_id": teacher_id 
+                } , {
+                    "$pull": {
+                        "subjects": {
+                             subject_id: subject_id
+                          
+                        }
+                    }
+                },
+                function (err, numAffected) {
+                   if (numAffected.result.nModified == 1 ) {
+                       db.close();
+                        res.send('true')
+                    } else {
+                        db.close();
+                        res.send('false')
+
+                    }
+
+
+                });
+
+        });
+    });
 
  // List assigined subjects to teachers by school id 
   router.route('/listsubjectstoteacher/:school_id')
@@ -231,17 +265,31 @@ router.route('/teachers/:school_id')
                 {
                     "$unwind": "$employee_doc"
                 },
-                // {
-                //     "$lookup": {
-                //         "from": "subjects",
-                //         "localField": "$subjects.subject_id",
-                //         "foreignField": "subject_id",
-                //         "as": "subjects_doc"
-                //     }
-                // },
-                // {
-                //     "$unwind": "$subjects_doc"
-                // },
+                {
+                    "$unwind": "$subjects"
+                },
+                {
+                    "$lookup": {
+                        "from": "subjects",
+                        "localField": "subjects.subject_id",
+                        "foreignField": "subject_id",
+                        "as": "subjects_doc"
+                    }
+                },
+                {
+                    "$unwind": "$subjects_doc"
+                },
+                {
+                    "$lookup": {
+                        "from": "class_sections",
+                        "localField": "subjects.section_id",
+                        "foreignField": "section_id",
+                        "as": "section_doc"
+                    }
+                },
+                {
+                    "$unwind": "$section_doc"
+                },
                 {
                     "$redact": {
                         "$cond": [{
@@ -260,8 +308,9 @@ router.route('/teachers/:school_id')
                         "school_id": "$school_id",
                         "employee_id": "$employee_id",
                         "added_on": "$added_on",
+                        "subjects": [{"subjects":"$subjects_doc","section":"$section_doc" 
 
-                        "subjects": "$subjects"
+                        }]
 
                     }
                 }
