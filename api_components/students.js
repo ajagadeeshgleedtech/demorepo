@@ -1,4 +1,5 @@
 // flow
+ 
 var express = require("express");
 var config = require("../config.json");
 var bodyParser = require("body-parser");
@@ -9,7 +10,7 @@ var assert = require('assert');
 var port = process.env.PORT || 4005;
 var router = express.Router();
 var url = 'mongodb://' + config.dbhost + ':27017/s_erp_data';
-
+var parentModule = require('../api_components/parent_module');
 var cookieParser = require('cookie-parser');
 router.use(function(req, res, next) {
     // do logging
@@ -26,6 +27,12 @@ router.route('/students/:section_id')
         var splited = section_id.split("-");
         var school_id = splited[0] + '-' + splited[1];
         var class_id = splited[0] + '-' + splited[1] + '-' + splited[2] + '-' + splited[3];
+        var parent_account_details = {};
+        parent_account_details.parent_account_create= req.body.parent_account_create;
+        parent_account_details.parent_account_new=req.body.parent_account_new;
+        parent_account_details.parent_id=req.body.parent_id;
+        parent_account_details.school_id=req.body.school_id;
+        console.log(parent_account_details);
 
 
         var status = 1;
@@ -136,6 +143,28 @@ router.route('/students/:section_id')
                                     parents: parent_gaurdian
                                 }
                             });
+                      // add parent
+                      if(parent_account_details.parent_account_create == true){
+                          console.log("testing");
+                          var requestData = {}
+                                requestData.name=parent_father.parent_name;
+                                requestData.student_id= class_id + '-STD-' + autoIndex;
+                                requestData.parent_id=parent_account_details.parent_id;
+                                requestData.school_id = parent_account_details.school_id;
+                                   console.log(requestData);
+                          if(parent_account_details.parent_account_new == true){
+                              console.log("newaccount")
+                             parentModule.addParent(requestData);
+
+                         }
+                         if(parent_account_details.parent_account_new == false){
+                             console.log("existing")
+                          parentModule.addStudentToParent(requestData);
+                         }
+ 
+                      }
+
+                    // add parent
                         });
                     }
                 });
@@ -204,6 +233,7 @@ router.route('/students/:section_id')
     .get(function(req, res, next) {
         var section = req.params.section_id;
         var resultArray = [];
+         
         mongo.connect(url, function(err, db) {
             assert.equal(null, err);
             var cursor = db.collection('students').aggregate([
