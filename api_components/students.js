@@ -7,6 +7,9 @@ var api_key = "api-key-KJFSI4924R23RFSDFSD7F94";
 var mongo = require('mongodb').MongoClient;
 var autoIncrement = require("mongodb-autoincrement");
 var assert = require('assert');
+var multer = require('multer');
+var xlstojson = require("xls-to-json-lc");
+var xlsxtojson = require("xlsx-to-json-lc");
 var port = process.env.PORT || 4005;
 var router = express.Router();
 var url = 'mongodb://' + config.dbhost + ':27017/s_erp_data';
@@ -480,7 +483,6 @@ router.route('/studentsdetails/:student_id')
 
 
 
-
 router.route('/get_parents/:student_id/')
     .get(function(req, res, next) {
         var student_id = req.params.student_id;
@@ -521,7 +523,9 @@ router.route('/get_array_students/:student_id/:array_name')
         mongo.connect(url, function(err, db) {
             assert.equal(null, err);
             var cursor = db.collection('students').find({ student_id }, {
-                [array_name]: 1, '_id': 0 });
+                [array_name]: 1,
+                '_id': 0
+            });
             cursor.forEach(function(doc, err) {
                 resultArray.push(doc);
             }, function() {
@@ -531,6 +535,210 @@ router.route('/get_array_students/:student_id/:array_name')
         });
     });
 
+// Modified
+
+// Student Bulk Upload via excel sheet
+
+var storage = multer.diskStorage({ //multers disk storage settings
+    destination: function(req, file, cb) {
+        cb(null, './uploads/')
+    },
+    filename: function(req, file, cb) {
+        var datetimestamp = Date.now();
+        cb(null, file.fieldname + '-' + datetimestamp + '.' + file.originalname.split('.')[file.originalname.split('.').length - 1])
+    }
+});
+
+var upload = multer({ //multer settings
+    storage: storage,
+    fileFilter: function(req, file, callback) { //file filter
+        if (['xls', 'xlsx'].indexOf(file.originalname.split('.')[file.originalname.split('.').length - 1]) === -1) {
+            return callback(new Error('Wrong extension type'));
+        }
+        callback(null, true);
+    }
+}).single('file');
+
+router.route('/bulk_upload_students/:section_id')
+    .post(function(req, res, next) {
+        var section_id = req.params.section_id;
+        var splited = section_id.split("-");
+        var school_id = splited[0] + '-' + splited[1];
+        var class_id = splited[0] + '-' + splited[1] + '-' + splited[2] + '-' + splited[3];
+        var status = 1;
+        var exceltojson;
+        upload(req, res, function(err) {
+            if (err) {
+                res.json({ error_code: 1, err_desc: err });
+                return;
+            }
+            /** Multer gives us file info in req.file object */
+            if (!req.file) {
+                res.json({ error_code: 1, err_desc: "No file passed" });
+                return;
+            }
+            /** Check the extension of the incoming file and 
+             *  use the appropriate module
+             */
+            if (req.file.originalname.split('.')[req.file.originalname.split('.').length - 1] === 'xlsx') {
+                exceltojson = xlsxtojson;
+            } else {
+                exceltojson = xlstojson;
+            }
+            console.log(req.file.path);
+            try {
+                exceltojson({
+                    input: req.file.path,
+                    output: null, //since we don't need output.json
+                    lowerCaseHeaders: true
+                }, function(err, result) {
+                    if (err) {
+                        return res.json({ error_code: 1, err_desc: err, data: null });
+                    }
+                    res.json({ data: result });
+                    console.log(result[0]);
+                    var test = result;
+                    var count = 0;
+
+                    if (test.length > 0) {
+                        test.forEach(function(key, value) {
+
+
+                            var item = {
+                                student_id: 'getauto',
+                                school_id: school_id,
+                                class_id: class_id,
+                                section_id: section_id,
+                                surname: key.surname,
+                                first_name: key.firstname,
+                                last_name: key.lastname,
+                                gender: key.gender,
+                                dob: key.dob,
+                                aadhar_no: key.aadharno,
+                                phone: key.phone,
+                                email: key.email,
+                                category: key.category,
+                                admission_date: key.admissiondate,
+                                admission_no: key.admissionno,
+                                roll_no: key.rollno,
+                                academic_year: key.academicyear,
+                                bus_route_id: key.busrouteid,
+                                status: status,
+
+
+                            };
+                            var current_address = {
+                                cur_address: key.curaddress,
+                                cur_city: key.curcity,
+                                cur_state: key.curstate,
+                                cur_pincode: key.curpincode,
+                                cur_long: key.curlong,
+                                cur_lat: key.curlat
+                            };
+                            var permanent_address = {
+                                perm_address: key.permaddress,
+                                perm_city: key.permcity,
+                                perm_state: key.permstate,
+                                perm_pincode: key.permpincode,
+                                perm_long: key.permlong,
+                                perm_lat: key.permlat
+                            };
+                            var parent_father = {
+                                parent_name: key.fathername,
+                                parent_contact: key.fathercontact,
+                                parent_relation: 'father',
+                                parent_address: key.curaddress + ' ' + key.permcity + ' ' + key.permstate + ' ' + key.permpincode,
+                                occupation: key.fatheroccupation
+                            };
+                            var parent_mother = {
+                                parent_name: key.mothername,
+                                parent_contact: key.mothercontact,
+                                parent_relation: 'mother',
+                                parent_address: key.curaddress + ' ' + key.permcity + ' ' + key.permstate + ' ' + key.permpincode,
+                                occupation: key.motheroccupation
+                            };
+                            var parent_gaurdian = {
+                                parent_name: key.gaurdianname,
+                                parent_contact: key.gaurdiancontact,
+                                parent_relation: key.gaurdianrelation,
+                                parent_address: key.gaurdianaddress,
+                                occupation: key.gaurdianoccupation
+                            };
+
+                            mongo.connect(url, function(err, db) {
+                                autoIncrement.getNextSequence(db, 'students', function(err, autoIndex) {
+
+                                    var collection = db.collection('students');
+                                    collection.ensureIndex({
+                                        "student_id": 1,
+                                    }, {
+                                        unique: true
+                                    }, function(err, result) {
+                                        if (item.section_id == null || item.phone == null) {
+                                            res.end('null');
+                                        } else {
+                                            item.student_id = class_id + '-STD-' + autoIndex;
+                                            collection.insertOne(item, function(err, result) {
+                                                if (err) {
+                                                    console.log(err);
+                                                    if (err.code == 11000) {
+
+                                                        res.end('false');
+                                                    }
+                                                    res.end('false');
+                                                }
+                                                collection.update({
+                                                    _id: item._id
+                                                }, {
+                                                    $push: {
+                                                        current_address,
+                                                        permanent_address,
+                                                        parents: parent_father
+                                                    }
+                                                });
+                                                collection.update({
+                                                    _id: item._id
+                                                }, {
+                                                    $push: {
+                                                        parents: parent_mother
+                                                    }
+                                                });
+                                                collection.update({
+                                                    _id: item._id
+                                                }, {
+                                                    $push: {
+                                                        parents: parent_gaurdian
+                                                    }
+                                                });
+                                                count++;
+                                                db.close();
+
+                                                if (count == test.length) {
+                                                    res.end('true');
+                                                }
+
+
+                                            });
+                                        }
+                                    });
+
+                                });
+                            });
+
+                        });
+
+
+                    } else {
+                        res.end('false');
+                    }
+
+
+                });
+            } catch (e) {
+                res.json({ error_code: 1, err_desc: "Corupted excel file" });
+            }
+        })
+    });
 
 router.route('/edit_students/:student_id')
     .put(function(req, res, next) {
