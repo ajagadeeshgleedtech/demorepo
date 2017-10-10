@@ -90,6 +90,48 @@ router.route('/schoolevents/:school_id')
     });
 
   
+    // Modified
+    // Get SchoolEvents Details By school_event_Id
+
+router.route('/school_events_details/:school_event_id')
+     .get(function(req, res, next) {
+        var school_event_id= req.params.school_event_id;
+        var status = 1;
+        var resultArray = [];
+          mongo.connect(url, function(err, db) {
+            assert.equal(null, err);
+            var cursor = db.collection('schoolevents').find({school_event_id});
+            cursor.forEach(function(doc, err) {
+                assert.equal(null, err);
+                resultArray.push(doc);
+            }, function() {
+                db.close();
+                res.send({
+                    schoolevents: resultArray
+                });
+            });
+        });
+    }); 
+
+ // Modified 
+ // delete School Events
+
+   router.route('/delete_school_events/:school_event_id')
+        .delete(function(req, res, next){
+          var myquery = {school_event_id:req.params.school_event_id};
+         
+          mongo.connect(url, function(err, db){
+                db.collection('schoolevents').deleteOne(myquery,function(err, result){
+                  assert.equal(null, err);
+                  if(err){
+                     res.send('false'); 
+                  }
+                   db.close();
+                   res.send('true');
+                });
+          });
+        });
+
         
 
 

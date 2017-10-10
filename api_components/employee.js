@@ -6,6 +6,9 @@ var api_key = "api-key-KJFSI4924R23RFSDFSD7F94";
 var mongo = require('mongodb').MongoClient;
 var autoIncrement = require("mongodb-autoincrement");
 var assert = require('assert');
+var multer = require('multer');
+var xlstojson = require("xls-to-json-lc");
+var xlsxtojson = require("xlsx-to-json-lc");
 var port = process.env.PORT || 4005;
 var router = express.Router();
 var url = 'mongodb://' + config.dbhost + ':27017/s_erp_data';
@@ -204,6 +207,168 @@ router.route('/employee_permanent_address/:employee_id')
                res.send('true');
             });
       });
+    });
+
+// Modified
+
+// Employee Bulk upload via excel sheet
+
+
+var storage = multer.diskStorage({ //multers disk storage settings
+    destination: function(req, file, cb) {
+        cb(null, './uploads/')
+    },
+    filename: function(req, file, cb) {
+        var datetimestamp = Date.now();
+        cb(null, file.fieldname + '-' + datetimestamp + '.' + file.originalname.split('.')[file.originalname.split('.').length - 1])
+    }
+});
+
+var upload = multer({ //multer settings
+    storage: storage,
+    fileFilter: function(req, file, callback) { //file filter
+        if (['xls', 'xlsx'].indexOf(file.originalname.split('.')[file.originalname.split('.').length - 1]) === -1) {
+            return callback(new Error('Wrong extension type'));
+        }
+        callback(null, true);
+    }
+}).single('file');
+
+router.route('/bulk_upload_employees/:school_id')
+    .post(function(req, res, next) {
+        var school_id = req.params.school_id;
+        var status = 1;
+        var exceltojson;
+        upload(req, res, function(err) {
+            if (err) {
+                res.json({ error_code: 1, err_desc: err });
+                return;
+            }
+            /** Multer gives us file info in req.file object */
+            if (!req.file) {
+                res.json({ error_code: 1, err_desc: "No file passed" });
+                return;
+            }
+            /** Check the extension of the incoming file and 
+             *  use the appropriate module
+             */
+            if (req.file.originalname.split('.')[req.file.originalname.split('.').length - 1] === 'xlsx') {
+                exceltojson = xlsxtojson;
+            } else {
+                exceltojson = xlstojson;
+            }
+            console.log(req.file.path);
+            try {
+                exceltojson({
+                    input: req.file.path,
+                    output: null, //since we don't need output.json
+                    lowerCaseHeaders: true
+                }, function(err, result) {
+                    if (err) {
+                        return res.json({ error_code: 1, err_desc: err, data: null });
+                    }
+                    res.json({ data: result });
+                    console.log(result[0]);
+                    var test = result;
+                    var count = 0;
+
+                    if (test.length > 0) {
+                        test.forEach(function(key, value) {
+
+
+                            var item = {
+                                employee_id: 'getauto',
+                                school_id: school_id,
+                                first_name: key.firstname,
+                                last_name: key.lastname,
+                                surname: key.surname,
+                                dob: key.dob,
+                                gender: key.gender,
+                                qualification: key.qualification,
+                                job_category: key.jobcategory,
+                                experience: key.experience,
+                                phone: key.phone,
+                                email: key.email,
+                                profile_image: key.profileimage,
+                                website: key.website,
+                                joined_on: key.joinedon,
+                                status: status,
+                            };
+                            var current_address = {
+                                cur_address: key.curaddress,
+                                cur_city: key.curcity,
+                                cur_state: key.curstate,
+                                cur_pincode: key.curpincode,
+                                cur_long: key.curlong,
+                                cur_lat: key.curlat
+                            };
+                            var permanent_address = {
+                                perm_address: key.permaddress,
+                                perm_city: key.permcity,
+                                perm_state: key.permstate,
+                                perm_pincode: key.permpincode,
+                                perm_long: key.permlong,
+                                perm_lat: key.permlat
+                            };
+
+                            mongo.connect(url, function(err, db) {
+                                autoIncrement.getNextSequence(db, 'employee', function(err, autoIndex) {
+
+                                    var collection = db.collection('employee');
+                                    collection.ensureIndex({
+                                        "employee_id": 1,
+                                    }, {
+                                        unique: true
+                                    }, function(err, result) {
+                                        if (item.school_id == null || item.dob == null) {
+                                            res.end('null');
+                                        } else {
+                                            item.employee_id = 'SCH-EMP-' + autoIndex;
+                                            collection.insertOne(item, function(err, result) {
+                                                if (err) {
+                                                    console.log(err);
+                                                    if (err.code == 11000) {
+
+                                                        res.end('false');
+                                                    }
+                                                    res.end('false');
+                                                }
+                                                collection.update({
+                                                    _id: item._id
+                                                }, {
+                                                    $push: {
+                                                        current_address,
+                                                        permanent_address
+                                                    }
+                                                });
+                                                count++;
+                                                db.close();
+
+                                                if (count == test.length) {
+                                                    res.end('true');
+                                                }
+
+
+                                            });
+                                        }
+                                    });
+
+                                });
+                            });
+
+                        });
+
+
+                    } else {
+                        res.end('false');
+                    }
+
+
+                });
+            } catch (e) {
+                res.json({ error_code: 1, err_desc: "Corupted excel file" });
+            }
+        })
     });
 
 
