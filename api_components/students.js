@@ -34,7 +34,7 @@ router.route('/students/:section_id')
         parent_account_details.parent_account_create= req.body.parent_account_create;
         parent_account_details.parent_account_new=req.body.parent_account_new;
         parent_account_details.parent_id=req.body.parent_id;
-        parent_account_details.school_id=req.body.school_id;
+        parent_account_details.school_id=school_id;
         console.log(parent_account_details);
 
 
