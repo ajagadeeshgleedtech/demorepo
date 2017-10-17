@@ -44,7 +44,7 @@ router.route('/exam_schedule/:school_id')
                 }, {
                     unique: true
                 }, function(err, result) {
-                    if (item.school_id == null ||  item.exam_title == null) {
+                    if (item.school_id == null || item.exam_title == null) {
                         res.end('null');
                     } else {
                         collection.insertOne(item, function(err, result) {
@@ -58,7 +58,7 @@ router.route('/exam_schedule/:school_id')
                                 _id: item._id
                             }, {
                                 $set: {
-                                    exam_sch_id: school_id+'-EXM_SCH-'+autoIndex
+                                    exam_sch_id: school_id + '-EXM_SCH-' + autoIndex
                                 }
                             }, function(err, result) {
                                 db.close();
@@ -72,11 +72,11 @@ router.route('/exam_schedule/:school_id')
 
     })
     .get(function(req, res, next) {
-      var school_id = req.params.school_id;
+        var school_id = req.params.school_id;
         var resultArray = [];
         mongo.connect(url, function(err, db) {
             assert.equal(null, err);
-            var cursor = db.collection('exam_schedule').find({school_id});
+            var cursor = db.collection('exam_schedule').find({ school_id });
             cursor.forEach(function(doc, err) {
                 assert.equal(null, err);
                 resultArray.push(doc);
@@ -89,8 +89,26 @@ router.route('/exam_schedule/:school_id')
         });
     });
 
-    router.route('/get_exam_schedule/:exam_sch_id')
+router.route('/get_exam_schedule/:exam_sch_id')
 
+    .get(function(req, res, next) {
+        var exam_sch_id = req.params.exam_sch_id;
+        var resultArray = [];
+        mongo.connect(url, function(err, db) {
+            assert.equal(null, err);
+            var cursor = db.collection('exam_schedule').find({ exam_sch_id });
+            cursor.forEach(function(doc, err) {
+                assert.equal(null, err);
+                resultArray.push(doc);
+            }, function() {
+                db.close();
+                res.send({
+                    exam_schedule: resultArray
+                });
+            });
+        });
+    });
+router.route('/get_exam_schedule/:exam_sch_id')
     .get(function(req, res, next) {
       var exam_sch_id = req.params.exam_sch_id;
         var resultArray = [];
@@ -108,6 +126,8 @@ router.route('/exam_schedule/:school_id')
             });
         });
     });
+
+
 //  Modified
 // Exam Schedule bulk upload via excel sheet
 
@@ -233,58 +253,63 @@ router.route('/bulk_upload_exam_schedule/:school_id')
         })
     });
 
-    router.route('/edit_exam_schedule/:exam_sch_id')
-        .put(function(req, res, next){
-          var exam_sch_id = req.params.exam_sch_id;
-          var name = req.body.name;
-          var value = req.body.value;
-          mongo.connect(url, function(err, db){
-                db.collection('exam_schedule').update({exam_sch_id},{$set:{[name]: value}}, function(err, result){
-                  assert.equal(null, err);
-                   db.close();
-                   res.send('true');
-                });
-          });
-        });
-
-
-     router.route('/edit_examschedule/:exam_sch_id')
-        .put(function(req, res, next){
-          var myquery = {exam_sch_id:req.params.exam_sch_id};
-          var req_exam_title = req.body.exam_title;
-          var req_exam_classes = req.body.exam_classes;
-          var req_start_date = req.body.start_date;
-         
-          mongo.connect(url, function(err, db){
-                db.collection('exam_schedule').update(myquery,{$set:{exam_title:req_exam_title,
-                                              exam_classes:req_exam_classes,
-                                              start_date:req_start_date}}, function(err, result){
-                  assert.equal(null, err);
-                  if(err){
-                     res.send('false'); 
-                  }
-                   db.close();
-                   res.send('true');
-                });
-          });
-        });
-
-
-    router.route('/delete_examschedule/:exam_sch_id')
-            .delete(function(req, res, next){
-              var myquery = {exam_sch_id:req.params.exam_sch_id};
-             
-              mongo.connect(url, function(err, db){
-                    db.collection('exam_schedule').deleteOne(myquery,function(err, result){
-                      assert.equal(null, err);
-                      if(err){
-                         res.send('false'); 
-                      }
-                       db.close();
-                       res.send('true');
-                    });
-              });
+router.route('/edit_exam_schedule/:exam_sch_id')
+    .put(function(req, res, next) {
+        var exam_sch_id = req.params.exam_sch_id;
+        var name = req.body.name;
+        var value = req.body.value;
+        mongo.connect(url, function(err, db) {
+            db.collection('exam_schedule').update({ exam_sch_id }, { $set: {
+                    [name]: value } }, function(err, result) {
+                assert.equal(null, err);
+                db.close();
+                res.send('true');
             });
+        });
+    });
+
+
+router.route('/edit_examschedule/:exam_sch_id')
+    .put(function(req, res, next) {
+        var myquery = { exam_sch_id: req.params.exam_sch_id };
+        var req_exam_title = req.body.exam_title;
+        var req_exam_classes = req.body.exam_classes;
+        var req_start_date = req.body.start_date;
+
+        mongo.connect(url, function(err, db) {
+            db.collection('exam_schedule').update(myquery, {
+                $set: {
+                    exam_title: req_exam_title,
+                    exam_classes: req_exam_classes,
+                    start_date: req_start_date
+                }
+            }, function(err, result) {
+                assert.equal(null, err);
+                if (err) {
+                    res.send('false');
+                }
+                db.close();
+                res.send('true');
+            });
+        });
+    });
+
+
+router.route('/delete_examschedule/:exam_sch_id')
+    .delete(function(req, res, next) {
+        var myquery = { exam_sch_id: req.params.exam_sch_id };
+
+        mongo.connect(url, function(err, db) {
+            db.collection('exam_schedule').deleteOne(myquery, function(err, result) {
+                assert.equal(null, err);
+                if (err) {
+                    res.send('false');
+                }
+                db.close();
+                res.send('true');
+            });
+        });
+    });
 
 
 

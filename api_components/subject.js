@@ -56,7 +56,7 @@ router.route('/subjects/:section_id')
                                 _id: item._id
                             }, {
                                 $set: {
-                                    subject_id: section_id+'-SUB-'+autoIndex
+                                    subject_id: section_id + '-SUB-' + autoIndex
                                 }
                             }, function(err, result) {
                                 db.close();
@@ -73,7 +73,7 @@ router.route('/subjects/:section_id')
         var section_id = req.params.section_id;
         mongo.connect(url, function(err, db) {
             assert.equal(null, err);
-            var cursor = db.collection('subjects').find({section_id});
+            var cursor = db.collection('subjects').find({ section_id });
             cursor.forEach(function(doc, err) {
                 assert.equal(null, err);
                 resultArray.push(doc);
@@ -86,63 +86,69 @@ router.route('/subjects/:section_id')
         });
     });
 
-    router.route('/get_subject_ids/:section_id')
-    .get(function(req, res, next){
-      var section_id = req.params.section_id;
-      var resultArray = [];
-      mongo.connect(url, function(err, db){
-        assert.equal(null, err);
-        var cursor = db.collection('subjects').aggregate([
-          {$match:{section_id}},
-          {$group: {
-            _id: '$section_id', subject_ids: {$push: '$subject_id'}
-            }
-          }
-        ]);
-        cursor.forEach(function(doc, err){
-          resultArray.push(doc);
-        }, function(){
-          db.close();
-          res.send(resultArray[0]);
+router.route('/get_subject_ids/:section_id')
+    .get(function(req, res, next) {
+        var section_id = req.params.section_id;
+        var resultArray = [];
+        mongo.connect(url, function(err, db) {
+            assert.equal(null, err);
+            var cursor = db.collection('subjects').aggregate([
+                { $match: { section_id } },
+                {
+                    $group: {
+                        _id: '$section_id',
+                        subject_ids: { $push: '$subject_id' }
+                    }
+                }
+            ]);
+            cursor.forEach(function(doc, err) {
+                resultArray.push(doc);
+            }, function() {
+                db.close();
+                res.send(resultArray[0]);
+            });
         });
-      });
     });
 
-    router.route('/get_subject_name/:subject_id')
-    .get(function(req, res, next){
-      var subject_id = req.params.subject_id;
-      var resultArray = [];
-      mongo.connect(url, function(err, db){
-        assert.equal(null, err);
-        var cursor = db.collection('subjects').aggregate([
-          {$match:{subject_id}},
-          {$group: {
-            _id: '$subject_id', subject_names: {$push: '$name'}
-            }
-          }
-        ]);
-        cursor.forEach(function(doc, err){
-          resultArray.push(doc);
-        }, function(){
-          db.close();
-          res.send(resultArray[0]);
+router.route('/get_subject_name/:subject_id')
+    .get(function(req, res, next) {
+        var subject_id = req.params.subject_id;
+        var resultArray = [];
+        mongo.connect(url, function(err, db) {
+            assert.equal(null, err);
+            var cursor = db.collection('subjects').aggregate([
+                { $match: { subject_id } },
+                {
+                    $group: {
+                        _id: '$subject_id',
+                        subject_names: { $push: '$name' }
+                    }
+                }
+            ]);
+            cursor.forEach(function(doc, err) {
+                resultArray.push(doc);
+            }, function() {
+                db.close();
+                res.send(resultArray[0]);
+            });
         });
-      });
     });
 
-    router.route('/subject_edit/:subject_id/:name/:value')
-        .post(function(req, res, next){
-          var subject_id = req.params.subject_id;
-          var name = req.params.name;
-          var value = req.params.value;
-          mongo.connect(url, function(err, db){
-                db.collection('subjects').update({subject_id},{$set:{[name]: value}}, function(err, result){
-                  assert.equal(null, err);
-                   db.close();
-                   res.send('true');
-                });
-          });
+router.route('/subject_edit/:subject_id/:name/:value')
+    .post(function(req, res, next) {
+        var subject_id = req.params.subject_id;
+        var name = req.params.name;
+        var value = req.params.value;
+        mongo.connect(url, function(err, db) {
+            db.collection('subjects').update({ subject_id }, { $set: {
+                    [name]: value } }, function(err, result) {
+                assert.equal(null, err);
+                db.close();
+                res.send('true');
+            });
         });
+    });
+
 
 var storage = multer.diskStorage({ //multers disk storage settings
     destination: function(req, file, cb) {
@@ -214,7 +220,7 @@ router.route('/bulk_upload_subjects/:section_id')
                                 autoIncrement.getNextSequence(db, 'subjects', function(err, autoIndex) {
 
                                     var collection = db.collection('subjects');
-                                    collection.ensureIndex({
+                                    collection.createIndex({
                                         "subject_id": 1,
                                     }, {
                                         unique: true
@@ -262,41 +268,41 @@ router.route('/bulk_upload_subjects/:section_id')
         })
     });
 
-    
-    router.route('/edit_subjects/:subject_id')
-        .put(function(req, res, next){
-          var myquery = {subject_id:req.params.subject_id};
-          var req_name = req.body.name;
-          
-          
-          mongo.connect(url, function(err, db){
-                db.collection('subjects').update(myquery,{$set:{name:req_name}}, function(err, result){
-                  assert.equal(null, err);
-                  if(err){
-                     res.send('false'); 
-                  }
-                   db.close();
-                   res.send('true');
-                });
-          });
-        });
-     
 
-    router.route('/delete_subjects/:subject_id')
-        .delete(function(req, res, next){
-          var myquery = {subject_id:req.params.subject_id};
-         
-          mongo.connect(url, function(err, db){
-                db.collection('subjects').deleteOne(myquery,function(err, result){
-                  assert.equal(null, err);
-                  if(err){
-                     res.send('false'); 
-                  }
-                   db.close();
-                   res.send('true');
-                });
-          });
+router.route('/edit_subjects/:subject_id')
+    .put(function(req, res, next) {
+        var myquery = { subject_id: req.params.subject_id };
+        var req_name = req.body.name;
+
+
+        mongo.connect(url, function(err, db) {
+            db.collection('subjects').update(myquery, { $set: { name: req_name } }, function(err, result) {
+                assert.equal(null, err);
+                if (err) {
+                    res.send('false');
+                }
+                db.close();
+                res.send('true');
+            });
         });
+    });
+
+
+router.route('/delete_subjects/:subject_id')
+    .delete(function(req, res, next) {
+        var myquery = { subject_id: req.params.subject_id };
+
+        mongo.connect(url, function(err, db) {
+            db.collection('subjects').deleteOne(myquery, function(err, result) {
+                assert.equal(null, err);
+                if (err) {
+                    res.send('false');
+                }
+                db.close();
+                res.send('true');
+            });
+        });
+    });
 
 
 

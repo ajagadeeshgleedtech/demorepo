@@ -83,10 +83,11 @@ router.route('/employee/:school_id')
                                 _id: item._id
                             }, {
                                 $set: {
-                                    employee_id: 'SCH-EMP-'+autoIndex
+                                    employee_id: 'SCH-EMP-' + autoIndex
                                 },
                                 $push: {
-                                  current_address, permanent_address
+                                    current_address,
+                                    permanent_address
                                 }
                             }, function(err, result) {
                                 db.close();
@@ -96,7 +97,9 @@ router.route('/employee/:school_id')
                     }
                 });
                 collection.ensureIndex({
-                    "first_name":"text","last_name":"text","email":"text"
+                    "first_name": "text",
+                    "last_name": "text",
+                    "email": "text"
                 });
             });
         });
@@ -118,96 +121,117 @@ router.route('/employee/:school_id')
             });
         });
     });
-router.route('/search_employee/:job_category/:gender/:search_key')
-    .get(function(req, res, next){
-      var job_category = req.params.job_category;
-      var gender = req.params.gender;
-      var search_key = req.params.search_key;
-      var resultArray = [];
-      mongo.connect(url, function(err, db){
-        assert.equal(null, err);
-        var cursor = db.collection('employee').find({job_category: job_category,gender, $text:{$search:search_key}});
-        cursor.forEach(function(doc, err){
-          resultArray.push(doc);
-        }, function(){
-          db.close();
-          res.send(resultArray);
-        });
-      });
-});
-router.route('/add_old_employment_details/:employee_id')
-    .post(function(req, res, next){
-      old_employment_details = [];
-      var employee_id = req.params.employee_id;
-      var old_employment_details = {
-        org_name: req.body.org_name,
-        designation: req.body.designation,
-        responsibilities: req.body.responsibilities,
-        salary_per_annum: req.body.salary_per_annum,
-        from_date: req.body.from_date,
-        to_date: req.body.to_date,
-      };
-      mongo.connect(url, function(err, db){
-            db.collection('employee').update({employee_id},{$push:{old_employment_details}}, function(err, result){
-              assert.equal(null, err);
-               db.close();
-               res.send('true');
+router.route('/search_employee/:job_category/:gender')
+    .get(function(req, res, next) {
+        var job_category = req.params.job_category;
+        var gender = req.params.gender;
+        var search_key = req.params.search_key;
+        var resultArray = [];
+        mongo.connect(url, function(err, db) {
+            assert.equal(null, err);
+            var cursor = db.collection('employee').find({ job_category, gender });
+            cursor.forEach(function(doc, err) {
+                resultArray.push(doc);
+            }, function() {
+                db.close();
+                res.send(resultArray);
             });
-      });
+        });
+    });
+router.route('/add_old_employment_details/:employee_id')
+    .post(function(req, res, next) {
+        old_employment_details = [];
+        var employee_id = req.params.employee_id;
+        var old_employment_details = {
+            org_name: req.body.org_name,
+            designation: req.body.designation,
+            responsibilities: req.body.responsibilities,
+            salary_per_annum: req.body.salary_per_annum,
+            from_date: req.body.from_date,
+            to_date: req.body.to_date,
+        };
+        mongo.connect(url, function(err, db) {
+            db.collection('employee').update({ employee_id }, { $push: { old_employment_details } }, function(err, result) {
+                assert.equal(null, err);
+                db.close();
+                res.send('true');
+            });
+        });
     });
 
 router.route('/employee_current_address/:employee_id')
-    .post(function(req, res, next){
-      current_address = [];
-      var employee_id = req.params.employee_id;
-      var cur_address = req.body.cur_address;
-      var cur_city = req.body.cur_city;
-      var cur_state = req.body.cur_state;
-      var cur_pincode = req.body.cur_pincode;
-      var cur_long = req.body.cur_long;
-      var cur_lat = req.body.cur_lat;
-      var current_address = {
-          cur_address: cur_address,
-          cur_city: cur_city,
-          cur_state: cur_state,
-          cur_pincode: cur_pincode,
-          cur_long: cur_long,
-          cur_lat: cur_lat
-      };
-      mongo.connect(url, function(err, db){
-            db.collection('employee').findOneAndUpdate({employee_id},{$set:{current_address}}, function(err, result){
-              assert.equal(null, err);
-               db.close();
-               res.send('true');
+    .post(function(req, res, next) {
+        current_address = [];
+        var employee_id = req.params.employee_id;
+        var cur_address = req.body.cur_address;
+        var cur_city = req.body.cur_city;
+        var cur_state = req.body.cur_state;
+        var cur_pincode = req.body.cur_pincode;
+        var cur_long = req.body.cur_long;
+        var cur_lat = req.body.cur_lat;
+        var current_address = {
+            cur_address: cur_address,
+            cur_city: cur_city,
+            cur_state: cur_state,
+            cur_pincode: cur_pincode,
+            cur_long: cur_long,
+            cur_lat: cur_lat
+        };
+        mongo.connect(url, function(err, db) {
+            db.collection('employee').findOneAndUpdate({ employee_id }, { $set: { current_address } }, function(err, result) {
+                assert.equal(null, err);
+                db.close();
+                res.send('true');
             });
-      });
+        });
     });
 router.route('/employee_permanent_address/:employee_id')
-    .post(function(req, res, next){
-      permanent_address = [];
-      var employee_id = req.params.employee_id;
-      var perm_address = req.body.perm_address;
-      var perm_city = req.body.perm_city;
-      var perm_state = req.body.perm_state;
-      var perm_pincode = req.body.perm_pincode;
-      var perm_long = req.body.perm_long;
-      var perm_lat = req.body.perm_lat;
-      var permanent_address = {
-          perm_address: perm_address,
-          perm_city: perm_city,
-          perm_state: perm_state,
-          perm_pincode: perm_pincode,
-          perm_long: perm_long,
-          perm_lat: perm_lat
-      };
-      mongo.connect(url, function(err, db){
-            db.collection('employee').findOneAndUpdate({employee_id},{$set:{permanent_address}}, function(err, result){
-              assert.equal(null, err);
-               db.close();
-               res.send('true');
+    .post(function(req, res, next) {
+        permanent_address = [];
+        var employee_id = req.params.employee_id;
+        var perm_address = req.body.perm_address;
+        var perm_city = req.body.perm_city;
+        var perm_state = req.body.perm_state;
+        var perm_pincode = req.body.perm_pincode;
+        var perm_long = req.body.perm_long;
+        var perm_lat = req.body.perm_lat;
+        var permanent_address = {
+            perm_address: perm_address,
+            perm_city: perm_city,
+            perm_state: perm_state,
+            perm_pincode: perm_pincode,
+            perm_long: perm_long,
+            perm_lat: perm_lat
+        };
+        mongo.connect(url, function(err, db) {
+            db.collection('employee').findOneAndUpdate({ employee_id }, { $set: { permanent_address } }, function(err, result) {
+                assert.equal(null, err);
+                db.close();
+                res.send('true');
             });
-      });
+        });
     });
+
+router.route('/employee_details/:employee_id')
+    .get(function (req, res, next) {
+        var employee_id = req.params.employee_id;
+        var status = 1;
+        var resultArray = [];
+        mongo.connect(url, function (err, db) {
+            assert.equal(null, err);
+            var cursor = db.collection('employee').find({ employee_id, status });
+            cursor.forEach(function (doc, err) {
+                assert.equal(null, err);
+                resultArray.push(doc);
+            }, function () {
+                db.close();
+                res.send({
+                    employee: resultArray
+                });
+            });
+        });
+    });
+
 
 // Modified
 
@@ -314,41 +338,52 @@ router.route('/bulk_upload_employees/:school_id')
                             mongo.connect(url, function(err, db) {
                                 autoIncrement.getNextSequence(db, 'employee', function(err, autoIndex) {
 
-                                    var collection = db.collection('employee');
-                                    collection.ensureIndex({
-                                        "employee_id": 1,
-                                    }, {
-                                        unique: true
-                                    }, function(err, result) {
-                                        if (item.school_id == null || item.dob == null) {
-                                            res.end('null');
+                                    var count = db.collection('employee').find({ email: item.email }).count(function(e, count) {
+
+                                        if (count > 0) {
+
+                                             res.end('already submitted');
+                                            db.close();
+                                            
                                         } else {
-                                            item.employee_id = 'SCH-EMP-' + autoIndex;
-                                            collection.insertOne(item, function(err, result) {
-                                                if (err) {
-                                                    console.log(err);
-                                                    if (err.code == 11000) {
 
-                                                        res.end('false');
-                                                    }
-                                                    res.end('false');
+                                            var collection = db.collection('employee');
+                                            collection.createIndex({
+                                                "employee_id": 1,
+                                            }, {
+                                                unique: true
+                                            }, function(err, result) {
+                                                if (item.school_id == null || item.dob == null) {
+                                                    res.end('null');
+                                                } else {
+                                                    item.employee_id = 'SCH-EMP-' + autoIndex;
+                                                    collection.insertOne(item, function(err, result) {
+                                                        if (err) {
+                                                            console.log(err);
+                                                            if (err.code == 11000) {
+
+                                                                res.end('false');
+                                                            }
+                                                            res.end('false');
+                                                        }
+                                                        collection.update({
+                                                            _id: item._id
+                                                        }, {
+                                                            $push: {
+                                                                current_address,
+                                                                permanent_address
+                                                            }
+                                                        });
+                                                        count++;
+                                                        db.close();
+
+                                                        if (count == test.length) {
+                                                            res.end('true');
+                                                        }
+
+
+                                                    });
                                                 }
-                                                collection.update({
-                                                    _id: item._id
-                                                }, {
-                                                    $push: {
-                                                        current_address,
-                                                        permanent_address
-                                                    }
-                                                });
-                                                count++;
-                                                db.close();
-
-                                                if (count == test.length) {
-                                                    res.end('true');
-                                                }
-
-
                                             });
                                         }
                                     });
@@ -372,62 +407,65 @@ router.route('/bulk_upload_employees/:school_id')
     });
 
 
- router.route('/edit_employee/:employee_id')
-        .put(function(req, res, next){
-          var myquery = {employee_id:req.params.employee_id};
+router.route('/edit_employee/:employee_id')
+    .put(function(req, res, next) {
+        var myquery = { employee_id: req.params.employee_id };
         //  var req_first_name = req.body.first_name;
         //  var req_last_name = req.body.last_name;
         //  var req_dob = req.body.dob;
-          var req_gender = req.body.gender;
+        var req_gender = req.body.gender;
         //  var req_qualification = req.body.qualification;
-          var req_job_category = req.body.job_category;
-          var req_experience = req.body.experience;
-          var req_phone = req.body.phone;
-          var req_email = req.body.email;
-         // var req_profile_image = req.body.profile_image;
+        var req_job_category = req.body.job_category;
+        var req_experience = req.body.experience;
+        var req_phone = req.body.phone;
+        var req_email = req.body.email;
+        // var req_profile_image = req.body.profile_image;
         //  var req_website = req.body.website;
-          var req_joined_on = req.body.joined_on;
-          
-          mongo.connect(url, function(err, db){
-                db.collection('employee').update(myquery,{$set:{//first_name:req_first_name,
-                                             // last_name:req_last_name,
-                                             // dob:req_dob,
-                                              gender:req_gender,
-                                            //  qualification:req_qualification,
-                                              job_category:req_job_category,
-                                              experience:req_experience,
-                                              phone:req_phone,
-                                              email:req_email,
-                                            //  profile_image:req_profile_image,
-                                            //  website:req_website,
-                                              joined_on:req_joined_on}}, function(err, result){
-                  assert.equal(null, err);
-                  if(err){
-                     res.send('false'); 
-                  }
-                   db.close();
-                   res.send('true');
-                });
-          });
+        var req_joined_on = req.body.joined_on;
+
+        mongo.connect(url, function(err, db) {
+            db.collection('employee').update(myquery, {
+                $set: { //first_name:req_first_name,
+                    // last_name:req_last_name,
+                    // dob:req_dob,
+                    gender: req_gender,
+                    //  qualification:req_qualification,
+                    job_category: req_job_category,
+                    experience: req_experience,
+                    phone: req_phone,
+                    email: req_email,
+                    //  profile_image:req_profile_image,
+                    //  website:req_website,
+                    joined_on: req_joined_on
+                }
+            }, function(err, result) {
+                assert.equal(null, err);
+                if (err) {
+                    res.send('false');
+                }
+                db.close();
+                res.send('true');
+            });
         });
+    });
 
 
 
-    router.route('/delete_employee/:employee_id')
-        .delete(function(req, res, next){
-          var myquery = {employee_id:req.params.employee_id};
-         
-          mongo.connect(url, function(err, db){
-                db.collection('employee').deleteOne(myquery,function(err, result){
-                  assert.equal(null, err);
-                  if(err){
-                     res.send('false'); 
-                  }
-                   db.close();
-                   res.send('true');
-                });
-          });
+router.route('/delete_employee/:employee_id')
+    .delete(function(req, res, next) {
+        var myquery = { employee_id: req.params.employee_id };
+
+        mongo.connect(url, function(err, db) {
+            db.collection('employee').deleteOne(myquery, function(err, result) {
+                assert.equal(null, err);
+                if (err) {
+                    res.send('false');
+                }
+                db.close();
+                res.send('true');
+            });
         });
+    });
 
 
 module.exports = router;
