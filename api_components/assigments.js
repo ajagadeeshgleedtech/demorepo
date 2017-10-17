@@ -28,18 +28,18 @@ router.route('/assignment/:section_id/:lesson_id')
         var status = 1;
         var section_id = req.params.section_id;
         var lesson_id = req.params.lesson_id;
-       // var chapter_name = req.params.chapter_name;
+        // var chapter_name = req.params.chapter_name;
         books = [];
         var item = {
             assignment_id: 'getauto',
-            section_id : section_id,
-           // course_id : course_id,
-            chapter_name : req.body.chapter_name,
-            assignment_title: req.body.assignment_title,           
-            subject_name:req.body.subject_name,            
+            section_id: section_id,
+            lesson_id: lesson_id,
+            chapter_name: req.body.chapter_name,
+            assignment_title: req.body.assignment_title,
+            subject_name: req.body.subject_name,
             due_date: req.body.due_date,
             description: req.body.description,
-            status : status,
+            status: status,
         };
         mongo.connect(url, function(err, db) {
             autoIncrement.getNextSequence(db, 'assignments', function(err, autoIndex) {
@@ -64,7 +64,7 @@ router.route('/assignment/:section_id/:lesson_id')
                                 _id: item._id
                             }, {
                                 $set: {
-                                    assignment_id: 'ASMT-'+autoIndex
+                                    assignment_id: 'ASMT-' + autoIndex
                                 }
                             }, function(err, result) {
                                 db.close();
@@ -77,7 +77,7 @@ router.route('/assignment/:section_id/:lesson_id')
         });
     })
 
-    
+
     .get(function(req, res, next) {
         var resultArray = [];
         mongo.connect(url, function(err, db) {
@@ -95,38 +95,63 @@ router.route('/assignment/:section_id/:lesson_id')
         });
     });
 
-    router.route('/assignment_edit/:assignment_id/:name/:value')
-        .post(function(req, res, next){
-          var assignment_id = req.params.assignment_id;
-          var name = req.params.name;
-          var value = req.params.value;
-          mongo.connect(url, function(err, db){
-                db.collection('assignments').update({assignment_id},{$set:{[name]: value}}, function(err, result){
-                  assert.equal(null, err);
-                   db.close();
-                   res.send('true');
-                });
-          });
+router.route('/assignment_edit/:assignment_id/:name/:value')
+    .post(function(req, res, next) {
+        var assignment_id = req.params.assignment_id;
+        var name = req.params.name;
+        var value = req.params.value;
+        mongo.connect(url, function(err, db) {
+            db.collection('assignments').update({ assignment_id }, { $set: {
+                    [name]: value } }, function(err, result) {
+                assert.equal(null, err);
+                db.close();
+                res.send('true');
+            });
         });
+    });
 
-    router.route('/assignment_edit/:assignment_id')
-      .get(function(req, res, next) {
-          var resultArray = [];
-          var assignment_id = req.params.assignment_id;
+router.route('/assignment_edit/:assignment_id')
+    .get(function(req, res, next) {
+        var resultArray = [];
+        var assignment_id = req.params.assignment_id;
+        mongo.connect(url, function(err, db) {
+            assert.equal(null, err);
+            var cursor = db.collection('assignments').find({ assignment_id });
+            cursor.forEach(function(doc, err) {
+                assert.equal(null, err);
+                resultArray.push(doc);
+            }, function() {
+                db.close();
+                res.send({
+                    removed: resultArray
+                });
+            });
+        });
+    });
+
+     // Modified
+    // Get Assignment Details By AssignmentId
+
+router.route('/assignment_details/:assignment_id')
+     .get(function(req, res, next) {
+        var assignment_id= req.params.assignment_id;
+        var status = 1;
+        var resultArray = [];
           mongo.connect(url, function(err, db) {
-              assert.equal(null, err);
-              var cursor = db.collection('assignments').find({assignment_id});
-              cursor.forEach(function(doc, err) {
-                  assert.equal(null, err);
-                  resultArray.push(doc);
-              }, function() {
-                  db.close();
-                  res.send({
-                      removed: resultArray
-                  });
-              });
-          });
-      });
+            assert.equal(null, err);
+            var cursor = db.collection('assignments').find({assignment_id});
+            cursor.forEach(function(doc, err) {
+                assert.equal(null, err);
+                resultArray.push(doc);
+            }, function() {
+                db.close();
+                res.send({
+                    assignment: resultArray
+                });
+            });
+        });
+    }); 
+
 
 
 //  Modified
@@ -259,46 +284,51 @@ router.route('/bulk_upload_assignments/:section_id/:lesson_id')
     });
 
 
-    router.route('/edit_assignments/:assignment_id')
-        .put(function(req, res, next){
-          var myquery = {assignment_id:req.params.assignment_id};
-          var req_assignment_title = req.body.assignment_title;
-          var req_chapter_name = req.body.chapter_name;
-          var req_due_date = req.body.due_date;
-          var req_description = req.body.description;
-          
-          mongo.connect(url, function(err, db){
-                db.collection('assignments').update(myquery,{$set:{assignment_title:req_assignment_title,
-                                              chapter_name:req_chapter_name,
-                                              due_date:req_due_date,
-                                              description:req_description}}, function(err, result){
-                  assert.equal(null, err);
-                  if(err){
-                     res.send('false'); 
-                  }
-                   db.close();
-                   res.send('true');
-                });
-          });
+
+router.route('/edit_assignments/:assignment_id')
+    .put(function(req, res, next) {
+        var myquery = { assignment_id: req.params.assignment_id };
+        var req_assignment_title = req.body.assignment_title;
+        var req_chapter_name = req.body.chapter_name;
+        var req_due_date = req.body.due_date;
+        var req_description = req.body.description;
+
+        mongo.connect(url, function(err, db) {
+            db.collection('assignments').update(myquery, {
+                $set: {
+                    assignment_title: req_assignment_title,
+                    chapter_name: req_chapter_name,
+                    due_date: req_due_date,
+                    description: req_description
+                }
+            }, function(err, result) {
+                assert.equal(null, err);
+                if (err) {
+                    res.send('false');
+                }
+                db.close();
+                res.send('true');
+            });
         });
+    });
 
 
 
-  router.route('/delete_assignments/:assignment_id')
-        .delete(function(req, res, next){
-          var myquery = {assignment_id:req.params.assignment_id};
-         
-          mongo.connect(url, function(err, db){
-                db.collection('assignments').deleteOne(myquery,function(err, result){
-                  assert.equal(null, err);
-                  if(err){
-                     res.send('false'); 
-                  }
-                   db.close();
-                   res.send('true');
-                });
-          });
+router.route('/delete_assignments/:assignment_id')
+    .delete(function(req, res, next) {
+        var myquery = { assignment_id: req.params.assignment_id };
+
+        mongo.connect(url, function(err, db) {
+            db.collection('assignments').deleteOne(myquery, function(err, result) {
+                assert.equal(null, err);
+                if (err) {
+                    res.send('false');
+                }
+                db.close();
+                res.send('true');
+            });
         });
+    });
 
 
 module.exports = router;
