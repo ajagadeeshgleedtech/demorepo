@@ -38,7 +38,7 @@ router.route('/students/:section_id')
         parent_account_details.parent_account_new = req.body.parent_account_new;
         parent_account_details.parent_id = req.body.parent_id;
         parent_account_details.school_id = req.body.school_id;
-      //  console.log(parent_account_details);
+        //  console.log(parent_account_details);
 
 
 
@@ -150,23 +150,23 @@ router.route('/students/:section_id')
                                         }
                                     });
                                 // add parent
-                              //  console.log(parent_account_details.parent_account_create);
-                              //  console.log(typeof(parent_account_details.parent_account_create)+'moksha');
+                                //  console.log(parent_account_details.parent_account_create);
+                                //  console.log(typeof(parent_account_details.parent_account_create)+'moksha');
                                 if (parent_account_details.parent_account_create == true) {
-                                  //  console.log("testing");
+                                    //  console.log("testing");
                                     var requestData = {}
                                     requestData.name = parent_father.parent_name;
                                     requestData.student_id = class_id + '-STD-' + autoIndex;
                                     requestData.parent_id = parent_account_details.parent_id;
                                     requestData.school_id = parent_account_details.school_id;
-                                  //  console.log(requestData);
+                                    //  console.log(requestData);
                                     if (parent_account_details.parent_account_new == true) {
-                                    //    console.log("newaccount")
+                                        //    console.log("newaccount")
                                         parentModule.addParent(requestData);
 
                                     }
                                     if (parent_account_details.parent_account_new == false) {
-                                     //   console.log("existing")
+                                        //   console.log("existing")
                                         parentModule.addStudentToParent(requestData);
                                     }
 
@@ -571,7 +571,7 @@ router.route('/bulk_upload_students/:section_id')
             } else {
                 exceltojson = xlstojson;
             }
-          //  console.log(req.file.path);
+            //  console.log(req.file.path);
             try {
                 exceltojson({
                     input: req.file.path,
@@ -582,7 +582,7 @@ router.route('/bulk_upload_students/:section_id')
                         return res.json({ error_code: 1, err_desc: err, data: null });
                     }
                     res.json({ data: result });
-                   
+
                     var test = result;
                     var count = 0;
                     var existedAids = [];
@@ -590,31 +590,31 @@ router.route('/bulk_upload_students/:section_id')
                     var splitted, collection;
 
                     //   var items = [];
-                    mongo.connect(url, function (err, db) {
-                        // collection = db.collection('students');
-                        assert.equal(null, err);
-                        //var last_value = collection.find().limit(1).sort({ $natural: -1 });
-                        // var cursor = db.collection('students').find({}, { admission_no: 1 });
-                        // cursor.forEach(function (doc, err) {
-                        //     assert.equal(null, err);
-                        //     existedAids.push(doc);
-                        //      //console.log(existedAids[0]);
-                        // });
-                        // console.log(existedAids[0]);
-                        
-                         var cursor = db.collection('students').find().limit(1).sort({ $natural: -1 });
-                         
+                    //  mongo.connect(url, function (err, db) {
+                    // collection = db.collection('students');
+                    //     assert.equal(null, err);
+                    //var last_value = collection.find().limit(1).sort({ $natural: -1 });
+                    // var cursor = db.collection('students').find({}, { admission_no: 1 });
+                    // cursor.forEach(function (doc, err) {
+                    //     assert.equal(null, err);
+                    //     existedAids.push(doc);
+                    //      //console.log(existedAids[0]);
+                    // });
+                    // console.log(existedAids[0]);
+
+                    //    var cursor = db.collection('students').find().limit(1).sort({ $natural: -1 });
+
                     //    cursor.forEach(function (doc, err) {
                     //         assert.equal(null, err);
                     //         recentSid.push(doc.student_id);
-                           
+
                     //           });
-                   
-                    });
-                          
-                    
+
+                    //  });
+
+
                     // mongo.connect(url, function (err, db) {
-                      
+
                     //     assert.equal(null, err);
                     //     //var last_value = collection.find().limit(1).sort({ $natural: -1 });
                     //     // var cursor = db.collection('students').find({}, { admission_no: 1 });
@@ -629,122 +629,122 @@ router.route('/bulk_upload_students/:section_id')
                     //     console.log(recentSid);
 
                     // });
-                    // var recent_id = 0;
+                    var recent_id = 0;
                     // if (existedAids != null) {
 
 
                     //     splited = recentSid.student_id;
                     //     splited = splited.split("-");
                     //     recent_id = splited[splited.length - 1];
-                    //     console.log(recent_id);
+                    //     //  console.log(recent_id);
 
 
                     // }
-                    // var itemArray = [];
-                    // //   var item_arrays = []; 
+                    var itemArray = [];
+                    //   var item_arrays = []; 
 
 
-                    // if (test.length > 0) {
-                    //     test.forEach(function (key, value) {
-                    //         recent_id = recent_id + 1;
-                    //         //console.log(recent_id);
+                    if (test.length > 0) {
+                        test.forEach(function (key, value) {
+                            recent_id = recent_id + 1;
+                            //console.log(recent_id);
 
-                    //         var item = {
-                    //             student_id: class_id + '-STD-' + recent_id,
-                    //             school_id: school_id,
-                    //             class_id: class_id,
-                    //             section_id: section_id,
-                    //             surname: key.surname,
-                    //             first_name: key.firstname,
-                    //             last_name: key.lastname,
-                    //             gender: key.gender,
-                    //             dob: key.dob,
-                    //             aadhar_no: key.aadharno,
-                    //             phone: key.phone,
-                    //             email: key.email,
-                    //             category: key.category,
-                    //             admission_date: key.admissiondate,
-                    //             admission_no: key.admissionno,
-                    //             roll_no: key.rollno,
-                    //             academic_year: key.academicyear,
-                    //             bus_route_id: key.busrouteid,
-                    //             status: status,
-                    //             current_address: {
-                    //                 cur_address: key.curaddress,
-                    //                 cur_city: key.curcity,
-                    //                 cur_state: key.curstate,
-                    //                 cur_pincode: key.curpincode,
-                    //                 cur_long: key.curlong,
-                    //                 cur_lat: key.curlat
-                    //             },
-                    //             permanent_address: {
-                    //                 perm_address: key.permaddress,
-                    //                 perm_city: key.permcity,
-                    //                 perm_state: key.permstate,
-                    //                 perm_pincode: key.permpincode,
-                    //                 perm_long: key.permlong,
-                    //                 perm_lat: key.permlat
-                    //             },
-                    //             parents: [
-                    //                 parent_father = {
-                    //                     parent_name: key.fathername,
-                    //                     parent_contact: key.fathercontact,
-                    //                     parent_relation: 'father',
-                    //                     parent_address: key.curaddress + ' ' + key.permcity + ' ' + key.permstate + ' ' + key.permpincode,
-                    //                     occupation: key.fatheroccupation
-                    //                 },
-                    //                 parent_mother = {
-                    //                     parent_name: key.mothername,
-                    //                     parent_contact: key.mothercontact,
-                    //                     parent_relation: 'mother',
-                    //                     parent_address: key.curaddress + ' ' + key.permcity + ' ' + key.permstate + ' ' + key.permpincode,
-                    //                     occupation: key.motheroccupation
-                    //                 },
-                    //                 parent_gaurdian = {
-                    //                     parent_name: key.gaurdianname,
-                    //                     parent_contact: key.gaurdiancontact,
-                    //                     parent_relation: key.gaurdianrelation,
-                    //                     parent_address: key.gaurdianaddress,
-                    //                     occupation: key.gaurdianoccupation
-                    //                 }
+                            var item = {
+                                student_id: class_id + '-STD-' + recent_id,
+                                school_id: school_id,
+                                class_id: class_id,
+                                section_id: section_id,
+                                surname: key.surname,
+                                first_name: key.firstname,
+                                last_name: key.lastname,
+                                gender: key.gender,
+                                dob: key.dob,
+                                aadhar_no: key.aadharno,
+                                phone: key.phone,
+                                email: key.email,
+                                category: key.category,
+                                admission_date: key.admissiondate,
+                                admission_no: key.admissionno,
+                                roll_no: key.rollno,
+                                academic_year: key.academicyear,
+                                bus_route_id: key.busrouteid,
+                                status: status,
+                                current_address: {
+                                    cur_address: key.curaddress,
+                                    cur_city: key.curcity,
+                                    cur_state: key.curstate,
+                                    cur_pincode: key.curpincode,
+                                    cur_long: key.curlong,
+                                    cur_lat: key.curlat
+                                },
+                                permanent_address: {
+                                    perm_address: key.permaddress,
+                                    perm_city: key.permcity,
+                                    perm_state: key.permstate,
+                                    perm_pincode: key.permpincode,
+                                    perm_long: key.permlong,
+                                    perm_lat: key.permlat
+                                },
+                                parents: [
+                                    parent_father = {
+                                        parent_name: key.fathername,
+                                        parent_contact: key.fathercontact,
+                                        parent_relation: 'father',
+                                        parent_address: key.curaddress + ' ' + key.permcity + ' ' + key.permstate + ' ' + key.permpincode,
+                                        occupation: key.fatheroccupation
+                                    },
+                                    parent_mother = {
+                                        parent_name: key.mothername,
+                                        parent_contact: key.mothercontact,
+                                        parent_relation: 'mother',
+                                        parent_address: key.curaddress + ' ' + key.permcity + ' ' + key.permstate + ' ' + key.permpincode,
+                                        occupation: key.motheroccupation
+                                    },
+                                    parent_gaurdian = {
+                                        parent_name: key.gaurdianname,
+                                        parent_contact: key.gaurdiancontact,
+                                        parent_relation: key.gaurdianrelation,
+                                        parent_address: key.gaurdianaddress,
+                                        occupation: key.gaurdianoccupation
+                                    }
 
-                    //             ]
+                                ]
 
-                    //         };
-                    //         // itemArray.item = item;
-                    //         // itemArray.itemId = recent_id;
-                    //         // item_arrays.push(itemArray);
-                    //         itemArray.push(item);
-
-
-                    //     });
-                    // } else {
-                    //     res.end('false');
-                    // }
-                    // if (existedAids != null) {
-                    //     itemArray.forEach(function (x) {
-                    //         if (existedAids.indexOf(x.admission_no) > -1) {
-                    //             itemArray.remove(x);
-                    //         }
+                            };
+                            // itemArray.item = item;
+                            // itemArray.itemId = recent_id;
+                            // item_arrays.push(itemArray);
+                            itemArray.push(item);
 
 
-                    //     });
-                    // }
+                        });
+                    } else {
+                        res.end('false');
+                    }
+                    if (existedAids != null) {
+                        itemArray.forEach(function (x) {
+                            if (existedAids.indexOf(x.admission_no) > -1) {
+                                itemArray.remove(x);
+                            }
 
-                    // mongo.connect(url, function (err, db) {
-                    //     var collection = db.collection('students');
-                    //     collection.insertMany(itemArray, function (err, result) {
-                    //         if (err) {
-                    //             if (err.code == 11000) {
-                    //                 res.end('false');
-                    //             }
-                    //             res.end('false');
-                    //         }
-                    //         console.log('file submitted');
 
-                    //     });
+                        });
+                    }
 
-                    // });
+                    mongo.connect(url, function (err, db) {
+                        var collection = db.collection('students');
+                        collection.insertMany(itemArray, function (err, result) {
+                            if (err) {
+                                if (err.code == 11000) {
+                                    res.end('false');
+                                }
+                                res.end('false');
+                            }
+                            console.log('file submitted');
+
+                        });
+
+                    });
 
 
                 });
