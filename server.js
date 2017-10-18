@@ -14,7 +14,7 @@ var subjects = require("./api_components/subject.js");
 var course_works = require("./api_components/course_work.js");
 var attendance = require("./api_components/attendance.js");
 var Emp_attendance = require("./api_components/Emp_attendance.js");
-//  var Employee_attendance_chart = require("./api_components/Employee_attendance_chart.js");
+var Employee_attendance_chart = require("./api_components/Employee_attendance_chart.js");
 var employee = require("./api_components/employee.js");
 var staff_user = require("./api_components/staff_user.js");
 var teachers = require("./api_components/teacher.js");
@@ -23,15 +23,17 @@ var assignment = require("./api_components/assigments.js");
 var fee_types = require("./api_components/fee_types.js");
 var vehicles = require("./api_components/vehicles.js");
 var attendance_charts = require("./api_components/AttendanceChart.js");
+var parent = require("./api_components/parent.js");
+var parent_student = require("./api_components/parent_student.js");
 var examgraph = require("./api_components/examgraph.js");
 var noticeboard = require("./api_components/noticeboard.js");
 var school_event = require("./api_components/schoolevent.js");
-var parent = require("./api_components/parent.js");
- var uploads = require("./api_components/uploads.js");
+var uploads = require("./api_components/uploads.js");
+var tasks = require("./api_components/tasks.js");
 const Authentication = require('./controllers/authentication');
-//  var tracking = require("./api_components/tracking.js")
 const passportService = require('./services/passport');
 const passport = require('passport');
+
 
 const requireAuth = passport.authenticate('jwt',{ session: false });
 const requireSignin = passport.authenticate('local',{session: false});
@@ -39,14 +41,15 @@ const requireSignin = passport.authenticate('local',{session: false});
 var config = require("./config.json");
 var express = require("express");
 var bodyParser = require("body-parser");
+
 var app = express();
 var server = require('http').createServer(app);
 var api_key = "api-key-KJFSI4924R23RFSDFSD7F94";
 var mongo = require('mongodb').MongoClient;
 const mongoose = require('mongoose');
+var mysql = require("mysql");
 var objectId = require('mongodb').ObjectID;
 var assert = require('assert');
-var mysql = require("mysql");
 var port = process.env.PORT || 4005;
 var router = express.Router();
 var fs = require("fs");
@@ -56,9 +59,12 @@ mongoose.connect('mongodb://localhost:auth/auth');
 var cookieParser = require('cookie-parser');
 app.use(cookieParser());
 
-app.use(bodyParser.urlencoded({
-    extended: false
-}));
+// app.use(bodyParser.urlencoded({
+//     extended: false
+// }));
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '100mb', extended: false, parameterLimit: 10000}));
+
 
 app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.json());
@@ -127,18 +133,19 @@ app.use('/api', subjects);
 app.use('/api', course_works);
 app.use('/api', attendance);
 app.use('/api', Emp_attendance);
-// app.use('/api', Employee_attendance_chart);
+app.use('/api', Employee_attendance_chart);
 app.use('/api', employee);
 app.use('/api', staff_user);
 app.use('/api', assesment);
 app.use('/api', fee_types);
 app.use('/api', assignment);
 app.use('/api', vehicles);
+app.use('/api', parent);
+app.use('/api', parent_student);
 app.use('/api', attendance_charts);
 app.use('/api', examgraph);
 app.use('/api', noticeboard);
 app.use('/api', school_event);
-app.use('/api', parent);
-// app.use('/api', tracking);
 app.use('/api', uploads);
+app.use('/api', tasks);
 app.use('/api', router);
