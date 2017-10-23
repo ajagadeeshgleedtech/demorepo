@@ -7,6 +7,7 @@ var mongo = require('mongodb').MongoClient;
 var autoIncrement = require("mongodb-autoincrement");
 var assert = require('assert');
 var multer = require('multer');
+var teacherModule = require('../api_components/teacher_module');
 var xlstojson = require("xls-to-json-lc");
 var xlsxtojson = require("xlsx-to-json-lc");
 var port = process.env.PORT || 4005;
@@ -22,7 +23,6 @@ router.use(function(req, res, next) {
 });
 
 // Add Employee
-
 router.route('/employee/:school_id')
     .post(function(req, res, next) {
         var status = 1;
@@ -93,6 +93,17 @@ router.route('/employee/:school_id')
                                 db.close();
                                 res.end('true');
                             });
+                            if (item.job_category == "teaching") {                               
+                                  var requestData = {}
+                                  requestData.name = item.first_name+" "+item.last_name;
+                                  requestData.employee_id = 'SCH-EMP-' + autoIndex;
+                                  requestData.joined_on = item.joined_on;
+                                  requestData.school_id = school_id;  
+
+                                  teacherModule.addTeacher(requestData);                             
+
+                              }
+
                         });
                     }
                 });
