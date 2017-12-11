@@ -28,9 +28,9 @@ router.route('/employee_attendance/:employee_id')
         var month = d.getMonth() + 1;
         var day = d.getDate()
         var year = d.getFullYear()
-        var select_date  =  new Date(year, d.getMonth(), day, 05, 30, 0, 0);
+        var select_date = new Date(year, d.getMonth(), day, 05, 30, 0, 0);
         var endDate = new Date(select_date);
-            endDate.setDate(endDate.getDate()+ 1)
+        endDate.setDate(endDate.getDate() + 1)
         var time = d.getHours();
         if (time >= 13) {
             var session = 'afternoon';
@@ -44,7 +44,8 @@ router.route('/employee_attendance/:employee_id')
         var item = {
             attendance_id: 'getauto',
             employee_id: employee_id,
-            date:  new Date(),
+            date: new Date(),
+            category: req.body.category,
             session: session,
             status: req.body.status,
         };
@@ -52,45 +53,45 @@ router.route('/employee_attendance/:employee_id')
             autoIncrement.getNextSequence(db, 'employee_attendance', function (err, autoIndex) {
                 var collection = db.collection('employee_attendance');
                 var data = collection.find({
-                    date:{$gte: new Date(select_date.toISOString()), $lt:new Date(endDate.toISOString())},
+                    date: { $gte: new Date(select_date.toISOString()), $lt: new Date(endDate.toISOString()) },
                     employee_id: item.employee_id
                 }).count(function (e, triggerCount) {
-                   
+
                     if (triggerCount > 0) {
                         res.end('false');
                     } else {
                         collection.ensureIndex({
                             "employee_attendance_id": 1,
                         }, {
-                            unique: true
-                        }, function (err, result) {
-                            if (item.employee_id == null || item.date == null || item.session == null || item.status == null) {
-                                res.end('null');
-                            } else {
-                                collection.insertOne(item, function (err, result) {
-                                    if (err) {
-                                        if (err.code == 11000) {
-                                            console.log(err);
+                                unique: true
+                            }, function (err, result) {
+                                if (item.employee_id == null || item.date == null || item.session == null || item.status == null) {
+                                    res.end('null');
+                                } else {
+                                    collection.insertOne(item, function (err, result) {
+                                        if (err) {
+                                            if (err.code == 11000) {
+                                                console.log(err);
+                                                res.end('false');
+                                            }
                                             res.end('false');
                                         }
-                                        res.end('false');
-                                    }
-                                    collection.update({
-                                        _id: item._id
-                                    }, {
-                                        $set: {
-                                            employee_attendance_id: employee_id + '-EMPATT-' + autoIndex
-                                        }
-                                    }, function (err, result) {
-                                        db.close();
-                                        res.send({
-                                            employee_attendance_id: employee_id + '-EMPATT-' + autoIndex
-                                        });
-                                        // res.end();
+                                        collection.update({
+                                            _id: item._id
+                                        }, {
+                                                $set: {
+                                                    employee_attendance_id: employee_id + '-EMPATT-' + autoIndex
+                                                }
+                                            }, function (err, result) {
+                                                db.close();
+                                                res.send({
+                                                    employee_attendance_id: employee_id + '-EMPATT-' + autoIndex
+                                                });
+                                                // res.end();
+                                            });
                                     });
-                                });
-                            }
-                        });
+                                }
+                            });
                     }
 
                 });
@@ -126,13 +127,15 @@ router.route('/employee_attendancebulk/:school_id')
     .post(function (req, res, next) {
 
         var school_id = req.params.school_id;
-       var d = new Date();
+       // console.log(school_id);
+        var d = new Date();
         var month = d.getMonth() + 1;
         var day = d.getDate()
-        var year = d.getFullYear()
-        var select_date  =  new Date(year, d.getMonth(), day, 05, 30, 0, 0);
+        var year = d.getFullYear();
+        // var date = req.params.date;
+        var select_date = new Date(year, d.getMonth(), day, 05, 30, 0, 0);
         var endDate = new Date(select_date);
-            endDate.setDate(endDate.getDate()+ 1)
+        endDate.setDate(endDate.getDate() + 1)
         var time = d.getHours();
         if (school_id == null) {
             res.end('null');
@@ -155,7 +158,8 @@ router.route('/employee_attendancebulk/:school_id')
                         employee_attendance_id: '',
                         employee_id: key.employee_id,
                         school_id: school_id,
-                        date:  new Date(),
+                        date: new Date(),
+                        category: key.category,
                         session: session,
                         status: key.status
                     };
@@ -163,13 +167,13 @@ router.route('/employee_attendancebulk/:school_id')
                     mongo.connect(url, function (err, db) {
                         autoIncrement.getNextSequence(db, 'employee_attendance', function (err, autoIndex) {
                             var data = db.collection('employee_attendance').find({
-                                 date:{$gte: new Date(select_date.toISOString()), $lt:new Date(endDate.toISOString())},
+                                date: { $gte: new Date(select_date.toISOString()), $lt: new Date(endDate.toISOString()) },
                                 employee_id: item.employee_id
                             }).count(function (e, triggerCount) {
                                 if (triggerCount > 0) {
                                     count++;
                                     if (count == req.body.employees.length) {
-                                        res.end('true');
+                                        res.send('false');
                                     }
                                 } else {
 
@@ -177,32 +181,31 @@ router.route('/employee_attendancebulk/:school_id')
                                     collection.ensureIndex({
                                         "employee_attendance_id": 1,
                                     }, {
-                                        unique: true
-                                    }, function (err, result) {
-                                        if (item.date == null || item.session == null || item.status == null) {
-                                            res.end('null');
-                                        } else {
-                                            item.employee_attendance_id = key.employee_id + '-EMPATT-' + autoIndex;
-                                            collection.insertOne(item, function (err, result) {
-                                                if (err) {
-                                                    console.log(err);
-                                                    if (err.code == 11000) {
-
+                                            unique: true
+                                        }, function (err, result) {
+                                            if (item.date == null || item.session == null || item.status == null || item.category == null) {
+                                                res.end('null');
+                                            } else {
+                                                item.employee_attendance_id = key.employee_id + '-EMPATT-' + autoIndex;
+                                                collection.insertOne(item, function (err, result) {
+                                                    if (err) {
+                                                        console.log(err);
+                                                        if (err.code == 11000) {
+                                                            res.end('false');
+                                                        }
                                                         res.end('false');
                                                     }
-                                                    res.end('false');
-                                                }
-                                                count++;
-                                                db.close();
+                                                    count++;
+                                                    db.close();
 
-                                                if (count == req.body.employees.length) {
-                                                    res.end('true');
-                                                }
+                                                    if (count == req.body.employees.length) {
+                                                        res.end('true');
+                                                    }
 
 
-                                            });
-                                        }
-                                    });
+                                                });
+                                            }
+                                        });
 
                                 }
 
@@ -234,14 +237,14 @@ router.route('/edit_attendance/:employee_attendance_id/:name/:value')
             db.collection('employee_attendance').update({
                 employee_attendance_id
             }, {
-                $set: {
-                    [name]: value
-                }
-            }, function (err, result) {
-                assert.equal(null, err);
-                db.close();
-                res.send('true');
-            });
+                    $set: {
+                        [name]: value
+                    }
+                }, function (err, result) {
+                    assert.equal(null, err);
+                    db.close();
+                    res.send('true');
+                });
         });
     });
 
@@ -255,11 +258,11 @@ router.route('/get_employee_attendance/:employee_id/')
             var cursor = db.collection('employee_attendance').find({
                 employee_id
             }, {
-                'status': 1,
-                'session': 1,
-                'date': 1,
-                '_id': 0
-            });
+                    'status': 1,
+                    'session': 1,
+                    'date': 1,
+                    '_id': 0
+                });
             cursor.forEach(function (doc, err) {
                 resultArray.push(doc);
             }, function () {
@@ -280,11 +283,11 @@ router.route('/get_employee_attendance_by_date/:employee_id/:date')
                 student_id,
                 date
             }, {
-                'status': 1,
-                'session': 1,
-                'date': 1,
-                '_id': 0
-            });
+                    'status': 1,
+                    'session': 1,
+                    'date': 1,
+                    '_id': 0
+                });
             cursor.forEach(function (doc, err) {
                 resultArray.push(doc);
             }, function () {
@@ -293,6 +296,73 @@ router.route('/get_employee_attendance_by_date/:employee_id/:date')
             });
         });
     });
+
+
+router.route('/employee_Attendance_by_category/:category/:select_date')
+    .get(function (req, res, next) {
+        var resultArray = [];
+        var category = req.params.category;
+        var select_date = new Date(req.params.select_date);
+        var endDate = new Date(select_date);
+        var present = 0, absent = 0, onLeave = 0;
+        var count=0,dataCount;
+        endDate.setDate(endDate.getDate() + 1)
+        mongo.connect(url, function (err, db) {
+            assert.equal(null, err);
+            var data = db.collection('employee_attendance').find({
+                date: { $gte: new Date(select_date.toISOString()), $lt: new Date(endDate.toISOString()) },
+                category: category
+            })
+            dataCount = data.count(function (e, triggerCount) {
+                if (triggerCount > 0) {
+                    count = triggerCount;
+                }
+            });
+
+            data.forEach(function (doc, err) {
+                if (doc.status == "Present") {
+                    present += 1;
+                }
+                else if (doc.status == "Absent") {
+                    absent += 1;
+                }
+                else if (doc.status == "On Leave") {
+                    onLeave += 1;
+                }
+            })
+
+            var cursor = db.collection('employee_attendance').aggregate([
+                {
+                    $match: {
+                        'date': {
+                            $gte: new Date(select_date.toISOString()),
+                            $lt: new Date(endDate.toISOString())
+                        },
+                        'category': category
+                    }
+                }
+            ])
+
+            cursor.forEach(function (doc, err) {
+                assert.equal(null, err);
+                resultArray.push(doc);
+            }, function () {
+                db.close();
+                res.send({
+                    employeeAttendence: resultArray,
+                    count: count,
+                    present: present,
+                    onleave: onLeave,
+                    absent: absent
+
+                });
+            });
+        });
+    });
+
+
+
+
 
 router.route('/get_employeeattendance_id_by_date_session/:employee_id/:date/:session')
     .get(function (req, res, next) {
@@ -307,9 +377,9 @@ router.route('/get_employeeattendance_id_by_date_session/:employee_id/:date/:ses
                 date,
                 session
             }, {
-                'employee_attendance_id': 1,
-                '_id': 0
-            });
+                    'employee_attendance_id': 1,
+                    '_id': 0
+                });
             cursor.forEach(function (doc, err) {
                 resultArray.push(doc);
             }, function () {

@@ -23,8 +23,7 @@ router.use(function(req, res, next) {
 router.route('/noticeboard/:school_id')
     .post(function(req, res, next) {
         var status = 1;
-        var school_id = req.params.school_id;
-       
+        var school_id = req.params.school_id;       
         
         var item = {
             messages_id: 'getauto',          
@@ -32,12 +31,13 @@ router.route('/noticeboard/:school_id')
             school_id:school_id,
             subject : req.body.subject,
             date:req.body.date,
+            time : req.body.time,
             status: status
            };
         mongo.connect(url, function(err, db) {
             autoIncrement.getNextSequence(db,'noticeboard', function(err, autoIndex) {
                 var collection = db.collection('noticeboard');
-                collection.ensureIndex({
+                collection.createIndex({
                     "messages_id": 1,
                 }, {
                     unique: true
@@ -87,15 +87,26 @@ router.route('/noticeboard/:school_id')
         });
     });
 
+
+router.route('/delete_notice_board/:messages_id')
+.delete(function (req, res, next) {
+    var myquery = { messages_id: req.params.messages_id };
+
+    mongo.connect(url, function (err, db) {
+        db.collection('noticeboard').deleteOne(myquery, function (err, result) {
+            assert.equal(null, err);
+            if (err) {
+                res.send('false');
+            }
+            db.close();
+            res.send('true');
+        });
+    });
+});
+
   
         
 
 
 module.exports = router;
 
-
-// { title: 'Long Event', start: new Date(y, m, d - 5), end: new Date(y, m, d - 2) },
-// { id: 999, title: 'Repeating Event', start: new Date(y, m, d - 3, 16, 0), allDay: false },
-// { id: 999, title: 'Repeating Event', start: new Date(y, m, d + 4, 16, 0), allDay: false },
-// { title: 'Birthday Party', start: new Date(y, m, d + 1, 19, 0), end: new Date(y, m, d + 1, 22, 30), allDay: false },
-// { title: 'Click for Google', start: new Date(y, m, 28), end: new Date(y, m, 29), url: 'http://google.com/' }
