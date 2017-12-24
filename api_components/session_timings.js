@@ -20,26 +20,28 @@ router.use(function (req, res, next) {
 
 // Add Schools
 
-router.route('/school_classes/:school_id')
+router.route('/session_timings/:school_id')
     .post(function (req, res, next) {
         var status = 1;
         var school_id = req.params.school_id;
-        school_classes = [];
         var item = {
-            class_id: 'getauto',
+            session_id: 'getauto',
             school_id: school_id,
-            name: req.body.name,
+            session: req.body.session,
+            start_time: req.body.start_time,
+            end_time: req.body.end_time,
             status: status,
+
         };
         mongo.connect(url, function (err, db) {
-            autoIncrement.getNextSequence(db, 'school_classes', function (err, autoIndex) {
-                var collection = db.collection('school_classes');
+            autoIncrement.getNextSequence(db, 'session_timings', function (err, autoIndex) {
+                var collection = db.collection('session_timings');
                 collection.ensureIndex({
-                    "class_id": 1,
+                    "session_id": 1,
                 }, {
                         unique: true
                     }, function (err, result) {
-                        if (item.name == null) {
+                        if (item.session == null) {
                             res.end('null');
                         } else {
                             collection.insertOne(item, function (err, result) {
@@ -54,7 +56,7 @@ router.route('/school_classes/:school_id')
                                     _id: item._id
                                 }, {
                                         $set: {
-                                            class_id: school_id + '-CL-' + autoIndex
+                                            session_id: school_id + '-SESSION-' + autoIndex
                                         }
                                     }, function (err, result) {
                                         db.close();
@@ -71,92 +73,32 @@ router.route('/school_classes/:school_id')
         var resultArray = [];
         mongo.connect(url, function (err, db) {
             assert.equal(null, err);
-            var cursor = db.collection('school_classes').find({ school_id });
+            var cursor = db.collection('session_timings').find({ school_id: school_id });
             cursor.forEach(function (doc, err) {
                 assert.equal(null, err);
                 resultArray.push(doc);
             }, function () {
                 db.close();
                 res.send({
-                    school_classes: resultArray
+                    session_timings: resultArray
                 });
             });
         });
     });
 
-router.route('/get_class_ids/:school_id')
-    .get(function (req, res, next) {
-        var school_id = req.params.school_id;
-        var resultArray = [];
-        mongo.connect(url, function (err, db) {
-            assert.equal(null, err);
-            var cursor = db.collection('school_classes').aggregate([
-                { $match: { school_id } },
-                {
-                    $group: {
-                        _id: '$school_id', classes: { $push: '$class_id' }
-                    }
-                }
-            ]);
-            cursor.forEach(function (doc, err) {
-                resultArray.push(doc);
-            }, function () {
-                db.close();
-                res.send(resultArray[0]);
-            });
-        });
-    });
-
-router.route('/get_class_name/:class_id')
-    .get(function (req, res, next) {
-        var class_id = req.params.class_id;
-        var resultArray = [];
-        mongo.connect(url, function (err, db) {
-            assert.equal(null, err);
-            var cursor = db.collection('school_classes').aggregate([
-                { $match: { class_id } },
-                {
-                    $group: {
-                        _id: '$class_id', classes: { $push: '$name' }
-                    }
-                }
-            ]);
-            cursor.forEach(function (doc, err) {
-                resultArray.push(doc);
-            }, function () {
-                db.close();
-                res.send(resultArray[0]);
-            });
-        });
-    });
-
-router.route('/school_classes_edit/:class_id/:name/:value')
+    router.route('/session_edit/:session_id')
     .post(function (req, res, next) {
-        var class_id = req.params.class_id;
-        var name = req.params.name;
-        var value = req.params.value;
+        var myquery = { session_id: req.params.session_id };
+        var session = req.body.session;
+        var start_time = req.body.start_time;
+        var end_time = req.body.end_time;
         mongo.connect(url, function (err, db) {
-            db.collection('school_classes').update({ class_id }, { $set: { [name]: value } }, function (err, result) {
-                assert.equal(null, err);
-                db.close();
-                res.send('true');
-            });
-        });
-    });
-
-
-
-router.route('/edit_classes/:class_id')
-    .put(function (req, res, next) {
-
-        var myquery = { class_id: req.params.class_id };
-        var req_name = req.body.name;
-
-        mongo.connect(url, function (err, db) {
-            db.collection('school_classes').update(myquery, {
-                $set: {
-                    name: req_name,
-                }
+            db.collection('session_timings').update(myquery, { 
+                $set: { 
+                    session: session,
+                    start_time: start_time,
+                    end_time: end_time, 
+                } 
             }, function (err, result) {
                 assert.equal(null, err);
                 if (err) {
@@ -170,12 +112,12 @@ router.route('/edit_classes/:class_id')
 
 
 
-router.route('/delete_classes/:class_id')
+router.route('/session_delete/:session_id')
     .delete(function (req, res, next) {
-        var myquery = { class_id: req.params.class_id };
+        var myquery = { session_id: req.params.session_id };
 
         mongo.connect(url, function (err, db) {
-            db.collection('school_classes').deleteOne(myquery, function (err, result) {
+            db.collection('session_timings').deleteOne(myquery, function (err, result) {
                 assert.equal(null, err);
                 if (err) {
                     res.send('false');
@@ -185,6 +127,7 @@ router.route('/delete_classes/:class_id')
             });
         });
     });
+
 
 
 module.exports = router;

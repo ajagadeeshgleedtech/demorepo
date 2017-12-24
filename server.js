@@ -35,17 +35,16 @@ var noticeboard = require("./api_components/noticeboard.js");
 var school_event = require("./api_components/schoolevent.js");
 var uploads = require("./api_components/uploads.js");
 var tasks = require("./api_components/tasks.js");
+var session_timings = require("./api_components/session_timings.js");
+var pay_band = require("./api_components/pay_band.js");
+var grades = require("./api_components/grades.js");
 const Authentication = require('./controllers/authentication');
 const passportService = require('./services/passport');
 const passport = require('passport');
 
 
-const requireAuth = passport.authenticate('jwt', {
-    session: false
-});
-const requireSignin = passport.authenticate('local', {
-    session: false
-});
+const requireAuth = passport.authenticate('jwt', { session: false });
+const requireSignin = passport.authenticate('local', { session: false });
 
 var config = require("./config.json");
 var express = require("express");
@@ -71,14 +70,8 @@ app.use(cookieParser());
 // app.use(bodyParser.urlencoded({
 //     extended: false
 // }));
-app.use(bodyParser.json({
-    limit: '50mb'
-}));
-app.use(bodyParser.urlencoded({
-    limit: '100mb',
-    extended: false,
-    parameterLimit: 10000
-}));
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '100mb', extended: false, parameterLimit: 10000 }));
 
 
 app.use(express.static(__dirname + "/public"));
@@ -169,4 +162,7 @@ app.use('/api', school_event);
 app.use('/api', uploads);
 app.use('/api', messages);
 app.use('/api', tasks);
+app.use('/api', session_timings);
+app.use('/api', pay_band);
+app.use('/api', grades);
 app.use('/api', router);

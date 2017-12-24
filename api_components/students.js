@@ -56,15 +56,7 @@ router.route('/students/:section_id')
         var section_id = req.params.section_id;
         var splited = section_id.split("-");
         var school_id = splited[0] + '-' + splited[1];
-        var class_id = splited[0] + '-' + splited[1] + '-' + splited[2] + '-' + splited[3];
-        // var parent_account_details = {};
-        // parent_account_details.parent_account_create = req.body.parent_account_create;
-        // parent_account_details.parent_account_new = req.body.parent_account_new;
-        // parent_account_details.parent_id = req.body.parent_id;
-        // parent_account_details.school_id = req.body.school_id;
-        //   console.log(parent_account_details);
-        //   console.log(req.body.parent_account_create);
-        //   console.log(req.body.parent_account_new);
+        var class_id = splited[0] + '-' + splited[1] + '-' + splited[2] + '-' + splited[3];        
 
         uploadImage(req, res, function (err) {
             if (err) {
@@ -87,6 +79,7 @@ router.route('/students/:section_id')
             parent_account_details.parent_account_new = req.body.parent_account_new;
             parent_account_details.parent_id = req.body.parent_id;
             parent_account_details.school_id = school_id;
+            parent_account_details.section_id = section_id;
             // console.log(parent_account_details);
             // console.log(req.body.parent_account_create);
             // console.log(req.body.parent_account_new);
@@ -111,6 +104,7 @@ router.route('/students/:section_id')
                 admission_no: req.body.admission_no,
                 roll_no: req.body.roll_no,
                 academic_year: req.body.academic_year,
+                blood_group: req.body.blood_group,
                 bus_route_id: req.body.bus_route_id,
 
             };
@@ -133,6 +127,7 @@ router.route('/students/:section_id')
             var parent_father = {
                 parent_name: req.body.father_name,
                 parent_contact: req.body.father_contact,
+                parent_email: req.body.father_email,
                 parent_relation: 'father',
                 parent_address: req.body.cur_address + ' ' + req.body.perm_city + ' ' + req.body.perm_state + ' ' + req.body.perm_pincode,
                 occupation: req.body.father_occupation
@@ -140,6 +135,7 @@ router.route('/students/:section_id')
             var parent_mother = {
                 parent_name: req.body.mother_name,
                 parent_contact: req.body.mother_contact,
+                parent_email: req.body.mother_email,
                 parent_relation: 'mother',
                 parent_address: req.body.cur_address + ' ' + req.body.perm_city + ' ' + req.body.perm_state + ' ' + req.body.perm_pincode,
                 occupation: req.body.mother_occupation
@@ -147,6 +143,7 @@ router.route('/students/:section_id')
             var parent_gaurdian = {
                 parent_name: req.body.gaurdian_name,
                 parent_contact: req.body.gaurdian_contact,
+                parent_email: req.body.gaurdian_email,
                 parent_relation: req.body.gaurdian_relation,
                 parent_address: req.body.gaurdian_address,
                 occupation: req.body.gaurdian_occupation
@@ -212,6 +209,7 @@ router.route('/students/:section_id')
                                         requestData.student_id = class_id + '-STD-' + autoIndex;
                                         requestData.parent_id = parent_account_details.parent_id;
                                         requestData.school_id = parent_account_details.school_id;
+                                        requestData.section_id = parent_account_details.section_id;
                                         // console.log(requestData);
                                         // console.log(parent_account_details.parent_account_new);
                                         if (parent_account_details.parent_account_new == true || parent_account_details.parent_account_new == 'true') {

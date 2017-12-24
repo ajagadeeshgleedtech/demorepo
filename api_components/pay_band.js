@@ -18,38 +18,53 @@ router.use(function (req, res, next) {
     next(); // make sure we go to the next routes and don't stop here
 });
 
-// Add Timetable
+// Add Schools
 
-router.route('/task/:school_id')
+router.route('/pay_band/:school_id')
     .post(function (req, res, next) {
-        var date = new Date();
+        var status = 1;
         var school_id = req.params.school_id;
-        var assigned_to = [];
+        var DA = req.body.DA;
+        var HRA = req.body.HRA;
+        var CA = req.body.CA;
+        var ALOW = req.body.ALOW;
+        var ARR = req.body.ARR;
+        var EPF = req.body.EPF;
+        var ESIC = req.body.ESIC;
+        var TDS = req.body.TDS;
+
         var item = {
-            task_id: 'getauto',
-            task: req.body.task,
+            payband_id: 'getauto',
             school_id: school_id,
-            department: req.body.department,
-            priority: req.body.priority,
-            posted_by: req.body.posted_by,
-            assigned_on: date,
-            status: "pending",
-        }
-        assigned_to = req.body.assigned_to;
+            pay_band: req.body.pay_band,
+            basic: req.body.basic,
+            DA: DA,
+            HRA: HRA,
+            CA: CA,
+            ALOW: ALOW,
+            ARR: ARR,
+            EPF: EPF,
+            ESIC: ESIC,
+            TDS: TDS,
+            Allowances: DA + HRA + CA + ALOW + ARR,
+            Deductions: EPF + ESIC + TDS
+        };
+
         mongo.connect(url, function (err, db) {
-            autoIncrement.getNextSequence(db, 'tasks', function (err, autoIndex) {
-                var collection = db.collection('tasks');
+            autoIncrement.getNextSequence(db, 'pay_band', function (err, autoIndex) {
+                var collection = db.collection('pay_band');
                 collection.ensureIndex({
-                    "task_id": 1,
+                    "payband_id": 1,
                 }, {
                         unique: true
                     }, function (err, result) {
-                        if (item.task == null) {
+                        if (item.pay_band == null) {
                             res.end('null');
                         } else {
                             collection.insertOne(item, function (err, result) {
                                 if (err) {
                                     if (err.code == 11000) {
+                                        console.log(err);
                                         res.end('false');
                                     }
                                     res.end('false');
@@ -58,10 +73,7 @@ router.route('/task/:school_id')
                                     _id: item._id
                                 }, {
                                         $set: {
-                                            task_id: 'TASK-' + autoIndex
-                                        },
-                                        $push: {
-                                            assigned_to
+                                            payband_id: school_id + '-PAYBAND-' + autoIndex
                                         }
                                     }, function (err, result) {
                                         db.close();
@@ -73,53 +85,34 @@ router.route('/task/:school_id')
             });
         });
     })
-router.route('/tasks/:sender_id')
-    .get(function (req, res, next) {
-        var resultArray = [];
-        var sender_id = req.params.sender_id;
-        mongo.connect(url, function (err, db) {
-            assert.equal(null, err);
-            var cursor = db.collection('tasks').find({ "assigned_to": { sender_id: sender_id } });
-            cursor.forEach(function (doc, err) {
-                assert.equal(null, err);
-                resultArray.push(doc);
-            }, function () {
-                db.close();
-                res.send({
-                    tasks: resultArray
-                });
-            });
-        });
-    });
-router.route('/tasks_manager/:school_id')
     .get(function (req, res, next) {
         var resultArray = [];
         var school_id = req.params.school_id;
         mongo.connect(url, function (err, db) {
             assert.equal(null, err);
-            var cursor = db.collection('tasks').find({ school_id: school_id });
+            var cursor = db.collection('pay_band').find({ school_id: school_id });
             cursor.forEach(function (doc, err) {
                 assert.equal(null, err);
                 resultArray.push(doc);
             }, function () {
                 db.close();
                 res.send({
-                    tasks: resultArray
+                    pay_band: resultArray
                 });
             });
         });
     });
 
-router.route('/edit_task/:task_id')
+router.route('/payband_edit/:payband_id')
     .put(function (req, res, next) {
-        var myquery = { task_id: req.params.task_id };
-        var req_status = req.body.status;
-
-
+        var myquery = { payband_id: req.params.payband_id };
+        var pay_band = req.body.pay_band;
+        var basic = req.body.basic;
         mongo.connect(url, function (err, db) {
-            db.collection('tasks').update(myquery, {
+            db.collection('pay_band').update(myquery, {
                 $set: {
-                    status: req_status,
+                    pay_band: pay_band,
+                    basic: basic,
                 }
             }, function (err, result) {
                 assert.equal(null, err);
@@ -132,45 +125,12 @@ router.route('/edit_task/:task_id')
         });
     });
 
-
-
-router.route('/edit_task_management/:task_id')
-    .put(function (req, res, next) {
-        var myquery = { task_id: req.params.task_id };
-        var req_priority = req.body.priority;
-        var req_department = req.body.department;
-        var req_assigned_on = req.body.assigned_on;
-        var req_status = req.body.status;
-        var req_task = req.body.task;
-       
-
-        mongo.connect(url, function (err, db) {
-            db.collection('tasks').update(myquery, {
-                $set: {
-                    priority: req_priority,                    
-                    assigned_on: req_assigned_on,
-                    department: req_department,
-                    status: req_status,
-                    task: req_task,
-                }
-            }, function (err, result) {
-                assert.equal(null, err);
-                if (err) {
-                    res.send('false');
-                }
-                db.close();
-                res.send('true');
-            });
-        });
-    });
-
-
-router.route('/delete_task_management/:task_id')
+router.route('/payband_delete/:payband_id')
     .delete(function (req, res, next) {
-        var myquery = { task_id: req.params.task_id };
+        var myquery = { payband_id: req.params.payband_id };
 
         mongo.connect(url, function (err, db) {
-            db.collection('tasks').deleteOne(myquery, function (err, result) {
+            db.collection('pay_band').deleteOne(myquery, function (err, result) {
                 assert.equal(null, err);
                 if (err) {
                     res.send('false');
@@ -180,6 +140,7 @@ router.route('/delete_task_management/:task_id')
             });
         });
     });
+
 
 
 module.exports = router;

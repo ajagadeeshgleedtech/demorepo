@@ -18,38 +18,36 @@ router.use(function (req, res, next) {
     next(); // make sure we go to the next routes and don't stop here
 });
 
-// Add Timetable
+// Add Schools
 
-router.route('/task/:school_id')
+router.route('/grades/:school_id')
     .post(function (req, res, next) {
-        var date = new Date();
+        var status = 1;
         var school_id = req.params.school_id;
-        var assigned_to = [];
         var item = {
-            task_id: 'getauto',
-            task: req.body.task,
+            grade_id: 'getauto',
             school_id: school_id,
-            department: req.body.department,
-            priority: req.body.priority,
-            posted_by: req.body.posted_by,
-            assigned_on: date,
-            status: "pending",
-        }
-        assigned_to = req.body.assigned_to;
+            grade: req.body.grade,
+            range_from: req.body.range_from,
+            range_to: req.body.range_to,
+            status: status,
+
+        };
         mongo.connect(url, function (err, db) {
-            autoIncrement.getNextSequence(db, 'tasks', function (err, autoIndex) {
-                var collection = db.collection('tasks');
+            autoIncrement.getNextSequence(db, 'grades', function (err, autoIndex) {
+                var collection = db.collection('grades');
                 collection.ensureIndex({
-                    "task_id": 1,
+                    "grade_id": 1,
                 }, {
                         unique: true
                     }, function (err, result) {
-                        if (item.task == null) {
+                        if (item.grade == null) {
                             res.end('null');
                         } else {
                             collection.insertOne(item, function (err, result) {
                                 if (err) {
                                     if (err.code == 11000) {
+                                        console.log(err);
                                         res.end('false');
                                     }
                                     res.end('false');
@@ -58,10 +56,7 @@ router.route('/task/:school_id')
                                     _id: item._id
                                 }, {
                                         $set: {
-                                            task_id: 'TASK-' + autoIndex
-                                        },
-                                        $push: {
-                                            assigned_to
+                                            grade_id: school_id + '-GRADE-' + autoIndex
                                         }
                                     }, function (err, result) {
                                         db.close();
@@ -73,53 +68,36 @@ router.route('/task/:school_id')
             });
         });
     })
-router.route('/tasks/:sender_id')
     .get(function (req, res, next) {
-        var resultArray = [];
-        var sender_id = req.params.sender_id;
-        mongo.connect(url, function (err, db) {
-            assert.equal(null, err);
-            var cursor = db.collection('tasks').find({ "assigned_to": { sender_id: sender_id } });
-            cursor.forEach(function (doc, err) {
-                assert.equal(null, err);
-                resultArray.push(doc);
-            }, function () {
-                db.close();
-                res.send({
-                    tasks: resultArray
-                });
-            });
-        });
-    });
-router.route('/tasks_manager/:school_id')
-    .get(function (req, res, next) {
-        var resultArray = [];
         var school_id = req.params.school_id;
+        var resultArray = [];
         mongo.connect(url, function (err, db) {
             assert.equal(null, err);
-            var cursor = db.collection('tasks').find({ school_id: school_id });
+            var cursor = db.collection('grades').find({ school_id: school_id });
             cursor.forEach(function (doc, err) {
                 assert.equal(null, err);
                 resultArray.push(doc);
             }, function () {
                 db.close();
                 res.send({
-                    tasks: resultArray
+                    grades: resultArray
                 });
             });
         });
     });
 
-router.route('/edit_task/:task_id')
+router.route('/grades_edit/:grade_id')
     .put(function (req, res, next) {
-        var myquery = { task_id: req.params.task_id };
-        var req_status = req.body.status;
-
-
+        var myquery = { grade_id: req.params.grade_id };
+        var grade = req.body.grade;
+        var range_from = req.body.range_from;
+        var range_to = req.body.range_to;
         mongo.connect(url, function (err, db) {
-            db.collection('tasks').update(myquery, {
+            db.collection('grades').update(myquery, {
                 $set: {
-                    status: req_status,
+                    grade: grade,
+                    range_from: range_from,
+                    range_to: range_to,
                 }
             }, function (err, result) {
                 assert.equal(null, err);
@@ -134,43 +112,12 @@ router.route('/edit_task/:task_id')
 
 
 
-router.route('/edit_task_management/:task_id')
-    .put(function (req, res, next) {
-        var myquery = { task_id: req.params.task_id };
-        var req_priority = req.body.priority;
-        var req_department = req.body.department;
-        var req_assigned_on = req.body.assigned_on;
-        var req_status = req.body.status;
-        var req_task = req.body.task;
-       
-
-        mongo.connect(url, function (err, db) {
-            db.collection('tasks').update(myquery, {
-                $set: {
-                    priority: req_priority,                    
-                    assigned_on: req_assigned_on,
-                    department: req_department,
-                    status: req_status,
-                    task: req_task,
-                }
-            }, function (err, result) {
-                assert.equal(null, err);
-                if (err) {
-                    res.send('false');
-                }
-                db.close();
-                res.send('true');
-            });
-        });
-    });
-
-
-router.route('/delete_task_management/:task_id')
+router.route('/grades_delete/:grade_id')
     .delete(function (req, res, next) {
-        var myquery = { task_id: req.params.task_id };
+        var myquery = { grade_id: req.params.grade_id };
 
         mongo.connect(url, function (err, db) {
-            db.collection('tasks').deleteOne(myquery, function (err, result) {
+            db.collection('grades').deleteOne(myquery, function (err, result) {
                 assert.equal(null, err);
                 if (err) {
                     res.send('false');
@@ -180,6 +127,7 @@ router.route('/delete_task_management/:task_id')
             });
         });
     });
+
 
 
 module.exports = router;
