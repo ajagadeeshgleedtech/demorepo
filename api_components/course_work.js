@@ -14,7 +14,7 @@ var router = express.Router();
 var url = 'mongodb://' + config.dbhost + ':27017/s_erp_data';
 
 var cookieParser = require('cookie-parser');
-router.use(function(req, res, next) {
+router.use(function (req, res, next) {
     // do logging
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -24,7 +24,7 @@ router.use(function(req, res, next) {
 // Add Exams
 
 router.route('/course_works/:subject_id')
-    .post(function(req, res, next) {
+    .post(function (req, res, next) {
 
         var status = 1;
         var subject_id = req.params.subject_id;
@@ -32,7 +32,7 @@ router.route('/course_works/:subject_id')
 
         var item = {
             lession_id: 'getauto',
-            subject_id: subject_id,            
+            subject_id: subject_id,
             title: req.body.title,
             chapter_code: req.body.chapter_code,
             no_of_topics: req.body.no_of_topics,
@@ -40,156 +40,314 @@ router.route('/course_works/:subject_id')
             status: status,
 
         };
-        mongo.connect(url, function(err, db) {
-            autoIncrement.getNextSequence(db, 'coursework', function(err, autoIndex) {
+        mongo.connect(url, function (err, db) {
+            autoIncrement.getNextSequence(db, 'coursework', function (err, autoIndex) {
                 var collection = db.collection('coursework');
                 collection.ensureIndex({
                     "lession_id": 1,
                 }, {
-                    unique: true
-                }, function(err, result) {
-                    if (item.title == null || item.chapter_code == null || item.no_of_topics == null) {
-                        res.end('null');
-                    } else {
-                        collection.insertOne(item, function(err, result) {
-                            if (err) {
-                                if (err.code == 11000) {
-                                    console.log(err);
+                        unique: true
+                    }, function (err, result) {
+                        if (item.title == null || item.chapter_code == null || item.no_of_topics == null) {
+                            res.end('null');
+                        } else {
+                            collection.insertOne(item, function (err, result) {
+                                if (err) {
+                                    if (err.code == 11000) {
+                                        console.log(err);
+                                        res.end('false');
+                                    }
                                     res.end('false');
                                 }
-                                res.end('false');
-                            }
-                            collection.update({
-                                _id: item._id
-                            }, {
-                                $set: {
-                                    lession_id: subject_id + '-LES-' + autoIndex
-                                }
-                            }, function(err, result) {
-                                db.close();
-                                res.end('true');
+                                collection.update({
+                                    _id: item._id
+                                }, {
+                                        $set: {
+                                            lession_id: subject_id + '-LES-' + autoIndex
+                                        }
+                                    }, function (err, result) {
+                                        db.close();
+                                        res.end('true');
+                                    });
                             });
-                        });
-                    }
-                });
+                        }
+                    });
             });
         });
     })
 
 
-    .get(function(req, res, next) {
+    .get(function (req, res, next) {
         var subject_id = req.params.subject_id;
         var resultArray = [];
-        mongo.connect(url, function(err, db) {
+        mongo.connect(url, function (err, db) {
             assert.equal(null, err);
-            var cursor = db.collection('coursework').find({ subject_id });
-            cursor.forEach(function(doc, err) {
+            //  var cursor = db.collection('coursework').find({ subject_id });
+            var cursor = db.collection('coursework').aggregate([
+                {
+                    $match: {
+                        'subject_id': subject_id
+                    }
+                },
+                {
+                    "$lookup": {
+                        "from": "subjects",
+                        "localField": "subject_id",
+                        "foreignField": "subject_id",
+                        "as": "subjects"
+                    }
+                }
+            ])
+            cursor.forEach(function (doc, err) {
                 assert.equal(null, err);
                 resultArray.push(doc);
-            }, function() {
+            }, function () {
                 db.close();
                 res.send({
-                    [subject_id]: resultArray
+                    chapters: resultArray
+                });
+            });
+        });
+    });
+
+// MOdified
+// New api of chapter completion result
+
+router.route('/no_of_classes_to_chapter/:subject_id')
+    .post(function (req, res, next) {
+
+        var status = 1;
+        var subject_id = req.params.subject_id;
+        var start_date = req.body.start_date;
+        var end_date = req.body.end_date;
+        start_date = new Date(start_date);
+        end_date = new Date(end_date);
+        var start_date_milliSeconds = start_date.getTime();
+        var end_date_milliSeconds = end_date.getTime();
+        var no_of_days = (end_date_milliSeconds - start_date_milliSeconds) / (1000 * 24 * 60 * 60);
+        var totalSundays = 0;
+        var class_status = count = 0;
+
+
+        for (var i = start_date; i <= end_date;) {
+            if (i.getDay() == 0) {
+                totalSundays++;
+            }
+            i.setTime(i.getTime() + 1000 * 60 * 60 * 24);
+        }
+        var no_of_days_except_sundays = no_of_days - totalSundays + 1;
+
+        var item = {
+            chapter_id: 'getauto',
+            lession_id: req.body.lession_id,
+            start_date: req.body.start_date,
+            end_date: req.body.end_date,
+            subject_id: subject_id,
+            title: req.body.title,
+            classes: no_of_days_except_sundays,
+            class_status: class_status,
+            count: count,
+            chapter_code: req.body.chapter_code,
+            no_of_topics: req.body.no_of_topics,
+            description: req.body.description,
+            status: status,
+
+        };
+        // console.log(no_of_days + "hema");
+        // console.log(totalSundays + "babu");
+        // console.log(no_of_days_except_sundays);
+
+        mongo.connect(url, function (err, db) {
+            autoIncrement.getNextSequence(db, 'chapters', function (err, autoIndex) {
+                var collection = db.collection('chapters');
+                collection.ensureIndex({
+                    "chapter_id": 1,
+                }, {
+                        unique: true
+                    }, function (err, result) {
+                        if (item.title == null || item.start_date == null || item.end_date == null) {
+                            res.end('null');
+                        } else {
+                            collection.insertOne(item, function (err, result) {
+                                if (err) {
+                                    if (err.code == 11000) {
+                                        console.log(err);
+                                        res.end('false');
+                                    }
+                                    res.end('false');
+                                }
+                                collection.update({
+                                    _id: item._id
+                                }, {
+                                        $set: {
+                                            chapter_id: subject_id + '-CHP-' + autoIndex
+                                        }
+                                    }, function (err, result) {
+                                        db.close();
+                                        res.end('true');
+                                    });
+                            });
+                        }
+                    });
+            });
+        });
+    })
+
+
+    .get(function (req, res, next) {
+        var subject_id = req.params.subject_id;
+        var resultArray = [];
+        mongo.connect(url, function (err, db) {
+            assert.equal(null, err);
+            //  var cursor = db.collection('coursework').find({ subject_id });
+            var cursor = db.collection('chapters').aggregate([
+                {
+                    $match: {
+                        'subject_id': subject_id
+                    }
+                },
+                {
+                    "$lookup": {
+                        "from": "subjects",
+                        "localField": "subject_id",
+                        "foreignField": "subject_id",
+                        "as": "subjects"
+                    }
+                }
+            ])
+            cursor.forEach(function (doc, err) {
+                assert.equal(null, err);
+                resultArray.push(doc);
+            }, function () {
+                db.close();
+                res.send({
+                    chapters: resultArray
                 });
             });
         });
     });
 
 
+router.route('/edit_chapters/:chapter_id')
+    .put(function (req, res, next) {
+        var myquery = { chapter_id: req.params.chapter_id };
+        var req_count = req.body.no_of_completed_classes;
+        var req_classes = req.body.classes;
+        var req_class_status = (req_count / req_classes) * 100;
 
-router.route('/topics/:lesson_id')
-    .post(function(req, res, next) {
-        var lesson_id = req.params.lesson_id;
+
+        mongo.connect(url, function (err, db) {
+            db.collection('chapters').update(myquery, {
+                $set: {
+                    count: req_count,
+                    class_status: req_class_status,
+                }
+            }, function (err, result) {
+                assert.equal(null, err);
+                if (err) {
+                    res.send('false');
+                }
+                db.close();
+                res.send('true');
+            });
+        });
+    });
+
+
+
+router.route('/topics/:lession_id')
+    .post(function (req, res, next) {
+        var lession_id = req.params.lession_id;
         var status = 1;
         subjects = [];
         var item = {
             topic_id: 'getauto',
-            lesson_id: lesson_id,
+            lession_id: lession_id,
             title: req.body.title,
             description: req.body.description,
             status: status,
         };
-        mongo.connect(url, function(err, db) {
-            autoIncrement.getNextSequence(db, 'topics', function(err, autoIndex) {
+        mongo.connect(url, function (err, db) {
+            autoIncrement.getNextSequence(db, 'topics', function (err, autoIndex) {
                 var collection = db.collection('topics');
                 collection.ensureIndex({
                     "topic_id": 1,
                 }, {
-                    unique: true
-                }, function(err, result) {
-                    if (item.lesson_id == null || item.title == null) {
-                        res.end('null');
-                    } else {
-                        collection.insertOne(item, function(err, result) {
-                            if (err) {
-                                if (err.code == 11000) {
+                        unique: true
+                    }, function (err, result) {
+                        if (item.lession_id == null || item.title == null) {
+                            res.end('null');
+                        } else {
+                            collection.insertOne(item, function (err, result) {
+                                if (err) {
+                                    if (err.code == 11000) {
+                                        res.end('false');
+                                    }
                                     res.end('false');
                                 }
-                                res.end('false');
-                            }
-                            collection.update({
-                                _id: item._id
-                            }, {
-                                $set: {
-                                    topic_id: lesson_id + '-TOPIC' + autoIndex
-                                }
-                            }, function(err, result) {
-                                db.close();
-                                res.end('true');
+                                collection.update({
+                                    _id: item._id
+                                }, {
+                                        $set: {
+                                            topic_id: lession_id + '-TOPIC' + autoIndex
+                                        }
+                                    }, function (err, result) {
+                                        db.close();
+                                        res.end('true');
+                                    });
                             });
-                        });
-                    }
-                });
+                        }
+                    });
             });
         });
 
     })
-    .get(function(req, res, next) {
-        var lesson_id = req.params.lesson_id;
+    .get(function (req, res, next) {
+        var lession_id = req.params.lession_id;
         var resultArray = [];
-        mongo.connect(url, function(err, db) {
+        mongo.connect(url, function (err, db) {
             assert.equal(null, err);
-            var cursor = db.collection('topics').find({ lesson_id });
-            cursor.forEach(function(doc, err) {
+            var cursor = db.collection('topics').find({ lession_id });
+            cursor.forEach(function (doc, err) {
                 assert.equal(null, err);
                 resultArray.push(doc);
-            }, function() {
+            }, function () {
                 db.close();
                 res.send({
-                    [lesson_id]: resultArray
+                    chapters: resultArray
                 });
             });
         });
     });
 
-    
-    // Modified
-    // Get Chapter Details By LessionId
+
+// Modified
+// Get Chapter Details By LessionId
 
 router.route('/course_details/:lession_id')
-     .get(function(req, res, next) {
-        var lession_id= req.params.lession_id;
+    .get(function (req, res, next) {
+        var lession_id = req.params.lession_id;
         var status = 1;
         var resultArray = [];
-          mongo.connect(url, function(err, db) {
+        mongo.connect(url, function (err, db) {
             assert.equal(null, err);
-            var cursor = db.collection('coursework').find({lession_id});
-            cursor.forEach(function(doc, err) {
+            var cursor = db.collection('coursework').find({ lession_id });
+            cursor.forEach(function (doc, err) {
                 assert.equal(null, err);
                 resultArray.push(doc);
-            }, function() {
+            }, function () {
                 db.close();
                 res.send({
                     coursework: resultArray
                 });
             });
         });
-    }); 
+    });
 
 
 
 router.route('/topic_notes/:topic_id')
-    .post(function(req, res, next) {
+    .post(function (req, res, next) {
         var topic_id = req.params.topic_id;
         var status = 1;
         subjects = [];
@@ -201,51 +359,51 @@ router.route('/topic_notes/:topic_id')
             description: req.body.description,
             status: status,
         };
-        mongo.connect(url, function(err, db) {
-            autoIncrement.getNextSequence(db, 'topic_notes', function(err, autoIndex) {
+        mongo.connect(url, function (err, db) {
+            autoIncrement.getNextSequence(db, 'topic_notes', function (err, autoIndex) {
                 var collection = db.collection('topic_notes');
                 collection.ensureIndex({
                     "notes_id": 1,
                 }, {
-                    unique: true
-                }, function(err, result) {
-                    if (item.file_name == null || item.link_path == null) {
-                        res.end('null');
-                    } else {
-                        collection.insertOne(item, function(err, result) {
-                            if (err) {
-                                if (err.code == 11000) {
+                        unique: true
+                    }, function (err, result) {
+                        if (item.file_name == null || item.link_path == null) {
+                            res.end('null');
+                        } else {
+                            collection.insertOne(item, function (err, result) {
+                                if (err) {
+                                    if (err.code == 11000) {
+                                        res.end('false');
+                                    }
                                     res.end('false');
                                 }
-                                res.end('false');
-                            }
-                            collection.update({
-                                _id: item._id
-                            }, {
-                                $set: {
-                                    notes_id: topic_id + '-NOTES' + autoIndex
-                                }
-                            }, function(err, result) {
-                                db.close();
-                                res.end('true');
+                                collection.update({
+                                    _id: item._id
+                                }, {
+                                        $set: {
+                                            notes_id: topic_id + '-NOTES' + autoIndex
+                                        }
+                                    }, function (err, result) {
+                                        db.close();
+                                        res.end('true');
+                                    });
                             });
-                        });
-                    }
-                });
+                        }
+                    });
             });
         });
 
     })
-    .get(function(req, res, next) {
+    .get(function (req, res, next) {
         var topic_id = req.params.topic_id;
         var resultArray = [];
-        mongo.connect(url, function(err, db) {
+        mongo.connect(url, function (err, db) {
             assert.equal(null, err);
             var cursor = db.collection('topic_notes').find({ topic_id });
-            cursor.forEach(function(doc, err) {
+            cursor.forEach(function (doc, err) {
                 assert.equal(null, err);
                 resultArray.push(doc);
-            }, function() {
+            }, function () {
                 db.close();
                 res.send({
                     [topic_id]: resultArray
@@ -277,10 +435,10 @@ router.route('/topic_notes/:topic_id')
 
 
 var storage = multer.diskStorage({ //multers disk storage settings
-    destination: function(req, file, cb) {
+    destination: function (req, file, cb) {
         cb(null, './uploads/')
     },
-    filename: function(req, file, cb) {
+    filename: function (req, file, cb) {
         var datetimestamp = Date.now();
         cb(null, file.fieldname + '-' + datetimestamp + '.' + file.originalname.split('.')[file.originalname.split('.').length - 1])
     }
@@ -288,7 +446,7 @@ var storage = multer.diskStorage({ //multers disk storage settings
 
 var upload = multer({ //multer settings
     storage: storage,
-    fileFilter: function(req, file, callback) { //file filter
+    fileFilter: function (req, file, callback) { //file filter
         if (['xls', 'xlsx'].indexOf(file.originalname.split('.')[file.originalname.split('.').length - 1]) === -1) {
             return callback(new Error('Wrong extension type'));
         }
@@ -297,11 +455,11 @@ var upload = multer({ //multer settings
 }).single('file');
 
 router.route('/bulk_upload_courseworks/:subject_id')
-    .post(function(req, res, next) {
+    .post(function (req, res, next) {
         var subject_id = req.params.subject_id;
         var status = 1;
         var exceltojson;
-        upload(req, res, function(err) {
+        upload(req, res, function (err) {
             if (err) {
                 res.json({ error_code: 1, err_desc: err });
                 return;
@@ -325,7 +483,7 @@ router.route('/bulk_upload_courseworks/:subject_id')
                     input: req.file.path,
                     output: null, //since we don't need output.json
                     lowerCaseHeaders: true
-                }, function(err, result) {
+                }, function (err, result) {
                     if (err) {
                         return res.json({ error_code: 1, err_desc: err, data: null });
                     }
@@ -335,11 +493,11 @@ router.route('/bulk_upload_courseworks/:subject_id')
                     var count = 0;
 
                     if (test.length > 0) {
-                        test.forEach(function(key, value) {
+                        test.forEach(function (key, value) {
 
-                    var item = {
+                            var item = {
                                 lession_id: 'getauto',
-                                subject_id: subject_id,            
+                                subject_id: subject_id,
                                 title: key.title,
                                 chapter_code: key.chapter_code,
                                 no_of_topics: key.no_of_topics,
@@ -347,39 +505,39 @@ router.route('/bulk_upload_courseworks/:subject_id')
                                 status: status,
 
                             };
-                            mongo.connect(url, function(err, db) {
-                                autoIncrement.getNextSequence(db, 'coursework', function(err, autoIndex) {
+                            mongo.connect(url, function (err, db) {
+                                autoIncrement.getNextSequence(db, 'coursework', function (err, autoIndex) {
 
                                     var collection = db.collection('coursework');
                                     collection.ensureIndex({
                                         "lession_id": 1,
                                     }, {
-                                        unique: true
-                                    }, function(err, result) {
-                                        if (item.subject_id == null || item.title == null) {
-                                            res.end('null');
-                                        } else {
-                                            item.lession_id =  subject_id + '-LES-'+ autoIndex;
-                                            collection.insertOne(item, function(err, result) {
-                                                if (err) {
-                                                    console.log(err);
-                                                    if (err.code == 11000) {
+                                            unique: true
+                                        }, function (err, result) {
+                                            if (item.subject_id == null || item.title == null) {
+                                                res.end('null');
+                                            } else {
+                                                item.lession_id = subject_id + '-LES-' + autoIndex;
+                                                collection.insertOne(item, function (err, result) {
+                                                    if (err) {
+                                                        console.log(err);
+                                                        if (err.code == 11000) {
 
+                                                            res.end('false');
+                                                        }
                                                         res.end('false');
                                                     }
-                                                    res.end('false');
-                                                }
-                                                count++;
-                                                db.close();
+                                                    count++;
+                                                    db.close();
 
-                                                if (count == test.length) {
-                                                    res.end('true');
-                                                }
+                                                    if (count == test.length) {
+                                                        res.end('true');
+                                                    }
 
 
-                                            });
-                                        }
-                                    });
+                                                });
+                                            }
+                                        });
 
                                 });
                             });
@@ -403,14 +561,14 @@ router.route('/bulk_upload_courseworks/:subject_id')
 
 
 router.route('/edit_course_work/:lession_id')
-    .put(function(req, res, next) {
+    .put(function (req, res, next) {
         var myquery = { lession_id: req.params.lession_id };
         var req_title = req.body.title;
         var req_chapter_code = req.body.chapter_code;
         var req_no_of_topics = req.body.no_of_topics;
         var req_description = req.body.description;
 
-        mongo.connect(url, function(err, db) {
+        mongo.connect(url, function (err, db) {
             db.collection('coursework').update(myquery, {
                 $set: {
                     title: req_title,
@@ -418,7 +576,7 @@ router.route('/edit_course_work/:lession_id')
                     no_of_topics: req_no_of_topics,
                     description: req_description
                 }
-            }, function(err, result) {
+            }, function (err, result) {
                 assert.equal(null, err);
                 if (err) {
                     res.send('false');
@@ -431,11 +589,11 @@ router.route('/edit_course_work/:lession_id')
 
 
 router.route('/delete_course_work/:lession_id')
-    .delete(function(req, res, next) {
+    .delete(function (req, res, next) {
         var myquery = { lession_id: req.params.lession_id };
 
-        mongo.connect(url, function(err, db) {
-            db.collection('coursework').deleteOne(myquery, function(err, result) {
+        mongo.connect(url, function (err, db) {
+            db.collection('coursework').deleteOne(myquery, function (err, result) {
                 assert.equal(null, err);
                 if (err) {
                     res.send('false');
