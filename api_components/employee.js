@@ -1,3 +1,4 @@
+
 // flow
 var express = require("express");
 var config = require("../config.json");
@@ -12,6 +13,8 @@ var xlstojson = require("xls-to-json-lc");
 var xlsxtojson = require("xlsx-to-json-lc");
 var port = process.env.PORT || 4005;
 var router = express.Router();
+var fs = require('fs');
+var unzip = require('unzip');
 var url = 'mongodb://' + config.dbhost + ':27017/s_erp_data';
 var loginUrl = 'mongodb://' + config.dbhost + ':27017/auth';
 
@@ -440,6 +443,13 @@ router.route('/bulk_upload_employees/:school_id')
                                 perm_long: key.permlong,
                                 perm_lat: key.permlat
                             };
+                            var studentImage = {
+                                filename: "student.jpg",
+                                originalname: "student",
+                                imagePath: "uploads",
+                                mimetype: "jpg/image",
+
+                            };
 
                             mongo.connect(url, function (err, db) {
                                 autoIncrement.getNextSequence(db, 'employee', function (err, autoIndex) {
@@ -477,7 +487,8 @@ router.route('/bulk_upload_employees/:school_id')
                                                             }, {
                                                                     $push: {
                                                                         current_address,
-                                                                        permanent_address
+                                                                        permanent_address,
+                                                                        studentImage
                                                                     }
                                                                 });
                                                             if (item.job_category == "teaching") {
@@ -496,8 +507,6 @@ router.route('/bulk_upload_employees/:school_id')
                                                             if (count == test.length) {
                                                                 res.end('true');
                                                             }
-
-
                                                         });
                                                     }
                                                 });
@@ -585,11 +594,21 @@ router.route('/edit_employee_details/:employee_id')
         var blood_group = req.body.blood_group;
         var spoken_languages = req.body.spoken_languages;
         var country = req.body.country;
+        var state = req.body.state;
+        var alternate_email = req.body.alternate_email;
         var perm_city = req.body.perm_city;
         var postal_code = req.body.postal_code;
+        var perm_address = req.body.perm_address;
+        var cur_address = req.body.cur_address;
+        var martial_status = req.body.martial_status
+
+
+
+
 
         mongo.connect(url, function (err, db) {
             db.collection('employee').update(myquery, {
+
                 $set: {
                     first_name: req_first_name,
                     last_name: req_last_name,
@@ -599,16 +618,24 @@ router.route('/edit_employee_details/:employee_id')
                     job_category: req_job_category,
                     experience: req_experience,
                     phone: req_phone,
-                    email: req_email,                    
+                    email: req_email,
                     website: req_website,
                     joined_on: req_joined_on,
                     salary_band: salary_band,
+                    alternate_email: alternate_email,
+                    state: state,
                     basic_pay: basic_pay,
+                    //  cur_address: cur_address,
+                    // perm_address: perm_address,
                     mobile: mobile,
                     blood_group: blood_group,
                     spoken_languages: spoken_languages,
                     country: country,
-                    postal_code: postal_code
+                    postal_code: postal_code,
+                    //   perm_city: perm_city,
+                    martial_status: martial_status,
+                    permanent_address: [{ perm_city: perm_city, perm_address: perm_address }],
+                    current_address: [{ cur_address: cur_address }]
                 }
             }, function (err, result) {
                 assert.equal(null, err);
@@ -621,7 +648,34 @@ router.route('/edit_employee_details/:employee_id')
         });
     });
 
+// else {
+//     mongo.connect(url, function (err, db) {
+//         var cursor = db.collection('teachers').find({ employee_id: employee_id });
+//         cursor.forEach(function (doc, err) {
+//             assert.equal(null, err);
+//             resultArray.push(doc);
+//         }, function () {
+//             uniqueId = resultArray[0].teacher_id;
+//             db.collection('teachers').deleteOne(myquery, function (err, result) {
+//                 if (err) {
+//                     res.send('teacher false');
+//                 }
+//                 else {
+//                     mongo.connect(loginUrl, function (err, db) {
+//                         db.collection('users').deleteOne({ uniqueId: uniqueId }, function (err, result) {
+//                             assert.equal(null, err);
+//                             if (err) {
+//                                 res.send('user false');
+//                             }
+//                         });
+//                     });
+//                 }
 
+//             });
+
+//         });
+//     });
+// }
 
 router.route('/delete_employee/:employee_id')
     .delete(function (req, res, next) {
@@ -642,23 +696,28 @@ router.route('/delete_employee/:employee_id')
                             assert.equal(null, err);
                             resultArray.push(doc);
                         }, function () {
-                            uniqueId = resultArray[0].teacher_id;
-                            db.collection('teachers').deleteOne(myquery, function (err, result) {
-                                if (err) {
-                                    res.send('teacher false');
-                                }
-                                else {
-                                    mongo.connect(loginUrl, function (err, db) {
-                                        db.collection('users').deleteOne({ uniqueId: uniqueId }, function (err, result) {
-                                            assert.equal(null, err);
-                                            if (err) {
-                                                res.send('user false');
-                                            }
+                            //  console.log(resultArray);
+                            length = resultArray.length;
+                            //   console.log(length);
+                            if (length != 0) {
+                                uniqueId = resultArray[0].teacher_id;
+                                db.collection('teachers').deleteOne(myquery, function (err, result) {
+                                    if (err) {
+                                        res.send('teacher false');
+                                    }
+                                    else {
+                                        mongo.connect(loginUrl, function (err, db) {
+                                            db.collection('users').deleteOne({ uniqueId: uniqueId }, function (err, result) {
+                                                assert.equal(null, err);
+                                                if (err) {
+                                                    res.send('user false');
+                                                }
+                                            });
                                         });
-                                    });
-                                }
+                                    }
 
-                            });
+                                });
+                            }
 
                         });
                     });
@@ -670,6 +729,21 @@ router.route('/delete_employee/:employee_id')
         });
     });
 
+// router.route('/delete_employee/:employee_id')
+// .delete(function (req, res, next) {
+//     var myquery = { employee_id: req.params.employee_id };
+
+//     mongo.connect(url, function (err, db) {
+//         db.collection('employee').deleteOne(myquery, function (err, result) {
+//             assert.equal(null, err);
+//             if (err) {
+//                 res.send('false');
+//             }
+//             db.close();
+//             res.send('true');
+//         });
+//     });
+// });
 
 router.route('/employee_photo_edit/:employee_id')
     .post(function (req, res, next) {
@@ -713,3 +787,54 @@ router.route('/employee_photo_edit/:employee_id')
 
 
 module.exports = router;
+
+
+var storageImage = multer.diskStorage({ //multers disk storage settings
+    destination: function (req, file, cb) {
+        cb(null, './uploads/')
+    },
+    filename: function (req, file, cb) {
+        var datetimestamp = Date.now();
+        cb(null, file.fieldname + '-' + datetimestamp + '.' + file.originalname.split('.')[file.originalname.split('.').length - 1])
+        // cb(null, file.originalname);
+    }
+});
+
+
+var uploadZip = multer({ //multer settings
+    storage: storageImage,
+    fileFilter: function (req, file, callback) { //file filter
+        if (['.zip'].indexOf(file.originalname.split('.')[file.originalname.split('.').length - 1]) === -1) {
+            return callback(new Error('Wrong extension type'));
+        }
+        callback(null, true);
+    }
+}).single('file');
+
+// Add Employee
+router.route('/multiple_images/:school_id')
+    .post(function (req, res, next) {
+        var status = 1;
+        var school_id = req.params.school_id;
+
+        uploadZip(req, res, function (err) {
+            if (err) {
+                res.json({ error_code: 1, err_desc: err });
+                return;
+            }
+            /** Multer gives us file info in req.file object */
+            if (!req.file) {
+                res.json({ error_code: 1, err_desc: "No file passed" });
+                return;
+            }
+            var dirPath = __dirname + "./uploads/"+req.file.filename;
+
+            var destPath = __dirname + "/uploads/unzip";
+
+            fs.createReadStream(dirPath).pipe(unzip.Extract({ path: destPath }));
+
+            res.redirect('/');
+
+
+        });
+    });
