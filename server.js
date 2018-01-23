@@ -39,7 +39,7 @@ var tasks = require("./api_components/tasks.js");
 var session_timings = require("./api_components/session_timings.js");
 var pay_band = require("./api_components/pay_band.js");
 var grades = require("./api_components/grades.js");
-const authentication = require('./controllers/authentication');
+const Authentication = require('./controllers/authentication');
 const passportService = require('./services/passport');
 const passport = require('passport');
 
@@ -68,11 +68,11 @@ mongoose.connect('mongodb://localhost:auth/auth');
 var cookieParser = require('cookie-parser');
 app.use(cookieParser());
 
-// app.use(bodyParser.urlencoded({
-//     extended: false
-// }));
-app.use(bodyParser.json({ limit: '50mb' }));
-app.use(bodyParser.urlencoded({ limit: '100mb', extended: false, parameterLimit: 10000 }));
+app.use(bodyParser.urlencoded({
+    extended: false
+}));
+// app.use(bodyParser.json({ limit: '50mb' }));
+// app.use(bodyParser.urlencoded({ limit: '100mb', extended: false, parameterLimit: 10000 }));
 
 
 app.use(express.static(__dirname + "/public"));
@@ -103,10 +103,10 @@ app.get('/secure', requireAuth, function (req, res) {
     res.send('School ERP API -  Authorised Page');
 });
 
-app.post('/signin', requireSignin, authentication.signin);
+app.post('/signin', requireSignin, Authentication.signin);
 
-app.post('/signup', authentication.signup);
-app.post('/checkemail', authentication.checkEmail);
+app.post('/signup', Authentication.signup);
+app.post('/checkemail', Authentication.checkEmail);
 
 router.route('/em')
     .get(function (req, res, next) {
