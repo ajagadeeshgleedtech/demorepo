@@ -39,7 +39,7 @@ var tasks = require("./api_components/tasks.js");
 var session_timings = require("./api_components/session_timings.js");
 var pay_band = require("./api_components/pay_band.js");
 var grades = require("./api_components/grades.js");
-const Authentication = require('./controllers/authentication');
+const authentication = require('./controllers/authentication');
 const passportService = require('./services/passport');
 const passport = require('passport');
 
@@ -103,10 +103,10 @@ app.get('/secure', requireAuth, function (req, res) {
     res.send('School ERP API -  Authorised Page');
 });
 
-app.post('/signin', requireSignin, Authentication.signin);
+app.post('/signin', requireSignin, authentication.signin);
 
-app.post('/signup', Authentication.signup);
-app.post('/checkemail', Authentication.checkEmail);
+app.post('/signup', authentication.signup);
+app.post('/checkemail', authentication.checkEmail);
 
 router.route('/em')
     .get(function (req, res, next) {
