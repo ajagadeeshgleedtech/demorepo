@@ -178,8 +178,6 @@ router.route('/class_timetables/:section_id')
                         "room_no": "$room_no",
                         "subject_id": "$subject_id",
                         "name": "$subject_doc.name",
-
-
                     }
                 }
             ])
@@ -377,5 +375,7 @@ router.route('/class_timetable_by_day/:select_day/:section_id')
             });
         });
     });
+
+    
 
 module.exports = router;

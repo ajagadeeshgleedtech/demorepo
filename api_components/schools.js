@@ -10,7 +10,7 @@ var port = process.env.PORT || 4005;
 var router = express.Router();
 var multer = require('multer');
 var url = 'mongodb://' + config.dbhost + ':27017/s_erp_data';
-// var mailer = require('nodemailer');
+//var mailer = require('nodemailer');
 var schoolUserModule = require('../api_components/school_registration_user');
 var cookieParser = require('cookie-parser');
 router.use(function (req, res, next) {

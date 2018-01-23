@@ -86,19 +86,19 @@ router.route('/session_timings/:school_id')
         });
     });
 
-    router.route('/session_edit/:session_id')
-    .post(function (req, res, next) {
+router.route('/edit_session/:session_id')
+    .put(function (req, res, next) {
         var myquery = { session_id: req.params.session_id };
         var session = req.body.session;
         var start_time = req.body.start_time;
         var end_time = req.body.end_time;
         mongo.connect(url, function (err, db) {
-            db.collection('session_timings').update(myquery, { 
-                $set: { 
+            db.collection('session_timings').update(myquery, {
+                $set: {
                     session: session,
                     start_time: start_time,
-                    end_time: end_time, 
-                } 
+                    end_time: end_time,
+                }
             }, function (err, result) {
                 assert.equal(null, err);
                 if (err) {
@@ -112,7 +112,7 @@ router.route('/session_timings/:school_id')
 
 
 
-router.route('/session_delete/:session_id')
+router.route('/delete_session/:session_id')
     .delete(function (req, res, next) {
         var myquery = { session_id: req.params.session_id };
 

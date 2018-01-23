@@ -205,13 +205,22 @@ router.route('/search_employee/:job_category/:gender')
         });
     });
 
-router.route('/employees_by_category/:job_category')
+router.route('/employees_by_category/:job_category/:school_id')
     .get(function (req, res, next) {
         var job_category = req.params.job_category;
+        var school_id = req.params.school_id;
         var resultArray = [];
+        var cursor;
+      //  console.log(job_category);
         mongo.connect(url, function (err, db) {
             assert.equal(null, err);
-            var cursor = db.collection('employee').find({ job_category: job_category });
+            //var cursor = db.collection('employee').find({ job_category: job_category, school_id: school_id });
+            if (job_category == "all") {            
+                 cursor = db.collection('employee').find({ school_id: school_id });
+            }
+            else {             
+                 cursor = db.collection('employee').find({ job_category: job_category, school_id: school_id });
+            }
             cursor.forEach(function (doc, err) {
                 resultArray.push(doc);
             }, function () {
@@ -362,6 +371,7 @@ router.route('/bulk_upload_employees/:school_id')
         var school_id = req.params.school_id;
         var status = 1;
         var exceltojson;
+        var teachers_account = [];
         upload(req, res, function (err) {
             if (err) {
                 res.json({ error_code: 1, err_desc: err });
@@ -380,7 +390,7 @@ router.route('/bulk_upload_employees/:school_id')
             } else {
                 exceltojson = xlstojson;
             }
-            console.log(req.file.path);
+            // console.log(req.file.path);
             try {
                 exceltojson({
                     input: req.file.path,
@@ -391,13 +401,12 @@ router.route('/bulk_upload_employees/:school_id')
                         return res.json({ error_code: 1, err_desc: err, data: null });
                     }
                     res.json({ data: result });
-                    console.log(result[0]);
+                    //  console.log(result[0]);
                     var test = result;
-                    var count = 0;
+                    var count1 = 0;
 
                     if (test.length > 0) {
                         test.forEach(function (key, value) {
-
 
                             var item = {
                                 employee_id: 'getauto',
@@ -409,22 +418,22 @@ router.route('/bulk_upload_employees/:school_id')
                                 dob: key.dob,
                                 gender: key.gender,
                                 qualification: key.qualification,
-                                job_category: key.job_category,
+                                job_category: key.jobcategory,
                                 experience: key.experience,
                                 phone: key.phone,
                                 email: key.email,
                                 website: key.website,
                                 joined_on: key.joinedon,
-                                basic_pay: key.basic_pay,
-                                blood_group: key.blood_group,
-                                spoken_languages: key.spoken_languages,
-                                salary_band: key.salary_band,
-                                martial_status: key.martial_status,
+                                basic_pay: key.basicpay,
+                                blood_group: key.bloodgroup,
+                                spoken_languages: key.spokenlanguages,
+                                salary_band: key.salaryband,
+                                martial_status: key.martialstatus,
                                 mobile: key.mobile,
-                                perm_city: key.perm_city,
+                                perm_city: key.permcity,
                                 country: key.country,
                                 state: key.state,
-                                postal_code: key.postal_code,
+                                postal_code: key.postalcode,
                                 status: status,
                             };
                             var current_address = {
@@ -443,7 +452,7 @@ router.route('/bulk_upload_employees/:school_id')
                                 perm_long: key.permlong,
                                 perm_lat: key.permlat
                             };
-                            var studentImage = {
+                            var employeeImage = {
                                 filename: "student.jpg",
                                 originalname: "student",
                                 imagePath: "uploads",
@@ -488,23 +497,27 @@ router.route('/bulk_upload_employees/:school_id')
                                                                     $push: {
                                                                         current_address,
                                                                         permanent_address,
-                                                                        studentImage
+                                                                        employeeImage
                                                                     }
                                                                 });
+                                                            // console.log(item.job_category);
                                                             if (item.job_category == "teaching") {
+                                                                // console.log("hema");
                                                                 var requestData = {}
                                                                 requestData.name = item.first_name + " " + item.last_name;
                                                                 requestData.employee_id = 'SCH-EMP-' + autoIndex;
                                                                 requestData.joined_on = item.joined_on;
                                                                 requestData.school_id = school_id;
-
-                                                                teacherModule.addTeacher(requestData);
+                                                                teachers_account.push(requestData);
+                                                                // teacherModule.addTeacher(requestData);
 
                                                             }
-                                                            count++;
+                                                            count1++;
                                                             db.close();
 
-                                                            if (count == test.length) {
+                                                            if (count1 == test.length) {
+                                                                // console.log(teachers_account);
+                                                                teacherModule.teacher(teachers_account);
                                                                 res.end('true');
                                                             }
                                                         });
@@ -601,10 +614,6 @@ router.route('/edit_employee_details/:employee_id')
         var perm_address = req.body.perm_address;
         var cur_address = req.body.cur_address;
         var martial_status = req.body.martial_status
-
-
-
-
 
         mongo.connect(url, function (err, db) {
             db.collection('employee').update(myquery, {
@@ -827,7 +836,7 @@ router.route('/multiple_images/:school_id')
                 res.json({ error_code: 1, err_desc: "No file passed" });
                 return;
             }
-            var dirPath = __dirname + "./uploads/"+req.file.filename;
+            var dirPath = __dirname + "./uploads/" + req.file.filename;
 
             var destPath = __dirname + "/uploads/unzip";
 

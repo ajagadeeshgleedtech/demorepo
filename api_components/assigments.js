@@ -40,7 +40,7 @@ router.route('/assignment/:section_id/:lession_id')
             lession_id: lession_id,
             school_id: school_id,
             assignment_title: req.body.assignment_title,
-            subject_name: req.body.subject_name,
+            subject_id: req.body.subject_id,
             due_date: req.body.due_date,
             description: req.body.description,
             status: status,
@@ -602,6 +602,16 @@ router.route('/delete_assignments/:assignment_id')
                 assert.equal(null, err);
                 if (err) {
                     res.send('false');
+                }
+                else {
+                    mongo.connect(url, function (err, db) {
+                        db.collection('assignment_marks').deleteOne(myquery, function (err, result) {
+                            assert.equal(null, err);
+                            if (err) {
+                                res.send('false');
+                            }
+                        });
+                    });
                 }
                 db.close();
                 res.send('true');

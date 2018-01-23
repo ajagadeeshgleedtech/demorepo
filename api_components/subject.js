@@ -207,7 +207,7 @@ router.route('/bulk_upload_subjects/:section_id')
                         return res.json({ error_code: 1, err_desc: err, data: null });
                     }
                     res.json({ data: result });
-                    console.log(result[0]);
+                    //  console.log(result[0]);
                     var test = result;
                     var count = 0;
 
@@ -300,6 +300,36 @@ router.route('/delete_subjects/:subject_id')
                 assert.equal(null, err);
                 if (err) {
                     res.send('false');
+                }
+                else {
+                    mongo.connect(url, function (err, db) {
+                        db.collection('coursework').deleteOne(myquery, function (err, result) {
+                            assert.equal(null, err);
+                            if (err) {
+                                res.send('false');
+                            }
+                            else {
+                                mongo.connect(url, function (err, db) {
+                                    db.collection('assignments').deleteOne(myquery, function (err, result) {
+                                        assert.equal(null, err);
+                                        if (err) {
+                                            res.send('false');
+                                        }
+                                        else {
+                                            mongo.connect(url, function (err, db) {
+                                                db.collection('assignment_marks').deleteOne(myquery, function (err, result) {
+                                                    assert.equal(null, err);
+                                                    if (err) {
+                                                        res.send('false');
+                                                    }
+                                                });
+                                            });
+                                        }
+                                    });
+                                });
+                            }
+                        });
+                    });
                 }
                 db.close();
                 res.send('true');
