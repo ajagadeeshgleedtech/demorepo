@@ -68,11 +68,11 @@ mongoose.connect('mongodb://localhost:auth/auth');
 var cookieParser = require('cookie-parser');
 app.use(cookieParser());
 
-app.use(bodyParser.urlencoded({
-    extended: false
-}));
-// app.use(bodyParser.json({ limit: '50mb' }));
-// app.use(bodyParser.urlencoded({ limit: '100mb', extended: false, parameterLimit: 10000 }));
+// app.use(bodyParser.urlencoded({
+//     extended: false
+// }));
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '100mb', extended: false, parameterLimit: 10000 }));
 
 
 app.use(express.static(__dirname + "/public"));
@@ -104,6 +104,8 @@ app.get('/secure', requireAuth, function (req, res) {
 });
 
 app.post('/signin', requireSignin, Authentication.signin);
+
+app.post('/testing', requireSignin, Authentication.signin);
 
 app.post('/signup', Authentication.signup);
 app.post('/checkemail', Authentication.checkEmail);
