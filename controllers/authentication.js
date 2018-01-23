@@ -10,7 +10,7 @@ var mongo = require('mongodb').MongoClient;
 var url = 'mongodb://' + config1.dbhost + ':27017/s_erp_data';
 var forEach = require('async-foreach').forEach;
 var ObjectID = require('mongodb').ObjectID;
-
+console.log("authentication");
 function tokenForUser(user) {
 	// console.log(user)
 	const timestamp = new Date().getTime();
