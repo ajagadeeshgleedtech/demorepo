@@ -25,7 +25,7 @@ function tokenForUser(user) {
 exports.signin = function (req, res, next) {
 	// User has already had their email and password auth'd
 	// we just need to give them a token
-  console.log("hi");
+   
 	if (req.user.role == 'parent') {
 	  mongo.connect(url, function (err, db) {
 		   var collection = db.collection('parents').findOne({"parent_id":  req.user.uniqueId},function(error,resultsData){

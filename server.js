@@ -42,7 +42,7 @@ var grades = require("./api_components/grades.js");
 const Authentication = require('./controllers/authentication');
 const passportService = require('./services/passport');
 const passport = require('passport');
-const signinauth = require('./controllers/authentication');
+
 
 const requireAuth = passport.authenticate('jwt', { session: false });
 const requireSignin = passport.authenticate('local', { session: false });
@@ -103,8 +103,8 @@ app.get('/secure', requireAuth, function (req, res) {
     res.send('School ERP API -  Authorised Page');
 });
 
-//app.post('/signin', requireSignin, Authentication.signin);
-app.post('/signin',  requireSignin, signinauth.signin);
+app.post('/signin', requireSignin, Authentication.signin);
+
 app.post('/signup', Authentication.signup);
 app.post('/checkemail', Authentication.checkEmail);
 
