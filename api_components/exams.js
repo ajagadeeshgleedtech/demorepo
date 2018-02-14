@@ -172,7 +172,6 @@ router.route('/examsbysectionid/:exam_sch_id/:section_id')
             {
                 $group: {
                     _id: '$_id',
-
                     "exam_paper_id": { "$first": "$exam_paper_id" },
                     "subject_id": { "$first": "$subject_id" },
                     "exam_sch_id": { "$first": "$exam_sch_id" },
@@ -373,11 +372,15 @@ router.route('/marksbulk_eval/:exam_sch_id/:exam_paper_id/:section_id/:class_id'
                         autoIncrement.getNextSequence(db, 'exam_evaluation', function (err, autoIndex) {
                             var data = db.collection('exam_evaluation').find({
                                 section_id: section_id,
-                                exam_paper_id: exam_paper_id
+                                exam_paper_id: exam_paper_id,
+                                student_id: item.student_id
                             }).count(function (e, triggerCount) {
+
                                 if (triggerCount > 0) {
-                                    db.close();
-                                    res.end('false');
+                                    count++;
+                                    if (count == req.body.studentsMarks.length) {
+                                        res.send('false');
+                                    }
                                 } else {
                                     var collection = db.collection('exam_evaluation');
                                     collection.ensureIndex({

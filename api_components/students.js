@@ -47,7 +47,7 @@ var uploadImage = multer({ //multer settings
         }
         callback(null, true);
     }
-}).single('file');
+}).any();
 
 
 // Add Stundents
@@ -58,6 +58,7 @@ router.route('/students/:section_id')
         var splited = section_id.split("-");
         var school_id = splited[0] + '-' + splited[1];
         var class_id = splited[0] + '-' + splited[1] + '-' + splited[2] + '-' + splited[3];
+        var studentDocuments = studentImage = filesArray = [];
 
         uploadImage(req, res, function (err) {
             if (err) {
@@ -65,16 +66,39 @@ router.route('/students/:section_id')
                 return;
             }
             /** Multer gives us file info in req.file object */
-            if (!req.file) {
+            if (!req.files) {
                 res.json({ error_code: 1, err_desc: "No file passed" });
                 return;
             }
-            var studentImage = {
-                filename: req.file.filename,
-                originalname: req.file.originalname,
-                imagePath: req.file.path,
-                mimetype: req.file.mimetype,
+            filesArray = req.files;
+            console.log(req.files);
+            for (i = 0; i < filesArray.length; i++) {
+
+                filename = filesArray[i].filename;
+                originalname = filesArray[i].originalname;
+                path = filesArray[i].path;
+                mimetype = filesArray[i].mimetype;
+
+                if (i == 0) {
+                    // studentImage.push({ filename: filename, imagePath: path, originalname: originalname, mimetype: mimetype });
+                    studentImage = {
+                        filename: filename,
+                        originalname: originalname,
+                        imagePath: path,
+                        mimetype: mimetype,
+                    }
+                }
+                else {
+                    studentDocuments.push({ filename: filename, originalname: originalname, mimetype: mimetype });
+                }
             }
+
+            // var studentImage = {
+            //     filename: req.file.filename,
+            //     originalname: req.file.originalname,
+            //     imagePath: req.file.path,
+            //     mimetype: req.file.mimetype,
+            // }
             var parent_account_details = {};
             parent_account_details.parent_account_create = req.body.parent_account_create;
             parent_account_details.parent_account_new = req.body.parent_account_new;
@@ -99,6 +123,7 @@ router.route('/students/:section_id')
                 dob: req.body.dob,
                 aadhar_no: req.body.aadhar_no,
                 religion: req.body.religion,
+                date: new Date(),
                 phone: req.body.phone,
                 email: req.body.email,
                 category: req.body.category,
@@ -179,6 +204,7 @@ router.route('/students/:section_id')
                                                 current_address,
                                                 permanent_address,
                                                 studentImage,
+                                                studentDocuments,
                                                 parents: parent_father
                                             }
                                         }, function (err, result) {
@@ -272,7 +298,7 @@ router.route('/students/:section_id')
                 }
             }
 
-            ]);
+            ]).sort({ roll_no: 1 });
             cursor.forEach(function (doc, err) {
                 assert.equal(null, err);
                 resultArray.push(doc);
@@ -300,6 +326,43 @@ router.route('/search_student/:academic_year/:class_id/:section/:search_key')
             }, function () {
                 db.close();
                 res.send(resultArray);
+            });
+        });
+    });
+
+router.route('/totalStudents_in_school/:school_id')
+    .get(function (req, res, next) {
+        var school_id = req.params.school_id;
+        var resultArray = [];
+        mongo.connect(url, function (err, db) {
+            assert.equal(null, err);
+            var cursor = db.collection('students').find({ school_id: school_id });
+            cursor.forEach(function (doc, err) {
+                resultArray.push(doc);
+            }, function () {
+                length = resultArray.length;
+                db.close();
+                res.send({ students: length });
+            });
+        });
+    });
+
+router.route('/totalNewStudents_in_school_by_Date/:select_date/:school_id')
+    .get(function (req, res, next) {
+        var school_id = req.params.school_id;
+        var select_date = new Date(req.params.select_date);
+        var endDate = new Date(select_date);
+        endDate.setDate(endDate.getDate() + 1)
+        var resultArray = [];
+        mongo.connect(url, function (err, db) {
+            assert.equal(null, err);
+            var cursor = db.collection('students').find({ date: { $gte: new Date(select_date.toISOString()), $lt: new Date(endDate.toISOString()) }, school_id: school_id });
+            cursor.forEach(function (doc, err) {
+                resultArray.push(doc);
+            }, function () {
+                length = resultArray.length;
+                db.close();
+                res.send({ students: length });
             });
         });
     });
@@ -533,6 +596,7 @@ router.route('/bulk_upload_students/:section_id')
         var class_id = splited[0] + '-' + splited[1] + '-' + splited[2] + '-' + splited[3];
         var status = 1;
         var exceltojson;
+        var date = new Date();
         var parents_account = [];
         upload(req, res, function (err) {
             if (err) {
@@ -593,6 +657,7 @@ router.route('/bulk_upload_students/:section_id')
                                 email: key.email,
                                 category: key.category,
                                 admission_date: key.admissiondate,
+                                date: date,
                                 admission_no: key.admissionno,
                                 roll_no: key.rollno,
                                 academic_year: key.academicyear,
@@ -697,7 +762,7 @@ router.route('/bulk_upload_students/:section_id')
                                                         var requestData = {}
                                                         requestData.parent_account_create = parent_account_details.parent_account_create;
                                                         requestData.parent_account_new = parent_account_details.parent_account_new;
-                                                       // requestData.parent_account_create = parent_account_details.parent_account_create;
+                                                        // requestData.parent_account_create = parent_account_details.parent_account_create;
                                                         requestData.name = parent_father.parent_name;
                                                         requestData.student_id = class_id + '-STD-' + autoIndex;
                                                         requestData.parent_id = parent_account_details.parent_id;
@@ -705,7 +770,7 @@ router.route('/bulk_upload_students/:section_id')
                                                         requestData.class_id = parent_account_details.class_id;
                                                         requestData.section_id = parent_account_details.section_id;
                                                         //  console.log(requestData);
-                                                          parents_account.push(requestData);
+                                                        parents_account.push(requestData);
                                                         //  console.log(parent_account_details.parent_account_new);
                                                         // if (parent_account_details.parent_account_new == true || parent_account_details.parent_account_new == 'true' || parent_account_details.parent_account_new == 'TRUE') {
                                                         //     //  console.log("newaccount")
@@ -722,7 +787,7 @@ router.route('/bulk_upload_students/:section_id')
 
                                                     if (count == test.length) {
                                                         //  console.log(parents_account);
-                                                          parentModule.parent(parents_account);
+                                                        parentModule.parent(parents_account);
                                                         res.end('true');
                                                     }
 

@@ -6,9 +6,12 @@ var api_key = "api-key-KJFSI4924R23RFSDFSD7F94";
 var mongo = require('mongodb').MongoClient;
 var autoIncrement = require("mongodb-autoincrement");
 var assert = require('assert');
+var multer = require('multer');
 var port = process.env.PORT || 4005;
 var router = express.Router();
 var url = 'mongodb://' + config.dbhost + ':27017/s_erp_data';
+var loginUrl = 'mongodb://' + config.dbhost + ':27017/auth';
+var number = 0;
 
 var cookieParser = require('cookie-parser');
 router.use(function (req, res, next) {
@@ -250,6 +253,31 @@ router.route('/get_section_name/:section_id')
         });
     });
 
+router.route('/class_section_school/:class')
+    .delete(function (req, res, next) {
+        var myquery = { school_id: req.params.class };
+        mongo.connect(url, function (err, db) {
+            db.collection('schools').deleteOne(myquery, function (err, result) {
+                assert.equal(null, err);
+                if (err) {
+                    res.send('false');
+                } else {
+                    mongo.connect(url, function (err, db) {
+                        db.collection('users').deleteOne(myquery, function (err, result) {
+                            assert.equal(null, err);
+                            if (err) {
+                                res.send('students false');
+                            }
+                        });
+                    });
+                }
+                db.close();
+                res.send('true');
+            });
+        });
+    });
+
+
 router.route('/class_sections_edit/:section_id/:name/:value')
     .post(function (req, res, next) {
         var section_id = req.params.section_id;
@@ -314,6 +342,63 @@ router.route('/delete_sections/:section_id')
             });
         });
     });
+
+
+var storageImage = multer.diskStorage({ //multers disk storage settings
+    destination: function (req, file, cb) {
+        cb(null, './uploads/')
+    },
+    filename: function (req, file, cb) {
+        var datetimestamp = Date.now();
+        cb(null, file.fieldname + '-' + datetimestamp + '.' + file.originalname.split('.')[file.originalname.split('.').length - 1])
+        // cb(null, file.originalname);
+    }
+});
+
+var uploadImage = multer({ //multer settings
+    storage: storageImage,
+    fileFilter: function (req, file, callback) { //file filter
+        if (['jpg', 'png'].indexOf(file.originalname.split('.')[file.originalname.split('.').length - 1]) === -1) {
+            return callback(new Error('Wrong extension type'));
+        }
+        callback(null, true);
+    }
+}).any();
+
+router.route('/multiplephotos')
+    .post(function (req, res, next) {
+
+        var result = [];
+        var studentImage = [];
+        uploadImage(req, res, function (err) {
+            //  console.log(req.body);
+            //  console.log(req.files.length);
+            filesArray = req.files;
+            //   console.log(req.files);
+            for (i = 0; i < filesArray.length; i++) {
+
+                filename = filesArray[i].filename;
+                originalname = filesArray[i].originalname;
+                mimetype = filesArray[i].mimetype;
+                if (i == 0) {
+                    studentImage.push({ filename: filename, originalname: originalname, mimetype: mimetype });
+                }
+                else {
+                    result.push({ filename: filename, originalname: originalname, mimetype: mimetype });
+                }
+            }
+
+            // console.log(studentImage);
+            // console.log(result);
+
+            if (err) {
+                return res.end("Error uploading file.");
+            }
+
+        });
+        res.end("hello");
+    });
+
 
 
 
